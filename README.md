@@ -11,7 +11,7 @@ This project is collaboratively developed under the guidance of Professor Jubert
 
 **Team 2** 
 * **Components**: SliderText, Grid, Card
-* **Members**: [Erick Semprún](https://github.com/Ejsll03), David Mundo, Carlos Bracho
+* **Members**: [Erick Semprún](https://github.com/Ejsll03), David Mundo, Carlos Bracho, [Juan Villasmil](https://github.com/jdvillasmil)
 
 **Team 3**
 * **Components**: Calendar, FieldSet
