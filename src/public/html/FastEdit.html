@@ -1,0 +1,60 @@
+<html>
+    <head>
+        <script type="module" src="../js/com/Fast.js"></script>
+        <link rel="icon" href="../images/icons/favicon.png" sizes="32x32" type="image/png">
+    </head>
+    <body>
+        <script>
+            let fastInit = async () => {
+                // await fast.getClass("FastEdit");
+                // fast.callbackids = ['editjs','MyFastEdit'];
+                fast.fBlur = ()=>{console.log('salio del edit HTML...onblur')};
+                //fast.callback =()=>{console.log('callBack ok...');}
+                let e = await fast.createInstance("FastEdit", {
+                    'id':'editjs', 
+                    'required' : true,
+                    'type':'number',
+                    'message': 'mensaje personalno es numero..!',
+                    'caption' : 'Editor - JS:',
+                    'hiddenValue' : "valor oculto", 
+                    //'readonly' : true,
+                    //'value' : 'Juan',
+                    //'disabled' : true,
+                    'style' : {'left':'10px', 'top':'100px'},
+                    'events' : {
+                        'click': ()=>{ 
+                            console.log('Hizo click en Nuevo Caption...');
+                            console.log("Instancia del HTML:", fast.getInstance("MyFastEdit"));
+                        }
+                    }
+                });
+
+            //    fast.callback = async ()=>{
+                e.built = async ()=>{
+                    fast.e2 = document.getElementById('MyFastEdit');//edit html
+                    console.log('Hidden Value:', e.hiddenValue);//edit js
+                    e.addEventListener('changeCaption', ()=>{console.log("cambió el caption a: " + e.caption)});
+                    e.addEventListener('enter', ()=>{console.log("Se pulso Enter")});
+                    e.caption="Edit JS:";
+                    //e.disabled = false;
+                    fast.i1 = new Integer(20);
+                    fast.i2 = new Integer(30);
+                    fast.i3 = new Integer();
+                    fast.e = e;
+                    fast.e2.addEventListener('keyup', ()=>{fast.i2.value = parseInt(fast.e2.value,10);})
+                    fast.i3.equation = `fast.e.value = (fast.i1.value + fast.i2.value)`;
+                    e.value = fast.i3.value;
+                    console.log('anterior valor calculado de i3:',fast.i3.value);
+                    fast.i2.value = 10;
+                    console.log('nuevo valor calculado de i3:',fast.i3.value);
+                }
+                //e.addToBody();
+                let f = document.getElementById('f1');
+                f.appendChild(e);
+            };
+        </script>
+        <form id="f1">
+            <fast-edit id = "MyFastEdit"  required=true type="number" message="valor numerico erroneo" reactive = true onblur = 'fast.fBlur()' hiddenValue = "50" onescape = 'alert("se pulso esc")' caption="Edit HTML:" value="10" style = "position:absolute; left:10px; top:20px"></fast-edit>
+        </form>
+    </body>
+</html>

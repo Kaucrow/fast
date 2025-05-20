@@ -1,0 +1,33 @@
+<html>
+    <head>
+        <script type="module" src="../js/com/Fast.js"></script>
+        <link rel="icon" href="../images/icons/favicon.png" sizes="32x32" type="image/png">
+    </head>
+    <body>
+        <script>
+            let fastInit = async () => {
+                let s = await fast.createInstance("FastSelect", {
+                    'id':'selectjs', 
+                    'style' : {'left':'10px', 'top':'40px', 'width' : '300px'},
+                    'caption' : 'Select js :',
+                    // 'disabled':true,
+                    'events' : {
+                        'escape': ()=>{
+                            s.clean();
+                            console.log('Se pulso ESC y se limpia el select ...');
+                            console.log('hiddenValue de la opt1 : '+s.getOption(1).hiddenValue); 
+                            console.log('Opcion inicial : '+s.getOption(0).text);
+                        }
+                    }
+                });
+                s.addToBody();
+                s.built = ()=>{
+                    s.addOption('Opcion 0')
+                    .addOption('Opcion 1')
+                    .addOption({'text': 'Opcion 2', 'hiddenValue' : 123456})
+                    .setOption({'index': 1, text:'Opcion 1 cambiada con un setOption()', 'hiddenValue':[11,22,33]})
+                }
+            }
+        </script>
+    </body>
+</html>

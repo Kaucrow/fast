@@ -1,0 +1,64 @@
+<html>
+    <head>
+        <script type="module" src="../js/com/Fast.js"></script>
+        <link rel="icon" href="../images/icons/favicon.png" sizes="32x32" type="image/png">
+    </head>
+    <body>
+        <script>
+            let fastInit = async () => {
+                let c = await fast.createInstance("FastComboCheck", {
+                    'id':'FastComboCheckJS', 
+                    'style' : {'left':'100px', 'top':'50px', 'width':'130px'},
+                    'master' : true,
+                    'caption' : 'Mi selección:',
+                    // 'enabled' : false,
+                    // 'events' : {'mouseup': (e)=>{ console.log('Hizo click...'); }},
+                });                
+                c.built = async ()=>{
+                    console.log('Componente construido...');
+                    await c.addOption({
+                        'option' : 'Primera',
+                        'value' : 50,
+                        'sts' : false
+                    })
+                    await c.addOption({
+                        'option' : 'Segunda',
+                        'value' : 150,
+                        'sts' : false
+                    })
+                    await c.addOption({
+                        'option' : 'Tercera',
+                        'value' : 100,
+                        'sts' : false
+                    })
+                    await c.addOption({
+                        'option' : 'Cuarta',
+                        'value' : 10,
+                        'sts' : false
+                    })
+                    await c.addOption({
+                        'option' : 'Quinta',
+                        'value' : 100,
+                        'sts' : false
+                    })
+                    await c.addOption({
+                        'option' : 'Sexta',
+                        'value' : 100,
+                        'sts' : false
+                    })
+                }
+                c.addToBody();
+                // c.enabled = false;
+            };
+            function getStsCheck(){
+                console.log('Seleccionados en JS : ', fast.getInstance('FastComboCheckJS').getSelected());
+                console.log('Deseleccionados en HTML : ', fast.getInstance('fastComboCheckHTML').getDiselected());
+            }
+        </script>
+        <fast-combocheck master=true id = "fastComboCheckHTML" caption="Lista:" style = "left:450px; top:50px; width:300px">
+            <option value="150" sts=false>primera HTML</option>
+            <option value="200" sts=false>segunda HTML</option>
+        </fast-combocheck>
+        <button onclick="getStsCheck()">estatus check</button>
+    </body>
+</html>

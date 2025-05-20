@@ -1,0 +1,9 @@
+en la terminal, dentro del direcorio de archivos (c:\fast\public\js\com) hacer:
+
+jsdoc FastComboCheck.js -d ../../doc
+
+ó
+
+jsdoc .\ -d ../../doc
+
+asi generará la documentación de todos los archivos en el directorio.

@@ -1,0 +1,56 @@
+.FastRadioPanel{
+    display : flex;
+    background-color: rgba(0,0,0,0);
+}
+
+.FastRadioCaption{
+    background-color: rgba(0,0,0,0);
+    font-size : 14px;
+    font-family : Segoe UI;
+    color : black;
+    padding-left:5px;
+}
+
+.FastRadioCaption:hover{
+    cursor: pointer;
+}
+
+.FastRadioCaptionSelected{
+    background-color: rgba(0,0,0,0);
+    font-size : 14px;
+    font-family : Segoe UI;
+    color : rgb(17, 121, 72);
+    padding-left:5px;
+}
+
+.FastExtRadio{
+    display: flex;
+    width: 20px;
+    height:20px;
+    background-color: rgba(58, 204, 136, 0.795);
+    border-radius: 1em;
+    align-items: center;
+    justify-content: center;
+    border-style: solid;
+    border-color: rgba(58, 204, 136, 0.795);
+    border-width: 1px;
+}
+
+
+.FastIntRadioSelected{
+    width: 10px;
+    height:10px;
+    background-color: white;
+    border-radius: 1em;
+}
+
+.FastIntRadio{
+    width: 10px;
+    height:10px;
+    background-color: rgba(25, 182, 129, 0.4);
+    border-radius: 1em;
+}
+
+.FastIntRadio{
+    cursor: pointer;
+}

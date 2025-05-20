@@ -1,0 +1,7 @@
+{
+    "name" : "FastTab",
+    "pathComponent" : "./public/js/com/",
+    "pathCss" : "./public/js/css/",
+    "pathHTML" : "./public/html/",
+    "xTab" : "fast-tab"
+}

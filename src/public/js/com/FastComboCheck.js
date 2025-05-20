@@ -1,0 +1,341 @@
+/**
+ * Crea una instancia del componente flex.ComboCheck de Flexivity.
+ *
+ * @class FastComboCheck
+ * @extends Fast
+ * @param {object} options - Objeto de propiedades. 
+ */
+export const FastComboCheck = class extends Fast{
+    constructor(props){
+        super();
+        this.name = "FastComboCheck";
+        if(props) {
+            this.props = props;
+            if(props.id) this.id = props.id;
+        }
+        else this.props = {};
+        this.built = ()=>{}; 
+        this.attachShadow({mode:'open'});   
+        this.isShow = false;     
+        this._options = [];
+        this._masterCheck = false;
+        this._caption = "";
+        this._enabled = true;
+    }
+    #getTemplate(){ return `
+        <div class='FastComboCheck'>
+            <div class = 'FastComboCheckInputContainer'>
+                <input class = 'FastComboCheckInput'>
+                <div class = 'FastComboCheckButtonDown'></div>
+                <label class = 'FastLabel'></label>
+            </div>
+            <div class = 'FastComboCheckPanel'></div>
+            <option class = 'ComboCheckOption'><slot name="comboCheckOption"></slot></option>
+        </div>
+        `    
+    }
+    async #getCss(){ return await fast.getCssFile("FastComboCheck"); }
+    #getObjProp(f){
+        let objOpt={'option':f.innerHTML, 'value':0, 'sts':false};
+        f.getAttributeNames().forEach((value)=>{
+            switch(value){
+                case 'option':{objOpt.option = f.getAttribute(value); break;}
+                case 'value':{objOpt.value = f.getAttribute(value); break;}
+                case 'sts':{objOpt.sts = f.getAttribute(value);break;}
+            }                        
+        })
+        return objOpt;
+    }   
+    #checkAttributes(){
+        return new Promise(async (resolve, reject)=>{
+            try{
+                for(let attr of this.getAttributeNames()){          
+                    if(attr.substring(0,2)!="on"){
+                        this.mainElement.setAttribute(attr, this.getAttribute(attr));
+                        this[attr] = this.getAttribute(attr);
+                    }
+                    switch(attr){
+                        case 'id' : 
+                            this.props.id = this[attr];
+                            this.id = this.props.id;
+                            await fast.createInstance('FastComboCheck', {'id': this[attr]});
+                            break;    
+                    }
+                }
+                if(this.innerHTML){
+                    let templ = document.createElement('template');
+                    templ.innerHTML = this.innerHTML;
+                    let t = templ.content.cloneNode(true);
+                    let f = t.firstChild.nextSibling;
+                    if(f){                    
+                        await this.addOption(this.#getObjProp(f));
+                        if(f.nextSibling.nextSibling){
+                            while(f.nextSibling.nextSibling){
+                                f = f.nextSibling.nextSibling;
+                                await this.addOption(this.#getObjProp(f));
+                            }
+                        }
+                    }                    
+                }
+                resolve(this);
+            }
+            catch(e){
+                reject(e);
+            }
+        })
+    }
+    #checkProps(){
+        return new Promise(async (resolve, reject)=>{
+            try{
+                if(this.props){
+                    for(let attr in this.props){
+                        switch(attr){
+                            case 'style' :
+                                for(let attrcss in this.props.style) {
+                                    switch(attrcss){
+                                        case "width" :
+                                            this.mainElement.style.width = this.props.style[attrcss];
+                                            break;
+                                        case "height" :
+                                            this.mainElement.style.height = this.props.style[attrcss];
+                                            break;
+                                    }
+                                    this.mainElement.style[attrcss] = this.props.style[attrcss];
+                                }
+                                break;
+                            case 'events' : 
+                                for(let attrevent in this.props.events){
+                                    this.mainElement.addEventListener(attrevent, this.props.events[attrevent]);
+                                }
+                                break;
+                            case 'id' : 
+                                if(attr==='id')await fast.createInstance('FastComboCheck', {'id': this.props[attr]});
+                                    this.mainElement.id = 'mainElement_'+this.props[attr];
+                                break;
+                            default : 
+                                this.setAttribute(attr, this.props[attr]);
+                                this[attr] = this.props[attr];                                
+                        }
+                    }
+                };
+                resolve(this);
+            }
+            catch(e){
+                reject(e);
+            }
+        })
+    }
+    #render(css){   
+        return new Promise((resolve, reject)=>{
+            try{
+                this.template = document.createElement('template');
+                this.template.innerHTML = this.#getTemplate();
+                let sheet = new CSSStyleSheet();
+                sheet.replaceSync(css);
+                this.shadowRoot.adoptedStyleSheets = [sheet];
+                let tpc = this.template.content.cloneNode(true);  
+                this.mainElement = tpc.firstChild.nextSibling;
+                this.inputElement = tpc.firstChild.nextSibling.firstChild.nextSibling.firstChild.nextSibling;
+                this.inputElement.readOnly = true;
+                this.labelElement = tpc.firstChild.nextSibling.firstChild.nextSibling.firstChild.nextSibling.nextSibling.nextSibling.nextSibling.nextSibling;                                                
+                this.buttonComboCheck = this.mainElement.firstChild.nextSibling.firstChild.nextSibling.nextSibling.nextSibling;                
+                this.panel = tpc.firstChild.nextSibling.firstChild.nextSibling.nextSibling.nextSibling;
+                this.shadowRoot.appendChild(this.mainElement);  
+                this.mainElement.id = this.id;
+                this.mainElement.pointerEvents = 'none';
+                resolve(this);
+            }
+            catch(e){
+                reject(e);
+            }
+        })        
+    }
+    /**
+     * @description Este método selecciona devuelve un arreglo con las opciones con checked=true
+     * @return [] - retorna un array de opciones
+    */
+    getSelected(){
+        let val = [];
+        this._options.forEach((item)=>{
+            if(!item.master) if(item.fastCheck.checked) val.push(item)            
+        })
+        return val;
+    }
+    /**
+     * @description Este método selecciona devuelve un arreglo con las opciones con checked=false
+     * @return [] - retorna un array de opciones
+    */
+    getDiselected(){
+        let val = [];
+        this._options.forEach((item)=>{
+            if(!item.master) if(!item.fastCheck.checked) val.push(item);
+        })
+        return val;
+    }
+    /**
+     * @description Este método añade una opción al combocheck
+     * @param {option} es un json que pose los datos de la opción como sigue:
+     * {
+            'option' : nobre de la opción,
+            'value' : un valor que puede tener la opción,
+            'sts' : boleano que indica si la opción estará o no chequeada
+        }
+     * @return {void} - no tiene valor de retorno
+    */
+    async addOption(option){
+        let toggleCheck = ()=>{
+            if(option.fastCheck.checked) option.fastCheck.checked = false;
+            else option.fastCheck.checked = true;
+            option.fastCheck.checking();
+            this.inputElement.value='';
+            let opt = this.getSelected();
+            for(let i=0; i<opt.length; i++){
+                if(i===0) this.inputElement.value += opt[i].option
+                else this.inputElement.value += " | "+opt[i].option
+                if(this.inputElement.value.trim()!=='') this.labelElement.style.animationName = 'labelUp';
+            }
+        }
+        if(!option.sts){option.sts=false};
+        if(!option.value){option.value=0};        
+        option.fastCheck  = await fast.createInstance("FastCheck", {
+            'id' : this.props.id+'_'+this._options.length,
+            'group' : this.id,
+            'master': option.master,
+            'style': {
+                'position':'relative',
+            }
+        })        
+        option.panel = document.createElement('div');
+        option.panel.id = 'optionPanel_'+this._options.length;
+        option.panel.className = 'FastComboCheckOption';
+        option.divText = document.createElement('div');
+        option.divCheck = document.createElement('div');
+        option.divText.className = "FastComboCheckDivText";
+        option.divCheck.className = "FastComboCheckDivCheck";
+        option.divCheck.appendChild(option.fastCheck);
+        option.divText.innerText = option.option;
+        option.panel.appendChild(option.divCheck);
+        option.panel.appendChild(option.divText); 
+        this.panel.appendChild(option.panel);        
+        this._options.push(option);
+        option.divCheck.addEventListener('click', (e)=>{
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            toggleCheck();
+        })
+        option.divText.addEventListener('click', (e)=>{
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            toggleCheck();
+        })
+    }
+    /**
+     * @description Este método despliega el panel de opciones
+     * @return {object} - retorna la instancia de este objeto
+    */
+    showOptions(){
+        if(this._options.length > 0){
+            let h = parseInt(window.getComputedStyle(this._options[0].panel).height,10)*this._options.length;
+            this.panel.animate([{ visibility: 'visible', height:h+'px'}],{duration:300, fill:'both'});
+        }
+        return this;        
+    }    
+    /**
+    * @description Este método oculta el panel de opciones
+    * @return {object} - retorna la instancia de este objeto
+   */
+    hideOptions(){
+        if(this._options.length > 0){
+            if(this.inputElement.value.trim()==='') this.labelElement.style.animationName = 'labelDown';
+            this.panel.animate([{ visibility: 'hidden', height:'0%' }],{duration:300, fill:'both'});
+        }
+        return this;
+    };
+    #events(){
+        let animaOpen = ()=>{
+            if(this._enabled){
+                this.buttonComboCheck.style.animationName = "animationUp";
+                this.showOptions();
+                this.isShow = true;
+            }
+        }
+        let animaClose = ()=>{
+            if(this._enabled){
+                this.buttonComboCheck.style.animationName = "animationDown";
+                this.hideOptions();
+                this.isShow = false;
+            }
+        }
+        document.body.addEventListener('click', (e)=>{
+            if(this._enabled){
+                e.preventDefault();
+                if(this._options.length > 0) animaClose();
+            }
+        });
+
+        this.buttonComboCheck.addEventListener('click', (e)=>{
+            if(this._enabled){
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                if(this._options.length > 0){
+                    if(!this.isShow){ animaOpen() } else{ animaClose() } 
+                }
+            } 
+        })
+    }
+    async connectedCallback(){
+        await this.#render(await this.#getCss());
+        if(this.props.master || this.getAttribute('master')==='true'){
+            await this.addOption({
+                'group':this.id,
+                'option' : '',
+                'value' : 0,
+                'master' : true,
+            })
+        }
+        await this.#checkAttributes();
+        await this.#checkProps();        
+        this.#events();
+        this.built(this);
+    }
+    /**
+     * @description Este método introduce este objeto en el body para su visualización
+     * @return {object} - retorna la instancia de este objeto
+    */
+    addToBody(){document.body.appendChild(this); return this;}
+    /**
+    * @property {string} master - propiedad que define si el combocheck tiene o no master check, para
+    * selección y deselección de todas las opciones
+    */
+    get master (){return this._masterCheck}
+    set master (val){ 
+        this._masterCheck = val;
+        this.setAttribute('master', val);
+    }
+    /**
+    * @property {string} caption - propiedad que define el texto que mostrará el combocheck como título
+    */
+    get caption (){return this._caption}
+    set caption (val){ 
+        this._caption = val;
+        this.labelElement.innerText = val;
+        this.setAttribute('caption', val);
+    } 
+    /**
+    * @property {boolean} enabled - propiedad que define si se habilita o no el comboCheck
+    */
+    get enabled (){return this._enabled}
+    set enabled (val){
+        let setSts = (v)=>{
+            this._enabled = v;
+            if(v){this.style.opacity = 1}
+            else{this.style.opacity = 0.4}
+        }
+        if(typeof(val)==='string'){
+            if(val==='true'){ setSts(true) } else{ setSts(false) } 
+        }
+        else{ setSts(val) }
+    }
+}
+
+if (!customElements.get ('fast-combocheck')) { customElements.define ('fast-combocheck', FastComboCheck); }

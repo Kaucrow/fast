@@ -1,0 +1,68 @@
+<html>
+    <head>
+        <script src="../js/com/Fast.js" type="module"></script>
+        <link rel="icon" href="../images/icons/favicon.png" sizes="32x32" type="image/png">
+    </head>
+    <body>
+        <script>
+            let fastInit = async () => {
+                let atc = fast.getClass("FastDialog");
+                let d = await fast.createInstance("FastDialog", {
+                    'id':'dialogJS',
+                    'title' : 'My JS Dialog',
+                    'showclosebutton' : true,
+                    'draggable' : true,
+                    'style' : {
+                        // 'resize' : 'none',
+                        'width' : '30%',
+                        'height' : '30%',
+                    },
+                    // 'modal': true, 
+                    'centerscreen' : true,
+                });
+                d.built = ()=>{
+                    d.show();
+                    let e1 = document.createElement('input');
+                    let e2 = document.createElement('input');
+                    let btn = document.createElement('button');
+                    let btn2 = document.createElement('button');
+
+                    btn.innerText ="Cerrar";
+                    btn2.innerText ="X-Y";
+                    e1.style.borderStyle = "solid";
+                    e1.style.borderWidth = "1px";
+                    e2.style.borderStyle = "solid";
+                    e2.style.borderWidth = "1px";
+                    btn.addEventListener("click", ()=>{d.hide();});
+
+                    console.log('Componente construido...');
+                    d.addRowBody({
+                        'elements' : [e1, e2],
+                        'style' :{
+                            'align-items' : 'center',
+                            'justify-content' : 'center',
+                            'height' : '40px',
+                            'gap': '20px'
+                        }
+                    },null)
+                    .addRowFooter({
+                        'elements' : [btn],
+                        'style' :{
+                            'align-items' : 'center',
+                            'justify-content' : 'center',
+                        }
+                    })
+                    .addXY('10px', '10px', btn2);
+                }
+                d.addToBody();
+            };
+        </script>
+        <fast-dialog id = "dialogHTML" showclosebutton = true title="My HTML Dialog" draggable=true centerscreen = true style="width:40%; height:70%;">
+            <div slot="bodyDialogSlot" style = "height: 70px; display:flex; align-items: center; justify-content: center; gap:10px">
+                <input id = "i1" style = "height: 30px;">
+                <input id = "i2" style = "height: 30px;">
+            </div>
+            <button slot = "footerDialogSlot">Hola</button>
+        </fast-dialog>
+    </body>
+</html>

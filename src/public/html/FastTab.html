@@ -1,0 +1,70 @@
+
+<html>
+    <head>
+        <script type="module" src="../js/com/Fast.js"></script>
+        <link rel="icon" href="../images/icons/favicon.png" sizes="32x32" type="image/png">
+    </head>
+    <body>
+        <script>
+            let fastInit = async () => {
+                let t = await fast.createInstance("FastTab", {
+                    'id':'MyFastTabJS',
+                    'maxshow':2,
+                    // // 'pageselected' : 1,//por ddefecto es 0
+                    // 'heighttaboption' : '30px',
+                    'style' : { 'position':'absolute', 'top':'40px', 'left' : '10px', 'width' : '300px', 'height': '50%'},
+                });
+                t.built = ()=>{
+                    console.log('Componente construido...');
+                    t.addTab({ 'id': 't1', 'tabname' : 'Opcion 1' })
+                    .addTab( { 'id': 't2', 'tabname' : 'Opcion número 2' })
+                    .addTab( { 'id': 't3', 'tabname' : 'Opcion del Tab Nro. 3' })
+                    .addTab( { 'id': 't4', 'tabname' : 'tab 4' })
+                    .addTab( { 'id': 't5', 'tabname' : 'tab opcion número 5' })
+                    .addRow( {
+                        tabId : "t1",
+                        elements:[document.createElement("input"),document.createElement("input")],
+                        style : { 'height':'40px', 'gap' : '10px', 'justify-content': 'center', 'align-items':'center'}
+                    })
+                    .addRow({
+                        tabId : "t1",
+                        elements:[document.createElement("textArea"),document.createElement("input")],
+                        style : { 'height':'60px', 'gap' : '10px', 'justify-content': 'center', 'align-items':'center'}
+                    })
+                    .addRow({
+                        tabId : "t2",
+                        elements:[document.createElement("input"),document.createElement("input"),document.createElement("input")],
+                        style : { 'height':'60px', 'gap' : '10px', 'justify-content': 'center', 'align-items':'center'}
+                    })
+                    .addRow({
+                        tabId : "t2",
+                        elements:[document.createElement("textArea"),document.createElement("textArea"),document.createElement("input")],
+                        style : { 'height':'60px', 'gap' : '10px', 'justify-content': 'center', 'align-items':'center'}
+                    })
+                    .addRow({
+                        tabId : "t3",
+                        elements:[document.createElement("textArea")],
+                        style : { 'height':'60px', 'gap' : '10px', 'justify-content': 'center', 'align-items':'center'}
+                    })
+                    .addRow({
+                        tabId : "t4",
+                        elements:[document.createElement("input")],
+                        style : { 'height':'60px', 'gap' : '10px', 'justify-content': 'center', 'align-items':'center'}
+                    })
+                    .addRow({
+                        tabId : "t5",
+                        elements:[document.createElement("textArea")],
+                        style : { 'height':'60px', 'gap' : '10px', 'justify-content': 'center', 'align-items':'center'}
+                    })
+                    .showTabs();
+                }
+                t.addToBody();
+            };
+        </script>
+        <fast-tab id="MyFastTabHTML" maxshow = 2 style="position:relative; left:450px; top:10px; width: 400px; height:200px">
+            <tab id="tab1" tabName = "Option 1"><div>Hola 1</div></tab>
+            <tab id="tab2" tabName = "Option 2"><div>Hola 2</div></tab>
+            <tab id="tab3" tabName = "Option 3"><div>Hola 3</div></tab>
+        </fast-tab>
+    </body>
+</html> 

@@ -1,0 +1,55 @@
+
+.FastStatusBar{
+    display : flex;
+    padding-right : 20px;
+    padding-left : 10px;
+    background-color : rgba(9, 92, 88);
+    color : white;
+    font-family : Trebuchet MS;
+    font-size : 14px;
+    font-weight: bold;
+    align-items : center;
+    justify-content : center;
+    border : 0px;
+    line-height: 40px;
+    height: 50px;
+    transition: 0.1s box-shadow;
+    border-radius: 1em;
+    animation-name: showbar;
+    animation-duration: 2s;
+    animation-delay: 0s;
+    animation-fill-mode: both;
+}
+
+FastStatusBarIcon{
+    display : flex;
+    height : 100%;
+    padding : 5px;
+    background-color : rgba(0, 0, 0, 0);
+    align-items : center;
+    justify-content : center;
+}
+
+FastStatusBarText{
+    display : flex;
+    height : 100%;
+    padding : 5px;
+    background-color : rgba(0, 0, 0, 0);
+    align-items : center;
+    justify-content : center;
+}
+
+.FastStatusBar:hover {
+    transition: all 0.2s ease-in-out;
+    box-shadow: 3px 2px 22px 1px rgba(0, 0, 0, 0.24);
+}
+
+@keyframes showbar{
+    from{ opacity:0%; }
+    to{ opacity: 100%; }
+}
+
+@keyframes hidebar{
+    from{ opacity: 100%; }
+    to{ opacity: 0%; }
+}

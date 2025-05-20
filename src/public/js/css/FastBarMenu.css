@@ -1,0 +1,141 @@
+:host{
+    --bgColorMenu : white;
+    --borderRadius : 0.4em;
+}
+.FastBarMenu{
+    display : flex;
+    position:absolute;
+    left: 0px;
+    top:0px;
+    height : 30px;
+    width: 100%;
+    max-width : 100%;
+    line-height: 30px;
+    border-radius: var(--borderRadius);
+    background-color : var(--bgColorMenu);
+    border : 0px;
+    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px; 
+    outline: none;
+}
+
+.FastPanelSubMenu{
+    display : grid;
+    position : absolute;
+    left : 0px;
+    top: 100%;
+    background-color : rgba(0,0,0,0);
+    border-style : solid;
+    border-radius : var(--borderRadius);
+    border-width : 1px;
+    border-color : rgba(0,0,0,0.3);
+    box-shadow : rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+    overflow: none;
+    animation-duration: 100;
+    animation-fill-mode: both;
+    outline: none;
+}
+
+.FastIconMenu {
+    display : 'flex';
+    align-items: center;
+    justify-content: center;
+}
+
+.FastOptionSM{
+    background-color: rgba(0,0,0,0);
+    display:flex;
+    width: 100%;
+    height: 100%;
+    color : rgb(8, 143, 136);
+    font-family : Trebuchet MS;
+    font-size : 12px;
+    font-weight: bold;
+    align-items: center;
+    justify-content : left;
+    padding: 5px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none; 
+    overflow: none;
+    border-radius : var(--borderRadius);
+    outline: none;
+}
+
+.FastTextOption{
+    display: flex;
+    font-family : Trebuchet MS;
+    background-color: rgba(0,0,0,0);
+    font-size : 12px;
+    font-weight: bold;
+    align-items : left;
+    justify-content : left;
+    position : relative;
+    border-radius : var(--borderRadius);
+    text-align: left;
+    justify-content: left;
+    outline: none;
+}
+
+.FastContainerOption{
+    display:flex;
+    align-items: center;
+    justify-content: left;
+    width: 100%;
+    height:100%;
+    position : relative;
+    background-color: rgba(0,0,0,0);
+    border-radius : var(--borderRadius);
+    grid-template-rows: 1fr 0fr;
+    overflow: none;
+    outline: none;
+}
+
+.FastOptionMenu{
+    display:flex;
+    color : rgb(8, 143, 136);
+    font-family : Trebuchet MS;
+    font-size : 12px;
+    gap:5px;
+    font-weight: bold;
+    align-items : left;
+    justify-content : left;
+    padding: 5px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none; 
+    border-radius : var(--borderRadius);
+    background-color: rgba(0,0,0,0);
+    outline: none;
+}
+
+.FastOptionSM:hover{
+    cursor: pointer;
+    color:white;
+}
+
+.FastContainerOption:hover .FastOptionMenu{
+    cursor: pointer;
+    color:white;
+}
+
+.FastContainerOption:hover{
+    cursor: pointer;
+    color:white;
+    animation-name: showover;
+    animation-duration: 0.5s;
+    animation-delay: 0s;
+    animation-fill-mode: both;
+}
+
+@keyframes showover{
+    from{
+        background-color:rgba(0,0,0,0);
+        color:white;
+    }
+    to{
+        background-color: rgba(23, 141, 135, 0.589);
+        color:white;
+    }
+}

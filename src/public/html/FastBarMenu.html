@@ -1,0 +1,180 @@
+<html>
+    <head>
+        <script type="module" src="../js/com/Fast.js"></script>
+        <link rel="icon" href="../images/icons/favicon.png" sizes="32x32" type="image/png">
+    </head>
+    <body>
+        <script>
+            let fastInit = async () => {
+            let bm = await fast.createInstance("FastBarMenu", {
+                    'id':'MyFastBarMenuJS', 
+                    'style' : {
+                        'position' : 'absolute',
+                        'left' : '20px',
+                        'top' : '40px',
+                        'width' : '35%',
+                        'height' : '40px'
+                    },
+                    'coloricon' : 'rgba(5,100,90,1)', 
+                });
+                bm.built = async ()=>{
+                    // console.log('Componente construido...');
+                    bm.addNode({
+                        'id':'op1',
+                        'text' :'Menu 1',
+                        'funct':()=>{console.log('opcion 1');},
+                        'iconname' : 'edit',
+                        // 'coloricon' : 'rgb(8, 143, 136)'
+                    })
+                    .addNode({
+                        'id':'op2',                        
+                        'text' :'Menu 2',
+                        'funct':()=>{console.log('opcion 2')},
+                        'iconname' : 'config',
+                        // 'coloricon' : 'black'
+                    })
+                    .addNode({
+                        'id':'op3',
+                        'text' :'Menu 3',
+                        'funct':()=>{console.log('opcion 3')}
+                    })
+                    .addNode({
+                        'id':'op4',
+                        'text' :'Menu 4',
+                        'funct':()=>{console.log('opcion 4')},
+                        'iconname' : 'user',
+                    })
+                    .addNode({
+                        'id' :'sm1',
+                        'parentId' : 'op1',
+                        'iconname':'user',
+                        'text' : 'user',
+                        'funct' : ()=>{console.log('user');
+                        }
+                    })
+                    .addNode({
+                        'id' :'sm2',
+                        'parentId' : 'op1',
+                        'iconname':'edit',
+                        'text' : 'editar',
+                        'funct' : ()=>{console.log('editar');}
+                    })
+                    .addNode({
+                        'id' :'sm3',
+                        'parentId' : 'op2',
+                        'iconname':'config',
+                        'text' : 'configurar',
+                        'funct' : ()=>{console.log('configurar');}
+                    })
+                    .addNode({
+                        'id' :'sm4',
+                        'parentId' : 'op2',
+                        'iconname':'users',
+                        'text' : 'Mantenimiento de usuarios',
+                        'funct' : ()=>{console.log('Mant User');}
+                    })
+                    .addNode({
+                        'id' :'sm5',
+                        'parentId' : 'op2',
+                        'iconname':'info',
+                        'text' : 'Información del sistema',
+                        'funct' : ()=>{console.log('info');}
+                    })
+                    .addNode({
+                        'id' :'sm6',
+                        'parentId' : 'op3',
+                        'iconname':'home',
+                        'text' : 'Iniciar',
+                        'funct' : ()=>{console.log('home');}
+                    })
+                    .addNode({
+                        'id' :'sm7',
+                        'parentId' : 'op3',
+                        'iconname':'world',
+                        'text' : 'Conectar',
+                        'funct' : ()=>{console.log('world');}
+                    })
+                    .addNode({
+                        'id' :'sm8',
+                        'parentId' : 'op4',
+                        'iconname':'zoomplus',
+                        'text' : 'Agrandar espacio entre opciones',
+                        'funct' : ()=>{alert('Agrandar..!')}
+                    })
+                    .addNode({
+                        'id' :'sm9',
+                        'parentId' : 'op4',
+                        'iconname':'zoomminus',
+                        'text' : 'disminuir espacios',
+                        'funct' : ()=>{console.log('minus');}
+                    })
+                    .addNode({
+                        'id' :'sm10',
+                        'parentId' : 'sm9',
+                        'iconname':'delete',
+                        'text' : 'Borrar',
+                        'funct' : ()=>{alert('Borrar')}
+                    })
+                    .addNode({
+                        'id' :'sm11',
+                        'parentId' : 'sm9',
+                        'iconname':'calendar',
+                        'text' : 'Definición de fecha',
+                        'funct' : ()=>{alert('calendar')}
+                    })
+                    .addNode({
+                        'id' :'sm12',
+                        'parentId' : 'sm11',
+                        'iconname':'debug',
+                        'text' : 'Depurar...',
+                        'funct' : ()=>{alert('debug')}
+                    })
+                    .addNode({
+                        'id' :'sm13',
+                        'parentId' : 'sm11',
+                        'iconname':'exit',
+                        'text' : 'salir',
+                        'funct' : ()=>{alert('salir')}
+                    })
+                    .addNode({
+                        'id' :'sm11_1',
+                        'parentId' : 'sm9',
+                        'iconname':'warn',
+                        'text' : 'warn',
+                        'funct' : ()=>{alert('Warn')}
+                    })
+                    .addNode({
+                        'id' :'sm14',
+                        'parentId' : 'sm11_1',
+                        'iconname':'plus',
+                        'text' : 'Plus',
+                        'funct' : ()=>{alert('Plus')}
+                    })
+                    .addNode({
+                        'id' :'sm15',
+                        'parentId' : 'sm11_1',
+                        'iconname':'print',
+                        'text' : 'Print',
+                        'funct' : ()=>{alert('Print')}
+                    })
+                    .addNode({
+                        'id' :'sm16',
+                        'parentId' : 'sm2',
+                        'iconname':'print',
+                        'text' : 'Print',
+                        'funct' : ()=>{alert('Imprime')}
+                    })
+                    .addNode({
+                        'id' :'sm17',
+                        'parentId' : 'sm2',
+                        'iconname':'calendar',
+                        'text' : 'Calendario',
+                        'funct' : ()=>{alert('Calendario')}
+                    })
+                    await bm.render();
+                }
+                bm.addToBody();
+            };
+        </script>
+    </body>
+</html>

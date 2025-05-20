@@ -1,0 +1,196 @@
+<html>
+    <head>
+        <script type="module" src="../js/com/Fast.js"></script>
+        <link rel="icon" href="../images/icons/favicon.png" sizes="32x32" type="image/png">
+    </head>
+    <body>
+        <script>
+            let fastInit = async () => {
+                let i = await fast.createInstance("FastIcon", {
+                    'id':'MyFastIconJS',
+                    'disabled' : true,
+                    'iconname' : 'exit',
+                    'caption' : 'salir',
+                    'hint' : 'Aqui se sale del sistema..!',
+                    'style' : {
+                        'position':'absolute', 
+                        'left':'20px', 
+                        'top':'20px', 
+                        // 'box-shadow':'none', 
+                        // 'border-style': 'none'
+                    },
+                    'events' :{
+                        'click' : ()=>{alert('se hizo click en salir...')}
+                    }
+                });
+                let i2 = await fast.createInstance("FastIcon", {
+                    'id':'MyFastIconJS2',
+                    'iconname' : 'options',
+                    'caption' : 'opciones',
+                    'style' : {'position':'absolute', 'left':'80px', 'top':'20px'},
+                });
+                let i3 = await fast.createInstance("FastIcon", {
+                    'id':'MyFastIconJS3',
+                    'iconname' : 'print',
+                    'caption' : 'imprimir',
+                    'style' : {'position':'absolute', 'left':'150px', 'top':'20px'},
+                });
+                let i4 = await fast.createInstance("FastIcon", {
+                    'id':'MyFastIconJS4',
+                    'iconname' : 'home',
+                    'caption' : 'inicio',
+                    'style' : {'position':'absolute', 'left':'220px', 'top':'20px'},
+                });
+                let i5 = await fast.createInstance("FastIcon", {
+                    'id':'MyFastIconJS5',
+                    'iconname' : 'edit',
+                    'caption' : 'editar',
+                    'style' : {'position':'absolute', 'left':'280px', 'top':'20px'},
+                    'hint' : 'Edita la informacion general del sistema..!',
+                });
+                let i6 = await fast.createInstance("FastIcon", {
+                    'id':'MyFastIconJS6',
+                    'iconname' : 'info',
+                    'caption' : 'informacion',
+                    'style' : {'position':'absolute', 'left':'340px', 'top':'20px'},
+                });
+                let i7 = await fast.createInstance("FastIcon", {
+                    'id':'MyFastIconJS7',
+                    'iconname' : 'warn',
+                    'caption' : 'alerta',
+                    'style' : {'position':'absolute', 'left':'420px', 'top':'20px'},
+                });
+                let i8 = await fast.createInstance("FastIcon", {
+                    'id':'MyFastIconJS8',
+                    'iconname' : 'calendar',
+                    'caption' : 'calendario',
+                    'style' : {'position':'absolute', 'left':'470px', 'top':'20px'},
+                });
+                let i9 = await fast.createInstance("FastIcon", {
+                    'id':'MyFastIconJS9',
+                    'iconname' : 'user',
+                    'caption' : 'usuario',
+                    'style' : {'position':'absolute', 'left':'540px', 'top':'20px'},
+                    'hint' : 'consulta de un usuario..!',
+                });
+                let i10 = await fast.createInstance("FastIcon", {
+                    'id':'MyFastIconJS10',
+                    'iconname' : 'users',
+                    'caption' : 'usuarios',
+                    'style' : {'position':'absolute', 'left':'20px', 'top':'120px'},
+                    'hint' : 'mantenimiento de usuarios del sistema..!',
+                });
+                let i11 = await fast.createInstance("FastIcon", {
+                    'id':'MyFastIconJS11',
+                    'iconname' : 'zoomplus',
+                    'caption' : 'zoom+',
+                    'style' : {'position':'absolute', 'left':'80px', 'top':'120px'},
+                });
+                let i12 = await fast.createInstance("FastIcon", {
+                    'id':'MyFastIconJS12',
+                    'iconname' : 'zoomminus',
+                    'caption' : 'zoom-',
+                    'style' : {'position':'absolute', 'left':'140px', 'top':'120px'},
+                });
+                
+                let i13 = await fast.createInstance("FastIcon", {
+                    'id':'MyFastIconJS13',
+                    'iconname' : 'world',
+                    'caption' : 'Mundo',
+                    'style' : {'position':'absolute', 'left':'200px', 'top':'120px'},
+                });
+
+                let i14 = await fast.createInstance("FastIcon", {
+                    'id':'MyFastIconJS14',
+                    'iconname' : 'config',
+                    'caption' : 'configuracion',
+                    'style' : {'position':'absolute', 'left':'260px', 'top':'120px'},
+                    'hint' : 'Configuración general del sistema de información',
+                });
+                let i15 = await fast.createInstance("FastIcon", {
+                    'id':'MyFastIconJS15',
+                    'iconname' : 'error',
+                    'caption' : 'error',
+                    'style' : {'position':'absolute', 'left':'340px', 'top':'120px'},
+                });
+                let i16 = await fast.createInstance("FastIcon", {
+                    'id':'MyFastIconJS16',
+                    'iconname' : 'debug',
+                    'caption' : 'debug',
+                    'style' : {'position':'absolute', 'left':'390px', 'top':'120px'},
+                });
+                let i17 = await fast.createInstance("FastIcon", {
+                    'id':'MyFastIconJS17',
+                    'iconname' : 'delete',
+                    'caption' : 'borrar',
+                    'style' : {'position':'absolute', 'left':'440px', 'top':'120px'},
+                });
+                let i18 = await fast.createInstance("FastIcon", {
+                    'id':'MyFastIconJS18',
+                    'iconname' : 'plus',
+                    'caption' : 'Adicionar',
+                    'style' : {'position':'absolute', 'left':'490px', 'top':'120px'},
+                });
+                let i19 = await fast.createInstance("FastIcon", {
+                    'id':'MyFastIconJS19',
+                    'iconname' : 'arrowRight',
+                    'caption' : 'avanza',
+                    'style' : {'position':'absolute', 'left':'550px', 'top':'120px'},
+                });
+                let i20 = await fast.createInstance("FastIcon", {
+                    'id':'MyFastIconJS20',
+                    'iconname' : 'hour',
+                    'caption' : 'Hora Proceso',
+                    'style' : {'position':'absolute', 'left':'600px', 'top':'120px'},
+                    'hint' : 'Visualice la hora del proceso pulsando en este icono..!',
+                });
+                let i21 = await fast.createInstance("FastIcon", {
+                    'id':'MyFastIconJS21',
+                    'iconname' : 'filter',
+                    'caption' : 'Filtro',
+                    'style' : {'position':'absolute', 'left':'80px', 'top':'200px'},
+                    'hint' : 'Filtre pulsando en este icono..!',
+                });
+                let i22 = await fast.createInstance("FastIcon", {
+                    'id':'MyFastIconJS22',
+                    'iconname' : 'cloud',
+                    'caption' : 'Nube',
+                    'style' : {
+                        'position':'absolute', 
+                        'left':'130px', 
+                        'top':'200px', 
+                        'fill' : 'white',
+                        'stroke': 'rgba(9, 92, 88)',
+                    },
+                    'hint' : 'Bajar de la nube..!',                    
+                });
+                i.built = ()=>{
+                    console.log('Componente construido...');
+                }
+                i.addToBody();
+                i2.addToBody();
+                i3.addToBody();
+                i4.addToBody();
+                i5.addToBody();
+                i6.addToBody();
+                i7.addToBody();
+                i8.addToBody();
+                i9.addToBody();
+                i10.addToBody();
+                i11.addToBody();
+                i12.addToBody();
+                i13.addToBody();
+                i14.addToBody();
+                i15.addToBody();
+                i16.addToBody();
+                i17.addToBody();
+                i18.addToBody();
+                i19.addToBody();
+                i20.addToBody();
+                i21.addToBody();
+                i22.addToBody();
+            };
+        </script>
+        <fast-icon onclick = "alert('config HTML')" id = "MyFastIconHTML" iconname="config" caption="config HTML" style="position:absolute; left:20px; top:200px;"></fast-icon>
+    </body>
+</html>

@@ -1,0 +1,28 @@
+:host{
+    --diametro : 20px;
+}
+.FastBadge{
+    display : flex;
+    height : 30px;
+    padding : 5px;
+    line-height: 30px;
+    background-color : rgb(8, 143, 136);
+    color : white;
+    font-family : Trebuchet MS;
+    font-size : 10px;
+    font-weight: bold;
+    align-items : center;
+    justify-content : center;
+    border : 0px;
+    height: var(--diametro);
+    width:var(--diametro);
+    border-radius: 50%;
+    transition: 0.1s box-shadow;
+}
+
+.FastBadge:hover {
+    transition: all 0.2s ease-in-out;
+    box-shadow: 3px 2px 22px 1px rgba(0, 0, 0, 0.24);
+    color : orange;
+    cursor:pointer;
+}

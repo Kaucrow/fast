@@ -1,0 +1,32 @@
+<html>
+    <head>
+        <script type="module" src="../js/com/Fast.js"></script>
+        <link rel="icon" href="../images/icons/favicon.png" sizes="32x32" type="image/png">
+    </head>
+    <body>
+        <script>
+            let fastInit = async () => {
+            fast.fExt = ()=>{console.log('se ejecuto la funcion externa : fExt()')};
+            let c = await fast.createInstance("FastCheck", {
+                    'id':'FastCheckJS', 
+                    'caption' : 'Master Check',
+                    'style' : {'left':'120px', 'top':'110px'},
+                    'events' : {'mouseup': (e)=>{ console.log('Hizo click...'); }},
+                    'group' : 'G1',
+                    'master' : true,
+                    'checked' : true,
+                    // 'disabled' : true
+                });
+                c.built = ()=>{
+                    // c.checked = true;
+                    console.log('Componente construido...');
+                    // c.addEventListener('changeCaption', ()=>{console.log("cambio el caption a " + c.caption)});
+                    // c.caption="Nuevo Caption";
+                }
+                c.addToBody();
+            };
+        </script>
+        <fast-check onclick = "fast.fExt()"  id = "FastCheckHTML" group = 'G1' caption="Aceptar" style="position:absolute; left:120px; top:140px"></fast-check>
+        <fast-check id = "FastCheckHTML2" group = 'G1' caption="Eliminar" style="position:absolute; left:120px; top:170px"></fast-check>
+    </body>
+</html>

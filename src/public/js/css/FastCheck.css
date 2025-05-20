@@ -1,0 +1,136 @@
+.FastCheck {
+    appearance: none;
+    display: block;
+    position: absolute;
+    padding-left: 30px;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+
+  .caption{
+    font-size : 14px;
+    font-family : Segoe UI;
+    color : black;
+  }
+  
+  .FastCheck input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+  }
+  
+  .checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 16px;
+    width: 16px;
+    background-color: rgba(0,0,0,0);
+    border-style : solid;
+    border-width : 1px;
+    border-color: rgba(0,0,0,0.3);
+    border-radius : 0.3em;
+  }
+
+  .checkmarkInd {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 16px;
+    width: 16px;
+    background-color: rgba(0,0,0,0);
+    border-style : solid;
+    border-width : 1px;
+    border-color: rgba(0,0,0,0.3);
+    border-radius : 0.3em;
+    /* -webkit-transform: rotate(45deg); */
+    /* -ms-transform: rotate(45deg); */
+    /* transform: rotate(45deg); */
+  }
+
+  .FastCheck:hover input ~ .checkmark {
+    border-style : solid;
+    border-width : 1px;
+    border-color: darkorange;
+    background-color: #ccc;
+  }
+  
+  .FastCheck input:checked ~ .checkmark {
+    border-style : solid;
+    border-width : 1px;
+    border-color:  rgb(21, 192, 135);
+    background-color: rgb(21, 192, 135);
+  }
+
+  .FastCheck input:checked ~ .checkmarkInd {
+    border-style : solid;
+    border-width : 1px;
+    border-color:  rgb(21, 192, 135);
+    background-color: rgb(21, 192, 135);
+  }
+
+  .FastCheck input:focus ~ .checkmark {
+    border-style : solid;
+    border-width : 1px;
+    border-color: darkorange;
+  }
+  
+  .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+  }
+
+  .checkmarkInd:after {
+    content: "";
+    position: absolute;
+    display: block;
+  }
+  
+  .FastCheck input:checked ~ .checkmark:after {
+    display: block;
+  }          
+  
+  .FastCheck .checkmark:after {
+    left: 4px;
+    top: 0px;
+    width: 5px;
+    height: 9px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+    animation-name:rising;
+    animation-duration: 0.5s; 
+    animation-timing-function: ease-out; 
+    animation-delay: 0s;
+    animation-direction: alternate;
+  }
+
+  .FastCheck .checkmarkInd:after {
+    left: 4px;
+    top: -2px;
+    width: 8px;
+    height: 9px;
+    border: solid white;
+    border-width: 0px 0px 3px 0px;
+    /* -webkit-transform: rotate(45deg); */
+    /* -ms-transform: rotate(45deg); */
+    /* transform: rotate(45deg); */
+    animation-name:rising;
+    animation-duration: 0.5s; 
+    animation-timing-function: ease-out; 
+    animation-delay: 0s;
+    animation-direction: alternate;
+  }
+
+  @keyframes rising {
+    from {opacity: 0;}
+    to {opacity: 1;}
+  }

@@ -1,0 +1,39 @@
+<html>
+    <head>
+        <script type="module" src="../js/com/Fast.js"></script>
+        <link rel="icon" href="../images/icons/favicon.png" sizes="32x32" type="image/png">
+    </head>
+    <body>
+        <script>
+            let fastInit = async () => {
+            let sts = await fast.createInstance("FastStatusBar", {
+                    'id':'MyFastStatusBarJS', 
+                    'message' : 'JAVASCIPT Status Bar para prueba, algo largo como ejemplo de texto..!',
+                    'style' : {'position':'absolute', 'left':'10px', 'top':'10px'},
+                    // 'events' : {'click': ()=>{ alert('Hizo click ...'); }},
+                    'typemessage' : 'info',
+                    // 'position' : 'down-center',
+                    // 'position' : 'down-left',
+                    // 'position' : 'center',
+                    // 'position' : 'up-left',
+                    // 'position' : 'up-center',
+                    // 'position' : 'up-right',
+                    'position' :'down-right',
+                    // 'iconsize' : 32,
+                    'duration' : 6,
+                });
+                sts.built = ()=>{
+                    console.log('Componente construido...');
+                    sts.show();
+                    // sts.show("WARN: Nuevo mensaje de debug");
+                    // sts.typemessage = 'debug';
+                    // sts.message = "Esto es una prueba del statusbar de Fast..!";
+                }
+                let sb = document.getElementById('MyFastStatusBarHTML');
+                sb.built = ()=>{sb.show();}
+                sts.addToBody();
+            };
+        </script>
+        <fast-statusbar id = "MyFastStatusBarHTML" message="HTML Status Bar de prueba..!" position="up-right" ></fast-ststus-bar>
+    </body>
+</html>

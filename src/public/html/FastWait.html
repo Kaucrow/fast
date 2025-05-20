@@ -1,0 +1,19 @@
+<html>
+  <head>
+    <script type="module" src="../js/com/Fast.js"></script>
+    <link rel="icon" href="../images/icons/favicon.png" sizes="32x32" type="image/png">
+</head>
+  <body>
+    <input>
+    <script>
+        fastInit = async () => {
+            let w1 = await fast.createInstance("FastWait", { id : 'w1', 'animateduration' : 1 });
+            w1.built = ()=>{
+              w1.show();
+              setTimeout(()=>{w1.hide()},3000);
+            }
+            w1.addToBody();
+        }   
+    </script>
+  </body>
+</html>

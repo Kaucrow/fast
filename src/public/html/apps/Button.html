@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script type="module" src = ../../js/com/Fast.js></script>      
+        <link rel="icon" href="../../images/favicon.png" sizes="32x32" type="image/png">
+    </head>
+    <body>
+        <script>            
+            fastInit = async ()=>{
+                let ButtonClass = await fast.getClass("Button");
+                let b = new ButtonClass({
+                    id:'b1', 
+                    'caption' : 'Hola',
+                    'disabled' : true,
+                    style : {
+                        'color' : 'yellow'
+                    },
+                    'onclick' : ()=>{console.log('se hizo click');}
+                });
+                b.show();
+                // b.disabled = true;
+            }
+        </script>
+    </body>
+</html>

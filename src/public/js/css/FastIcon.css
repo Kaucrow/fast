@@ -1,0 +1,98 @@
+:host{
+    --widthIcon : 24px;
+    --heightIcon: 24px;
+    --borderColorIcon : rgba(52, 151, 151, 0.4); 
+    --boxShadowIcon : 2px 3px 5px 0px rgba(0,0,0,0.3);
+    --cursorIcon : pointer;
+}
+.FastIconContainer{
+    display:grid;
+    background-color: rgba(0,0,0,0);
+    position:absolute;
+    grid-template-rows: 0.9fr 0.1fr;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.5em;
+    padding: 5px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgba(0,0,0,0);
+}
+.FastIconHint{
+    z-index: 1000;
+    position:absolute;
+    visibility: hidden;
+    padding: 6px;
+    background: rgb(6, 104, 99);
+    color: white;
+    left : 0px;
+    font-size : 10px;
+    font-family: Trebuchet MS;
+    text-align : center;
+    border-radius : 3px;
+    top : calc(var(--heightIcon) * 2.3);
+    &::after {
+      --size:8px;
+      content: "";
+      display: block;
+      width: var(--size);
+      height: var(--size);
+      position: absolute;
+      background: rgb(6, 78, 56);
+      top: calc(var(--size)*-1 + 2px);
+      left:var(--size);
+      clip-path: polygon(50% 0, 100% 100%, 0 100%);
+    }
+}
+.FastContainerSVG{
+    display:block;
+    margin:auto;
+    position:relative;
+    width : var(--widthIcon);
+    height : var(--heightIcon);
+}
+.FastIcon{
+    background-color: rgba(0,0,0,0);
+    position:relative;
+    width : var(--widthIcon);
+    height : var(--heightIcon);
+    fill:rgb(10, 70, 62);
+    stroke : white;
+}
+.FastIconContainer:active {
+    box-shadow: var(--boxShadowIcon);
+}
+.FastIconContainer:hover{
+    cursor: var(--cursorIcon);
+    border-color:  var(--borderColorIcon);
+}
+.FastIconCaption{
+    position:relative;
+    background-color: rgba(0,0,0,0);
+    color : rgb(5, 48, 48);
+    font-size: 12px;
+    font-family: Segoe UI;
+    text-align: center;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none; 
+}
+@keyframes showhint {
+    from {
+        opacity : 0%;
+    }
+    to {
+        opacity : 100%;
+    }
+}
+@keyframes hidehint {
+    from {
+        opacity : 100%;
+    }
+    to {
+        opacity : 0%;
+        visibility : hidden;
+    }
+}
+

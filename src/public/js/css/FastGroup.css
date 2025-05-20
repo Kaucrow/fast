@@ -1,0 +1,86 @@
+.FastGroupContainer {
+    display: grid;
+    position:relative;
+    background-color: rgba(0,0,0,0);
+    border-style : solid;
+    border-width : 1px;
+    border-color: rgba(0,0,0,0.4);
+    border-top : none;
+    border-radius:1em;
+    height : 300px;
+    grid-template-rows: 0.1fr 0.9fr;
+    width: fit-content;
+}
+
+.ElementContainer{
+    display:grid;
+    background-color: rgba(0,0,0,0);
+    overflow:hidden;
+    width:100%;
+    height : 100%;
+    align-items : left;
+    justify-content : center;
+    align-items : center;
+    margin-right: 10px;
+}
+
+.ContainerHead{
+    display: flex;
+    flex : 0.15 0.25 0.6;
+    align-items: left;
+    width: 100%;
+    height : 100%;
+    background-color : rgba(0,0,0,0);
+}
+
+.HeadLineInit{
+    border-style : solid;
+    border-width : 1px;
+    border-color: rgba(0,0,0,0.4);
+    border-left : none;
+    border-right : none;
+    border-bottom : none;
+    border-top-left-radius:1em;
+    position: relative;
+    left:0px;
+    height : 50%;
+    width:45px;
+}
+
+.HeadLineEnd{
+    border-style : solid;
+    border-width : 1px;
+    border-color: rgba(0,0,0,0.4);
+    border-left : none;
+    border-right : none;
+    border-bottom : none;
+    position: relative;
+    left:0px;
+    flex : 100%;
+    height : 50%;
+    border-top-right-radius:1em;
+}
+
+.captionPanel {
+    display:flex;
+    background-color : rgba(0,120,90,0.6);
+    position : relative;
+    font-size : 12px;
+    font-family : Trebuchet MS;
+    line-height : 12px;
+    color : white;
+    top : -12.5px;
+    border-radius: 0.5em;
+    align-items: center;
+    justify-content: center;
+    height:25px;
+    width:fit-content;
+}  
+
+.Row{
+    background-color : rgba(0,0,0,0);
+    display: flex;
+    position:relative;
+    left:0px;
+    width:100%;
+}

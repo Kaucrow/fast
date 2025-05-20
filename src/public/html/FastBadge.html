@@ -1,0 +1,26 @@
+<html>
+    <head>
+        <script type="module" src="../js/com/Fast.js"></script>
+        <link rel="icon" href="../images/icons/favicon.png" sizes="32x32" type="image/png">
+    </head>
+    <body>
+        <script>
+            let fastInit = async () => {
+                fast.f = ()=>{console.log('se ejecuto la Funcion externa')}
+            let b = await fast.createInstance("FastBadge", {
+                    'id':'MyFastBadgeJS', 
+                    'caption' : 'JS',
+                    'style' : {'position':'absolute', 'left':'10px', 'top':'10px'},
+                    'events' : {'click': ()=>{ alert('Hizo click ...'); b.caption = "A";}},
+                    'disabled' : true,
+                    'bgbadge' : 'darkblue'
+                });
+                b.built = ()=>{
+                    console.log('Componente construido...');
+                }
+                b.addToBody();
+            };
+        </script>
+        <fast-badge onclick = "fast.f()" id = "MyFastBadgeHTML" bgbadge = 'black' caption="HTML" style="position:absolute; left:70px; top:10px;"></fast-badge>
+    </body>
+</html>

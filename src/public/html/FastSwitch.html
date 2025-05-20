@@ -1,0 +1,27 @@
+<html>
+    <head>
+        <script type="module" src="../js/com/Fast.js"></script>
+        <link rel="icon" href="../images/icons/favicon.png" sizes="32x32" type="image/png">
+    </head>
+    <body>
+        <script>
+            let fastInit = async () => {
+                fast.fsw = ()=>{
+                    let sw2 = fast.getInstance("MyFastSw");                      
+                    if(sw2.sts) console.log('Encendido');
+                    else console.log('apagado');
+                }
+                let sw = await fast.createInstance("FastSwitch", {
+                    'id':'sw1',
+                    'events' : {'click': ()=>{if(sw.sts) console.log('on'); else console.log('off');}},
+                    // 'disabled' : true
+                });
+                sw.built = ()=>{
+                    console.log('Componente construido...');
+                }
+                sw.addToBody();
+            };
+        </script>
+        <fast-switch id="MyFastSw" sts = true  onclick = 'fast.fsw()'></fast-switch>
+    </body>
+</html>

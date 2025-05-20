@@ -1,0 +1,136 @@
+
+.FastTabContainer{
+    display : grid;
+    background-color : rgba(0,0,0,0);
+    align-items : center;
+    padding: 5px;
+    justify-content : center;
+    border : 1px;
+    border-style: solid;
+    border-color: rgba(0,0,0,0.2);
+    border-radius: 0.5em;
+    grid-template-rows: 0.1fr 0.9fr;
+    overflow: hidden;
+}
+
+.FastTabHead{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* opacity : 0; */
+    overflow: hidden;
+}
+
+.FastTabIcon{
+    display:flex;
+    background-color : rgba(0,0,0,0);
+}
+
+.FastTabOptionContainer{
+    display : flex;
+    background-color : rgba(0,0,0,0);
+    overflow: hidden;
+    align-items: center;
+    justify-content: center;
+}
+
+.FastTabOption{
+    display : flex;
+    background-color : rgb(24, 107, 103);
+    font-family: Trebuchet MS;
+    font-size: 12px;
+    margin:5px;
+    padding: 5px;
+    border-style: solid;
+    border-width: 2px;
+    border-color: rgb(24, 107, 103);
+    align-items: center;
+    justify-content:center;
+    border-radius: 0.5em;
+    animation-name: selected;
+    animation-duration: 0.6s;
+    animation-delay: 0s;
+    animation-fill-mode: both;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.FastTabOption:hover {
+    transition: all 0.2s ease-in-out;
+    border-color: rgb(216, 219, 46);
+    color: white;
+    cursor:pointer;
+}
+
+.FastTabGroup{
+    display:flex;
+    position: relative;
+    background-color : rgba(0,0,0,0);
+    align-items: center;
+    justify-content: center;
+    animation-name: showTabOptionLeft;
+    animation-duration: 0.5s;
+    animation-delay: 0s;
+    animation-fill-mode: both;
+}
+
+.FastTabContent{
+    display : grid;
+    position:relative;
+    background-color: rgba(0,0,0,0);
+    align-items: center;
+    justify-content: center;
+}
+
+.FastTabRowContent {
+    display : flex;
+    background-color: rgba(0,0,0,0);
+}
+
+@keyframes showTabOptionLeft {
+    from{ left : -100%; }
+    to{ left:0%; }
+}
+@keyframes showTabOptionRight {
+    from{ left : 100%; }
+    to{ left:0%; }
+}
+@keyframes hideTabOptionLeft {
+    from{ left : 0%; }
+    to{ left:-100%; }
+}
+@keyframes hideTabOptionRight {
+    from{ left : 0%; }
+    to{ left:100%; }
+}
+
+@keyframes diselected{
+    from{
+        opacity: 1;
+        color : white;
+        background-color : rgb(11, 66, 64);
+    }
+    to{
+        opacity : 0.8;
+        color : rgb(218, 230, 229); 
+        background-color : rgb(24, 107, 103);
+    }
+}
+
+@keyframes selected{
+    from{
+        opacity: 0.8;
+        color : rgb(218, 230, 229); 
+        background-color : rgb(24, 107, 103);
+        border-color: rgb(24, 107, 103);
+    }
+    to{
+        opacity : 1;
+        color : white;
+        background-color : rgb(11, 66, 64);
+        border-color: rgb(11, 66, 64);
+    }
+}
+

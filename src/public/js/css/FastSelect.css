@@ -1,0 +1,99 @@
+:host{
+    --FastSelectTopLabel : -20px;  
+    --FastSelectDownLabel : 10px;
+    --FastSelectLeftLabel : 0px;
+    --FastSelectBgLabelDown : rgba(0,0,0,0);
+    --FastSelectBgLabelUp : rgba(0,0,0,0);
+    --FastSelectColorLabelDown : rgb(180,180,180);
+    --FastSelectColorLabelUp : black;
+}
+.FastSelectContainer {
+    display : flex;
+    position : absolute;
+    background-color: rgba(0,0,0,0);
+    border-width : 1px;
+    border-style: solid;
+    border-color : rgba(40,120,160,1);
+    border-radius : 1em;
+    height : 40px; 
+    width : 200px;
+    align-items : center;
+    justify-content: center;
+}
+
+.FastSelect{
+    height : 100%; 
+    width : 95%;
+    background-color : rgba(0,0,0,0);
+    position : absolute;
+    border-width: 0px;
+    outline: none;
+    padding-left: 10px; 
+    padding-right: 10px; 
+    font-family : Trebuchet MS;
+    font-size : 14px;
+    color : black;            
+    border-radius : 1em;
+    overflow : hidden;            
+}
+
+.FastSelectLabel{
+    height : 16px;
+    position: absolute;
+    left:var(--FastSelectLeftLabel);
+    top : var(--FastSelectDownLabel);
+    display: inline-block;
+    color : var(--FastSelectColorLabelDown);
+    font-family : Segoe UI;
+    font-size : 14px;
+    line-height: 16px; 
+    margin-left: 10px;
+    border-radius: .25em;
+    padding-left: 10px; 
+    padding-right: 10px; 
+}
+
+.FastOption{
+    font-size : 14px;
+    font-family : Segoe UI;
+    background-color: rgba(0,0,0,0);
+}
+
+.FastSelectContainer:hover {
+    cursor : pointer;
+    border-color : orange;
+}
+
+.FastSelect:hover {
+    cursor : pointer;
+}
+
+.FastSelectLabel:hover {
+    cursor : pointer;
+}
+
+@keyframes animationLabelUp{
+    from{ 
+        top: var(--FastSelectDownLabel);
+        color:var(--FastSelectColorLabelDown);
+        background-color: var(--EditBgLabelDown);
+    }
+    to{
+        top: var(--FastSelectTopLabel);
+        color:var(--FastSelectColorLabelUp);
+        background-color: var(--FastSelectBgLabelUp);
+    }
+}
+
+@keyframes animationLabelDown{
+    from{
+        top: var(--FastSelectTopLabel);
+        color:var(--FastSelectColorLabelUp);
+        background-color: var(--FastSelectBgLabelUp);
+    }
+    to{ 
+        top: var(--FastSelectDownLabel);
+        color:var(--FastSelectColorLabelDown);
+        background-color: var(--FastSelectBgLabelDown);
+    }
+}

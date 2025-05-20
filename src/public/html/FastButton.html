@@ -1,0 +1,27 @@
+<html>
+    <head>
+        <script type="module" src="../js/com/Fast.js"></script>
+        <link rel="icon" href="../images/icons/favicon.png" sizes="32x32" type="image/png">
+    </head>
+    <body>
+        <script>
+            let fastInit = async () => {
+            fast.fCancel = ()=>{alert('pulsó aceptar...')};
+            let b = await fast.createInstance("FastButton", {
+                    'id':'buttonJS', 
+                    'caption' : 'Cancelar',
+                    'style' : {'background-color':'green'},
+                    'events' : {'click': ()=>{ alert('Hizo click en Nuevo Caption...')}},
+                    // 'disabled' : true
+                });
+                b.built = ()=>{
+                    console.log('Componente construido...');
+                    b.addEventListener('changeCaption', ()=>{console.log("cambio el caption a " + b.caption)});
+                    b.caption="Nuevo Caption";
+                }
+                b.addToBody();
+            };
+        </script>
+        <fast-button id = "MyFastButtonHTML" onclick = 'fast.fCancel()' caption="Aceptar"></fast-button>
+    </body>
+</html>

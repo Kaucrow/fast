@@ -1,0 +1,29 @@
+<html>
+    <head>
+        <script type="module" src="../js/com/Fast.js"></script>
+        <link rel="icon" href="../images/icons/favicon.png" sizes="32x32" type="image/png">
+    </head>
+    <body>
+        <script>
+            let fastInit = async () => {
+                let c = await fast.createInstance("FastRadio", {
+                    'id':'FastRadio1', 
+                    'caption' : 'Radio JS',
+                    'group' : 'Grupo1',
+                    // 'checked':true,
+                });
+                let c2 = await fast.createInstance("FastRadio", {
+                    'id':'FastRadio2', 
+                    'caption' : 'Radio JS 2',
+                    'group' : 'Grupo1'
+                });
+                c.built = (e)=>{
+                    
+                }
+                c.addToBody();
+                c2.addToBody();
+            }
+        </script>
+        <fast-radio id = "fr1" group="Grupo1" caption="Radio HTML" checked=true></fast-radio>
+    </body>
+</html>
