@@ -1,0 +1,26 @@
+<html>
+    <head>
+        <script type="module" src ='../js/com/FastPopUpMenu.js'></script>
+    </head>
+    <body>
+        <fast-popup-menu></fast-popup-menu>
+        <script>
+            window.addEventListener('DOMContentLoaded', async () => {
+                await customElements.whenDefined('fast-popup-menu');
+                const popupMenu = document.querySelector('fast-popup-menu');
+                popupMenu.addItem('Example 1', () => alert('Example 1 clicked'));
+                popupMenu.addItem('Example 2', () => alert('Example 2 clicked'));
+                popupMenu.addItem('Example 3', () => alert('Example 3 clicked'));
+
+                window.addEventListener('contextmenu', (event) => {
+                    event.preventDefault();
+                    popupMenu.show(event);
+                });
+
+                document.addEventListener('click', () => {
+                    popupMenu.hide();
+                });
+            });
+        </script>
+    </body>
+</html>
