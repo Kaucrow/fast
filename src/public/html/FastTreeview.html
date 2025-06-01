@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Treeview Web Component</title>
+  <link rel="icon" href="../images/icons/favicon.png" sizes="32x32" type="image/png">
+  <script type="module" src="../js/com/Fast.js"></script>
+</head>
+<body>
+  <script>
+      const treeData = [
+        {
+          label: "Root",
+          children: [
+            {
+              label: "Folder 1",
+              children: [
+                { label: "File 1.1" },
+                { label: "File 1.2" }
+              ]
+            },
+            {
+              label: "Folder 2",
+              children: [
+                { label: "File 2.1" },
+                { 
+                  label: "Subfolder 2.2",
+                  children: [
+                    { label: "File 2.2.1" },
+                    { label: "File 2.2.2" }
+                  ]
+                }
+              ]
+            },
+            { label: "File 3" }
+          ]
+        }
+      ];
+
+      let fastInit = async () => {
+        //fast.fCancel = ()=>{alert('pulsó aceptar...')};
+        let treeview = await fast.createInstance("FastTreeview", {
+          'id': 'treeview', 
+          'caption': 'Cancelar',
+          'style': {'background-color':'green'},
+          'events': {'click': ()=>{ alert('Hizo click en Nuevo Caption...')}},
+          // 'disabled' : true
+        });
+        treeview.built = ()=>{
+          console.log('Componente acoplado...');
+          treeview.addEventListener('changeCaption', ()=>{console.log("cambio el caption a " + b.caption)});
+          treeview.caption="Nuevo Caption";
+        }
+        treeview.addToBody();
+
+        treeview.data = treeData;
+
+        treeview.addEventListener('node-selected', (e) => {
+          console.log('Selected node:', e.detail.node.label);
+        });
+      };
+  </script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+:host {
+  display: block;
+  font-family: Arial, sans-serif;
+  user-select: none;
+}
+
+ul {
+  list-style: none;
+  padding-left: 20px;
+  margin: 0;
+}
+
+li {
+  position: relative;
+  padding: 2px 0;
+}
+
+.node {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 4px 0;
+}
+
+.node:hover {
+  background-color: #f0f0f0;
+}
+
+.toggle {
+  width: 16px;
+  height: 16px;
+  margin-right: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.toggle::before {
+  content: "▶";
+  font-size: 10px;
+  color: #666;
+  transition: transform 0.2s;
+}
+
+.toggle.expanded::before {
+  transform: rotate(90deg);
+}
+
+.leaf .toggle {
+  visibility: hidden;
+}
+
+.label {
+  flex-grow: 1;
+}
+
+.selected > .node {
+  background-color: #e0e0e0;
+  font-weight: bold;
+}
+
+.collapsed > ul {
+  display: none;
+}
