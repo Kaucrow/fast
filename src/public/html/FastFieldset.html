@@ -6,39 +6,33 @@
 <body>
     <script>
         let fastInit = async () => {
-                let atc = fast.getClass("FastFieldSet");
-                let d = await fast.createInstance("FastFieldSet", {
-                    'id':'FieldSet js',
-                    'title' : 'My JS FieldSet',
-                    'style' : {
-                        // 'resize' : 'none',
-                        'width' : '30%',
-                        'height' : '30%',
-                    },
+            let atc = fast.getClass("FastFieldSet");
+            let d = await fast.createInstance("FastFieldSet", {
+                'id':'FieldSetJS',
+                'title' : 'My JS FieldSet',
+                'style' : {},
+            });
+
+            d.built = () => {
+                
+                let label1 = document.createElement('label');
+                label1.textContent = 'Nombre:';
+                let input1 = document.createElement('input');
+                input1.type = 'text';
+
+                let label2 = document.createElement('label');
+                label2.textContent = 'Apellido:';
+                let input2 = document.createElement('input');
+                input2.type = 'text';
+
+                d.addRowBody({
+                    elements: [label1, input1, label2, input2],
+                    style: { }
                 });
-
-                d.built = () => {
-                    let l1 = document.createElement('legend');
-                    let e1 = document.createElement('label');
-                    let e2 = document.createElement('input');
-                    let e3 = document.createElement('label');
-                    let e4 = document.createElement('input');
-
-
-                    d.addRowBody({
-                        'elements' : [l1, e1, e2, e3, e4],
-                        'style' :{ }
-                    },null);
-
-                    d.addToBody();
-                }
-                document.body.appendChild(d);
-
             }
+            d.addToBody();
+    }
     </script>
-
-    <fast-fieldset id="FieldsetHTML" style="width:40%; height:70%;"></fast-fieldset>
-
 
 </body>
 </html>

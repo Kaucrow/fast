@@ -95,7 +95,7 @@ export const FastFieldSet = class extends Fast{
 
                 // Guarda referencias a elementos importantes
                 this.mainElement = clone.querySelector('.FieldSet');
-                this.rowsContainer = this.mainElement.querySelector('.Rows');
+                this.rowsContainer = this.mainElement.querySelector('.Row');
 
                 // Inserta en el shadowRoot
                 this.shadowRoot.appendChild(this.mainElement);
@@ -113,7 +113,6 @@ export const FastFieldSet = class extends Fast{
         await this.#render(await this.#getCss());
         await this.#checkAttributes();
         await this.#checkProps();
-
         //this.#events();
         this._isBuilt = true;
         this.built(this);
@@ -126,17 +125,28 @@ export const FastFieldSet = class extends Fast{
 
     addRowBody({ elements = [], style = {} }, index = null) {
         let row = document.createElement('div');
-        row.classList.add('Row'); // opcional
+        
+        row.classList.add('Row');
+
+        if (!Array.isArray(elements)) {
+            elements = [elements];
+        }
 
         for (let e of elements) {
-            row.appendChild(e);
+            let field = document.createElement('div');
+            field.classList.add('Field');
+            field.appendChild(e);
+            row.appendChild(field);
         }
+
         Object.assign(row.style, style);
+
         if (index === null || index >= this.rowsContainer.children.length) {
             this.rowsContainer.appendChild(row);
         } else {
             this.rowsContainer.insertBefore(row, this.rowsContainer.children[index]);
         }
+
         return this;
     }
 
