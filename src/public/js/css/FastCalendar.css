@@ -1,1 +1,26 @@
-/* Here will be the styles when they implement it */
+.FastCalendar {
+    font-family: sans-serif;
+    padding: 1em;
+    border: 1px solid #ccc;
+    background-color: #fff;
+}
+
+.FastCalendarHeader {
+    font-weight: bold;
+    font-size: 1.2em;
+    margin-bottom: 0.5em;
+    text-align: center;
+}
+
+.FastCalendarBody {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+}
+
+.FastCalendarDays {
+    border: 1px dashed #999;
+    padding: 0.5em;
+    min-height: 100px;
+    background-color: #eee;
+}

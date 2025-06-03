@@ -5,8 +5,17 @@
   <title>FastCalendar</title>
   <link rel="icon" href="../images/icons/favicon.png" sizes="32x32" type="image/png">
   <script type="module" src="../js/com/Fast.js"></script>
+  <script type="module" src="../js/com/FastCalendar.js"></script>
 </head>
 <body>
-  <!-- Here will be the calendar when they implement it -->
+<fast-calendar id="miCalendario" date-order="dd-mm-yyyy" current-date="true"></fast-calendar>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const calendar = document.querySelector('fast-calendar');
+    calendar.built = () => {
+      console.log('Calendario construido');
+    };
+  });
+</script>
 </body>
 </html>
