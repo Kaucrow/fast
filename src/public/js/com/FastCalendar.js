@@ -212,7 +212,7 @@ export class FastCalendar extends Fast {
     }
 
     addBody() {
-        document.body.appendChild(this.mainElement);
+        document.body.appendChild(this);
     }
 }
 
