@@ -1,38 +1,48 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
+    <meta charset="UTF-8">
+    <title>Formulario con FastFieldSet</title>
     <script type="module" src="../js/com/Fast.js"></script>
+    <script type="module" src="../js/com/FastFieldSet.js"></script>
 </head>
 <body>
-    <script>
+    <script type="module">
         let fastInit = async () => {
-            let atc = fast.getClass("FastFieldSet");
             let d = await fast.createInstance("FastFieldSet", {
-                'id':'FieldSetJS',
-                'title' : 'My JS FieldSet',
-                'style' : {},
+                id: 'FieldSetJS',
+                title: 'Contacto',
+                style: {},
             });
 
             d.built = () => {
-                
-                let label1 = document.createElement('label');
-                label1.textContent = 'Nombre:';
-                let input1 = document.createElement('input');
-                input1.type = 'text';
+                const createRow = (labelText, inputType = 'text') => {
+                    let label = document.createElement('label');
+                    label.textContent = labelText;
 
-                let label2 = document.createElement('label');
-                label2.textContent = 'Apellido:';
-                let input2 = document.createElement('input');
-                input2.type = 'text';
+                    let input;
+                    if (inputType === 'textarea') {
+                        input = document.createElement('textarea');
+                    } else {
+                        input = document.createElement('input');
+                        input.type = inputType;
+                    }
 
-                d.addRowBody({
-                    elements: [label1, input1, label2, input2],
-                    style: { }
-                });
-            }
+                    d.addRowBody({ elements: [label, input] });
+                };
+
+                createRow('Nombre:');
+                createRow('Apellido:');
+                createRow('Email:', 'email');
+                createRow('Mensaje:', 'textarea');
+            };
+
             d.addToBody();
-    }
-    </script>
+        };
 
+        fastInit();
+    </script>
 </body>
 </html>
+
+
