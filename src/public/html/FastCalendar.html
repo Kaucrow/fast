@@ -8,26 +8,26 @@
   <script type="module" src="../js/com/FastCalendar.js"></script>
 </head>
 <body>
-<!--<fast-calendar id="miCalendario" date-order="dd-mm-yyyy" current-date="true"></fast-calendar>-->
+  <fast-calendar id="my-fastCalendar-html" date-order="dd-mm-yyyy" current-date="true"></fast-calendar>
 <script>
+  // my-fastCalendar-html events
+  document.addEventListener('DOMContentLoaded', () => {
+    const calendar = document.querySelector('fast-calendar');
+    calendar.built = () => {
+      console.log('Built my-fastCalendar-html');
+    };
+  });
+
   let fastInit = async () => {
     let c = await fast.createInstance("FastCalendar", {
-      'id' : 'my-fastCalendar',
-      'style' : {'background-color' : 'green'},
+      'id' : 'my-fastCalendar-js',
       'date-order' : 'mm-dd-yyyy',
-      'current-date' : 'true',
-      'events' : {'click' : () => {alert('Se creo el calendario.')}}
+      'current-date' : 'false',
+      'style' : {'background-color' : 'blue'},
+      //'events' : {'click' : () => {alert('Se creo el calendario.')}}
     })
     c.addBody();
   }
-
-  /*document.addEventListener('DOMContentLoaded', () => {
-    const calendar = document.querySelector('fast-calendar');
-    calendar.built = () => {
-      console.log('Calendario construido');
-    };
-  });
-  */
 </script>
 </body>
 </html>

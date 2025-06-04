@@ -90,18 +90,16 @@ export class FastCalendar extends Fast {
                                     this.mainElement.addEventListener(attrEvent, this.props.events[attrEvent], false)
                                 }
                                 break;
-                            case 'date-order':
-                                this.dateOrder = this[attr].toLowerCase();
-                                break;
-                            case 'current-date':
-                                if (this[attr] === "false") this.currentDate = false;
-                                break;
                             default:
                                 this.setAttribute(attr, this.props[attr]);
                                 this[attr] = this.props[attr];
                                 if (attr === 'id') {
                                     fast.createInstance('FastCalendar', { 'id': this[attr] });
                                     this.mainElement.id = this[attr];
+                                } else if(attr === 'date-order') {
+                                    this.dateOrder = this[attr].toLowerCase();
+                                } else if(attr === 'current-date') {
+                                    if (this[attr] === "false") this.currentDate = false;
                                 }
                         }
                     }
