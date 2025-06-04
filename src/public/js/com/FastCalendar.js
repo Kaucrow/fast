@@ -16,13 +16,25 @@ export class FastCalendar extends Fast {
         return `
       <div class="FastCalendar">
         <div class="FastCalendarHeader">
-          <div class="FastCalendarHeader-DivInput"></div>
+          <div class="container-inputs-date"></div>
           <button class="FastCalendarHeader-Button">Ocultar</button>
         </div>
         <div class="FastCalendarBody">
-          <div class="FastCalendarOptions">
+          <div class="FastCalendarSelect">
+            <select>
+                <option>Enero</option>
+                <option>Febrero</option>
+                <option>Marzo</option>
+                <option>Abril</option>
+            </select>
+            <select>
+                <option>2025</option>
+                <option>2026</option>
+                <option>2027</option>
+            </select>
           </div>
-          <div class="FastCalendarDays"></div>
+          <div class="FastCalendarDays">
+          </div>
         </div>
       </div>
     `;
@@ -128,27 +140,27 @@ export class FastCalendar extends Fast {
     }
 
     #formatDate() {
-        const divInput = this.shadowRoot.querySelector('.FastCalendarHeader-DivInput');
+        const divInput = this.shadowRoot.querySelector('.container-inputs-date');
         if (!divInput) return;
 
         divInput.innerHTML = '';
 
         const dayInput = document.createElement('input');
-        dayInput.className = 'FastCalendarHeader-DayInput';
+        dayInput.className = 'input-day input';
         dayInput.type = 'number';
         dayInput.placeholder = 'DD';
         dayInput.min = 1;
         dayInput.max = 31;
 
         const monthInput = document.createElement('input');
-        monthInput.className = 'FastCalendarHeader-MonthInput';
+        monthInput.className = 'input-month input';
         monthInput.type = 'number';
         monthInput.placeholder = 'MM';
         monthInput.min = 1;
         monthInput.max = 12;
 
         const yearInput = document.createElement('input');
-        yearInput.className = 'FastCalendarHeader-YearInput';
+        yearInput.className = 'input-year input';
         yearInput.type = 'number';
         yearInput.placeholder = 'YYYY';
         yearInput.min = 1900;
@@ -168,9 +180,9 @@ export class FastCalendar extends Fast {
     }
 
     #getCurrentDay() {
-        const dayInput = this.shadowRoot.querySelector('.FastCalendarHeader-DayInput');
-        const monthInput = this.shadowRoot.querySelector('.FastCalendarHeader-MonthInput');
-        const yearInput = this.shadowRoot.querySelector('.FastCalendarHeader-YearInput');
+        const dayInput = this.shadowRoot.querySelector('.input-day');
+        const monthInput = this.shadowRoot.querySelector('.input-month');
+        const yearInput = this.shadowRoot.querySelector('.input-year');
         if (!dayInput || !monthInput || !yearInput) return;
 
         const date = new Date()
@@ -186,9 +198,11 @@ export class FastCalendar extends Fast {
 
         button.addEventListener('click', () => {
             if(this.bodyVisible === true) {
+                body.style.animation = "hidden 1s ease-in-out";
                 body.style.display = 'none';
                 this.bodyVisible = false;
             } else {
+                body.style.animation = "show 1s ease-in-out";
                 body.style.display = 'block';
                 this.bodyVisible = true;
             }

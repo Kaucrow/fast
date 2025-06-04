@@ -8,22 +8,22 @@
   <script type="module" src="../js/com/FastCalendar.js"></script>
 </head>
 <body>
-  <fast-calendar id="my-fastCalendar-html" date-order="dd-mm-yyyy" current-date="true"></fast-calendar>
+  <!--<fast-calendar id="my-fastCalendar-html" date-order="dd-mm-yyyy" current-date="true"></fast-calendar>-->
 <script>
   // my-fastCalendar-html events
-  document.addEventListener('DOMContentLoaded', () => {
+  /*document.addEventListener('DOMContentLoaded', () => {
     const calendar = document.querySelector('fast-calendar');
     calendar.built = () => {
       console.log('Built my-fastCalendar-html');
     };
   });
-
+  */
   let fastInit = async () => {
     let c = await fast.createInstance("FastCalendar", {
       'id' : 'my-fastCalendar-js',
       'date-order' : 'mm-dd-yyyy',
-      'current-date' : 'false',
-      'style' : {'background-color' : 'blue'},
+      'current-date' : 'true',
+      //'style' : {'background-color' : 'blue'},
       //'events' : {'click' : () => {alert('Se creo el calendario.')}}
     })
     c.addBody();
