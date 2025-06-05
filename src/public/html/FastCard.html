@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fast Card Test</title>
+    <script type="module" src="../js/com/Fast.js"></script>
+    <style>
+        .cards-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="cards-container">
+        <fast-card id="cardHTML" title="Card 1" content="This card was created with html" ></fast-card>
+    </div>
+    <script>
+        let fastInit = async () => {          
+            const cardJS = await fast.createInstance("FastCard", {
+                id: "cardJS",
+                title: "Card 2",
+                content: "This card was created with JavaScript",
+                img: "../images/card-image.png",
+                style: {
+                    'border': '2px solid blue',
+                },
+                events: {
+                    'click': () => alert('JS Card clicked!')
+                }
+            });
+            cardJS.built = () => {
+                console.log('JS Card built');
+                cardJS.content = "This card was created with js";
+            };
+            document.querySelector('.cards-container').appendChild(cardJS);
+        };
+
+        window.addEventListener('DOMContentLoaded', () => {
+            document.getElementById("cardHTML").addEventListener("click", () => {
+                console.log('HTML Card clicked!');
+                alert('HTML Card clicked!');
+            });
+        });
+        
+    </script>
+    
+</body>
+</html>
