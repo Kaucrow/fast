@@ -1,26 +1,35 @@
 <html>
     <head>
-        <script type="module" src ='../js/com/FastPopUpMenu.js'></script>
+        <script type="module" src="../js/com/Fast.js"></script>
+        <script type="module" src="../js/com/FastPopUpMenu.js"></script>
     </head>
     <body>
-        <fast-popup-menu></fast-popup-menu>
         <script>
-            window.addEventListener('DOMContentLoaded', async () => {
-                await customElements.whenDefined('fast-popup-menu');
-                const popupMenu = document.querySelector('fast-popup-menu');
-                popupMenu.addItem('Example 1', () => alert('Example 1 clicked'));
-                popupMenu.addItem('Example 2', () => alert('Example 2 clicked'));
-                popupMenu.addItem('Example 3', () => alert('Example 3 clicked'));
+            let fastInit = async () => {
+                let popupMenu = await fast.createInstance("FastPopUpMenu", {
+                    id: "main-popup",
+                    style: {
+                        position: "absolute",
+                        left: "100px",
+                        top: "100px"
+                    }
+                });
+                popupMenu.built = async () => {
+                    popupMenu.addItem('Example 1', () => alert('Example 1 selected'));
+                    popupMenu.addItem('Example 2', () => alert('Example 2 selected'));
+                    popupMenu.addItem('Example 3', () => alert('Example 3 selected'));
+                };
+                popupMenu.addToBody();
 
-                window.addEventListener('contextmenu', (event) => {
+                document.addEventListener('contextmenu', (event) => {
                     event.preventDefault();
                     popupMenu.show(event);
                 });
 
-                document.addEventListener('click', () => {
+                document.addEventListener('click', (event) => {
                     popupMenu.hide();
                 });
-            });
+            };
         </script>
     </body>
 </html>
