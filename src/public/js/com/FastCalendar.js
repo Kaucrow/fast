@@ -11,7 +11,7 @@ export class FastCalendar extends Fast {
         this.widthCharMenu = 7;
         this.sizeIconMenu = 14;
         this.currentDate = true;
-        this.bodyVisible = true;
+        this.bodyVisible = false;
         this._isBuilt = false;
     }
 
@@ -20,7 +20,7 @@ export class FastCalendar extends Fast {
       <div class="FastCalendar">
         <div class="FastCalendarHeader">
           <div class="container-inputs-date"></div>
-          <button class="FastCalendarHeader-Button-Update">Aceptar</button>
+          <button class="FastCalendarHeader-Button-Update">Seleccionar</button>
         </div>
         <div class="FastCalendarBody">
           <div class="FastCalendarSelect">
@@ -45,13 +45,13 @@ export class FastCalendar extends Fast {
             </select>
           </div>
           <div class="container-header-days">
+            <p>Dom</p>
             <p>Lun</p>
             <p>Mar</p>
             <p>Mié</p>
             <p>Jue</p>
             <p>Vie</p>
             <p>Sáb</p>
-            <p>Dom</p>
           </div>
           <div class="container-body-days">
             <div class="container-days"></div>
@@ -177,7 +177,6 @@ export class FastCalendar extends Fast {
         dayInput.placeholder = 'DD';
         dayInput.min = 1;
         dayInput.max = 31;
-        dayInput.disabled = true;
         const labelDay = document.createElement('p');
         labelDay.classList.add('label-input');
         labelDay.innerHTML = 'DD';
@@ -188,7 +187,6 @@ export class FastCalendar extends Fast {
         monthInput.placeholder = 'MM';
         monthInput.min = 1;
         monthInput.max = 12;
-        monthInput.disabled = true;
         const labelMont = document.createElement('p');
         labelMont.classList.add('label-input');
         labelMont.innerHTML = 'MM'
@@ -199,7 +197,6 @@ export class FastCalendar extends Fast {
         yearInput.placeholder = 'YYYY';
         yearInput.min = 1900;
         yearInput.max = 2100;
-        yearInput.disabled = true;
         const labelYear = document.createElement('p');
         labelYear.classList.add('label-input');
         labelYear.innerHTML = "YYYY";
@@ -313,40 +310,36 @@ export class FastCalendar extends Fast {
         }
 
         for (let i = 1; i <= numberOfDaysPerMonth; i++) {
-            const currentDay = this.#getDayOfWeek(i, month, year);
+            const currentDay = this.#getDayOfWeek(i, m, y);
             const date = document.createElement('p');
             date.textContent = i.toString();
 
             switch (currentDay) {
-                case "Monday": {
+                case "Sunday": {
                     calendarDays[0].appendChild(date);
                     break;
                 }
-                case "Tuesday": {
-                    if (date.textContent === '1') {
-                        calendarDays[1].appendChild(date);
-                    }
-
+                case "Monday": {
                     calendarDays[1].appendChild(date);
                     break;
                 }
-                case "Wednesday": {
+                case "Tuesday": {
                     calendarDays[2].appendChild(date);
                     break;
                 }
-                case "Thursday": {
+                case "Wednesday": {
                     calendarDays[3].appendChild(date);
                     break;
                 }
-                case "Friday": {
+                case "Thursday": {
                     calendarDays[4].appendChild(date);
                     break;
                 }
-                case "Saturday": {
+                case "Friday": {
                     calendarDays[5].appendChild(date);
                     break;
                 }
-                case "Sunday": {
+                case "Saturday": {
                     calendarDays[6].appendChild(date);
                     break;
                 }
@@ -362,12 +355,12 @@ export class FastCalendar extends Fast {
         const selectYear  = this.shadowRoot.querySelector('.container-select-year');
 
         if (monthInput && selectMonth) {
-            if (monthInput === null) {
+            if (this.currentDate) {
                 selectMonth.value = monthInput.value;
             }
         } else return;
         if (yearInput && selectYear) {
-            if (yearInput === null) {
+            if (this.currentDate) {
                 selectYear.value = yearInput.value;
             }
         } else return;
@@ -376,7 +369,7 @@ export class FastCalendar extends Fast {
         const updateSelector = () => {
             selectYear.value = yearInput.value;
             selectMonth.value = monthInput.value;
-            update();
+            updateCalendar();
         }
 
         button.addEventListener('click', updateSelector);
