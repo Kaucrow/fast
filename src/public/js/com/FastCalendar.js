@@ -17,23 +17,48 @@ export class FastCalendar extends Fast {
       <div class="FastCalendar">
         <div class="FastCalendarHeader">
           <div class="container-inputs-date"></div>
+          <button class="FastCalendarHeader-Button-Update">Aceptar</button>
           <button class="FastCalendarHeader-Button">Ocultar</button>
         </div>
         <div class="FastCalendarBody">
           <div class="FastCalendarSelect">
-            <select>
-                <option>Enero</option>
-                <option>Febrero</option>
-                <option>Marzo</option>
-                <option>Abril</option>
+            <select class="FastCalendarSelect-Month">
+                <option value="1">Enero</option>
+                <option value="2">Febrero</option>
+                <option value="3">Marzo</option>
+                <option value="4">Abril</option>
+                <option value="5">Mayo</option>
+                <option value="6">Junio</option>
+                <option value="7">Julio</option>
+                <option value="8">Agosto</option>
+                <option value="9">Septiembre</option>
+                <option value="10">Octubre</option>
+                <option value="11">Noviembre</option>
+                <option value="12">Diciembre</option>
             </select>
-            <select>
-                <option>2025</option>
-                <option>2026</option>
-                <option>2027</option>
+            <select class="FastCalendarSelect-Year">
+                <option value="2025">2025</option>
+                <option value="2026">2026</option>
+                <option value="2027">2027</option>
             </select>
           </div>
+          <div class="FastCalendarNameDays">
+            <p>Lun</p>
+            <p>Mar</p>
+            <p>Mié</p>
+            <p>Jue</p>
+            <p>Vie</p>
+            <p>Sáb</p>
+            <p>Dom</p>
+          </div>
           <div class="FastCalendarDays">
+            <div class="FastCalendarDay-Monday"></div>
+            <div class="FastCalendarDay-Tuesday"></div>
+            <div class="FastCalendarDay-Wednesday"></div>
+            <div class="FastCalendarDay-Thursday"></div>
+            <div class="FastCalendarDay-Friday"></div>
+            <div class="FastCalendarDay-Saturday"></div>
+            <div class="FastCalendarDay-Sunday"></div>
           </div>
         </div>
       </div>
@@ -185,11 +210,138 @@ export class FastCalendar extends Fast {
         const yearInput = this.shadowRoot.querySelector('.input-year');
         if (!dayInput || !monthInput || !yearInput) return;
 
-        const date = new Date()
+        const date = new Date();
+        const day   = date.getDate();
+        const month = date.getMonth() + 1;
+        const year  = date.getFullYear();
 
-        dayInput.value = date.getDay();
-        monthInput.value = date.getMonth() + 1;
-        yearInput.value = date.getFullYear();
+        dayInput.value   = day;
+        monthInput.value = month;
+        yearInput.value  = year;
+    }
+
+    #isLeapYear(year) {
+        if ((year % 4) === 0) {
+            if ((year % 100) === 0) {
+                if (year % 400 === 0) {
+                    return 29;
+                } else {
+                    return 28;
+                }
+            }
+            return 29;
+        }
+        return 28;
+    }
+
+    #getDayOfWeek(day, month, year) {
+        if (month < 3) {
+            month += 12;
+            year -= 1;
+        }
+
+        let K = year % 100;
+        let J = Math.floor(year / 100);
+
+        let h = (day + Math.floor((month + 1) * 26 / 10) + K + Math.floor(K / 4) + Math.floor(J / 4) - 2 * J) % 7;
+
+        const weekDays = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+
+        h = (h + 7) % 7;
+
+        return weekDays[h];
+    }
+
+    #getCalendar(month, year) {
+        const m = Number(month);
+        const y = Number(year);
+
+        const calendarDays = this.shadowRoot.querySelector('.FastCalendarDays').children;
+        if (!calendarDays) return;
+
+        for (let days of calendarDays) days.textContent = "";
+
+        let numberOfDaysPerMonth;
+        if ( [1,3,5,7,8,10,12].includes(m) ) {
+            numberOfDaysPerMonth = 31;
+        } else if ( [4,6,9,11].includes(m) ) {
+            numberOfDaysPerMonth = 30;
+        } else if ( m === 2 ) {
+            numberOfDaysPerMonth = this.#isLeapYear(y);
+        }
+
+        for (let i = 1; i <= numberOfDaysPerMonth; i++) {
+            const currentDay = this.#getDayOfWeek(i, month, year);
+            const date = document.createElement('p');
+            date.textContent = i.toString();
+
+            switch (currentDay) {
+                case "Monday": {
+                    calendarDays[0].appendChild(date);
+                    break;
+                }
+                case "Tuesday": {
+                    if (date.textContent === '1') {
+                        calendarDays[1].appendChild(date);
+                    }
+
+                    calendarDays[1].appendChild(date);
+                    break;
+                }
+                case "Wednesday": {
+                    calendarDays[2].appendChild(date);
+                    break;
+                }
+                case "Thursday": {
+                    calendarDays[3].appendChild(date);
+                    break;
+                }
+                case "Friday": {
+                    calendarDays[4].appendChild(date);
+                    break;
+                }
+                case "Saturday": {
+                    calendarDays[5].appendChild(date);
+                    break;
+                }
+                case "Sunday": {
+                    calendarDays[6].appendChild(date);
+                    break;
+                }
+            }
+        }
+    }
+
+    #UpdateCalendar() {
+        const button = this.shadowRoot.querySelector('.FastCalendarHeader-Button-Update');
+        const monthInput = this.shadowRoot.querySelector('.input-month');
+        const yearInput  = this.shadowRoot.querySelector('.input-year');
+        const selectMonth = this.shadowRoot.querySelector('.FastCalendarSelect-Month');
+        const selectYear  = this.shadowRoot.querySelector('.FastCalendarSelect-Year');
+
+        if (monthInput && selectMonth) {
+            if (monthInput === null) {
+                selectMonth.value = monthInput.value;
+            }
+        } else return;
+        if (yearInput && selectYear) {
+            if (yearInput === null) {
+                selectYear.value = yearInput.value;
+            }
+        } else return;
+
+        const updateCalendar = () => this.#getCalendar(selectMonth.value, selectYear.value);
+        const updateSelector = () => {
+            selectYear.value = yearInput.value;
+            selectMonth.value = monthInput.value;
+            update();
+        }
+
+        button.addEventListener('click', updateSelector);
+        selectMonth.addEventListener('change', updateCalendar);
+        selectYear.addEventListener('change', updateCalendar);
+
+        updateCalendar();
     }
 
     #hideCalendar() {
@@ -218,6 +370,7 @@ export class FastCalendar extends Fast {
         this.#formatDate();
         this.#hideCalendar();
         if (this.currentDate === true) this.#getCurrentDay();
+        this.#UpdateCalendar();
 
         this._isBuilt = true;
         this.built();
