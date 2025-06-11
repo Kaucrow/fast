@@ -21,8 +21,9 @@
   let fastInit = async () => {
     let c = await fast.createInstance("FastCalendar", {
       'id' : 'my-fastCalendar-js',
-      'date-order' : 'mm-dd-yyyy',
+      'date-order' : 'dd-mm-yyyy',
       'current-date' : 'true',
+      'iconname' : 'arrowRight',
       //'style' : {'background-color' : 'blue'},
       //'events' : {'click' : () => {alert('Se creo el calendario.')}}
     })

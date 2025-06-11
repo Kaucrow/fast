@@ -7,6 +7,9 @@ export class FastCalendar extends Fast {
         this.attachShadow({mode: 'open'});
 
         this.dateOrder = 'dd-mm-yyyy';
+        this._coloricon = '#FFF';
+        this.widthCharMenu = 7;
+        this.sizeIconMenu = 14;
         this.currentDate = true;
         this.bodyVisible = true;
         this._isBuilt = false;
@@ -18,11 +21,10 @@ export class FastCalendar extends Fast {
         <div class="FastCalendarHeader">
           <div class="container-inputs-date"></div>
           <button class="FastCalendarHeader-Button-Update">Aceptar</button>
-          <button class="FastCalendarHeader-Button">Ocultar</button>
         </div>
         <div class="FastCalendarBody">
           <div class="FastCalendarSelect">
-            <select class="FastCalendarSelect-Month">
+            <select class="container-select-month">
                 <option value="1">Enero</option>
                 <option value="2">Febrero</option>
                 <option value="3">Marzo</option>
@@ -36,13 +38,13 @@ export class FastCalendar extends Fast {
                 <option value="11">Noviembre</option>
                 <option value="12">Diciembre</option>
             </select>
-            <select class="FastCalendarSelect-Year">
+            <select class="container-select-year">
                 <option value="2025">2025</option>
                 <option value="2026">2026</option>
                 <option value="2027">2027</option>
             </select>
           </div>
-          <div class="FastCalendarNameDays">
+          <div class="container-header-days">
             <p>Lun</p>
             <p>Mar</p>
             <p>Mié</p>
@@ -51,14 +53,14 @@ export class FastCalendar extends Fast {
             <p>Sáb</p>
             <p>Dom</p>
           </div>
-          <div class="FastCalendarDays">
-            <div class="FastCalendarDay-Monday"></div>
-            <div class="FastCalendarDay-Tuesday"></div>
-            <div class="FastCalendarDay-Wednesday"></div>
-            <div class="FastCalendarDay-Thursday"></div>
-            <div class="FastCalendarDay-Friday"></div>
-            <div class="FastCalendarDay-Saturday"></div>
-            <div class="FastCalendarDay-Sunday"></div>
+          <div class="container-body-days">
+            <div class="container-days"></div>
+            <div class="container-days"></div>
+            <div class="container-days"></div>
+            <div class="container-days"></div>
+            <div class="container-days"></div>
+            <div class="container-days"></div>
+            <div class="container-days"></div>
           </div>
         </div>
       </div>
@@ -163,7 +165,6 @@ export class FastCalendar extends Fast {
             }
         });
     }
-
     #formatDate() {
         const divInput = this.shadowRoot.querySelector('.container-inputs-date');
         if (!divInput) return;
@@ -176,6 +177,10 @@ export class FastCalendar extends Fast {
         dayInput.placeholder = 'DD';
         dayInput.min = 1;
         dayInput.max = 31;
+        dayInput.disabled = true;
+        const labelDay = document.createElement('p');
+        labelDay.classList.add('label-input');
+        labelDay.innerHTML = 'DD';
 
         const monthInput = document.createElement('input');
         monthInput.className = 'input-month input';
@@ -183,6 +188,10 @@ export class FastCalendar extends Fast {
         monthInput.placeholder = 'MM';
         monthInput.min = 1;
         monthInput.max = 12;
+        monthInput.disabled = true;
+        const labelMont = document.createElement('p');
+        labelMont.classList.add('label-input');
+        labelMont.innerHTML = 'MM'
 
         const yearInput = document.createElement('input');
         yearInput.className = 'input-year input';
@@ -190,6 +199,10 @@ export class FastCalendar extends Fast {
         yearInput.placeholder = 'YYYY';
         yearInput.min = 1900;
         yearInput.max = 2100;
+        yearInput.disabled = true;
+        const labelYear = document.createElement('p');
+        labelYear.classList.add('label-input');
+        labelYear.innerHTML = "YYYY";
 
         const inputsMap = {
             'dd': dayInput,
@@ -197,13 +210,42 @@ export class FastCalendar extends Fast {
             'yyyy': yearInput
         };
 
+        const labelMap = {
+            'dd' : labelDay,
+            'mm' : labelMont,
+            'yyyy' : labelYear
+        }
+        let x = 0;
+        let y = false;
         this.dateOrder.split('-').forEach(part => {
-            if (inputsMap[part]) {
+            if (inputsMap[part] && labelMap[part]) {
+                if (x === 0) {
+                    let a = part;
+                    if (a === 'yyyy'){
+                        labelMap[part].classList.add('lb-yyyy');
+                        y = true;
+                    }
+                    else{
+                        labelMap[part].classList.add('label-left');
+                        console.log(labelMap[part].content);
+                    }
+                };
+                if (x === 1) labelMap[part].classList.add('label-center');
+                if (x === 2) {
+                    if (y){
+                        labelMap[part].classList.add('lb-rigth');
+                    }
+                    else{
+                        labelMap[part].classList.add('label-rigth');
+                    }
+                }
+                divInput.appendChild(labelMap[part]);
                 divInput.appendChild(inputsMap[part]);
             }
+            x++;
         });
     }
-
+    
     #getCurrentDay() {
         const dayInput = this.shadowRoot.querySelector('.input-day');
         const monthInput = this.shadowRoot.querySelector('.input-month');
@@ -256,7 +298,7 @@ export class FastCalendar extends Fast {
         const m = Number(month);
         const y = Number(year);
 
-        const calendarDays = this.shadowRoot.querySelector('.FastCalendarDays').children;
+        const calendarDays = this.shadowRoot.querySelector('.container-body-days').children;
         if (!calendarDays) return;
 
         for (let days of calendarDays) days.textContent = "";
@@ -316,8 +358,8 @@ export class FastCalendar extends Fast {
         const button = this.shadowRoot.querySelector('.FastCalendarHeader-Button-Update');
         const monthInput = this.shadowRoot.querySelector('.input-month');
         const yearInput  = this.shadowRoot.querySelector('.input-year');
-        const selectMonth = this.shadowRoot.querySelector('.FastCalendarSelect-Month');
-        const selectYear  = this.shadowRoot.querySelector('.FastCalendarSelect-Year');
+        const selectMonth = this.shadowRoot.querySelector('.container-select-month');
+        const selectYear  = this.shadowRoot.querySelector('.container-select-year');
 
         if (monthInput && selectMonth) {
             if (monthInput === null) {
@@ -344,20 +386,55 @@ export class FastCalendar extends Fast {
         updateCalendar();
     }
 
-    #hideCalendar() {
-        const button = this.shadowRoot.querySelector('.FastCalendarHeader-Button');
-        const body = this.shadowRoot.querySelector('.FastCalendarBody');
+    async #hideCalendar() {
+        const containerHeader = this.shadowRoot.querySelector('.FastCalendarHeader');
+        const containerBody = this.shadowRoot.querySelector('.FastCalendarBody');
 
-        button.addEventListener('click', () => {
-            if(this.bodyVisible === true) {
-                body.style.animation = "hidden 1s ease-in-out";
-                body.style.display = 'none';
+        let icon = null;
+        if(this.props.iconname) icon = await this.#renderIcon(this.props);
+        icon.classList.add('open-calendar');
+
+        containerHeader.appendChild(icon);
+
+        icon.addEventListener('click', () => {
+            if(this.bodyVisible){
+                containerBody.style.animation = 'ocultar 2s ease-in-out';
+                icon.classList.remove('open-calendar');
+                icon.classList.add('close-calendar');
+                containerBody.style.display = 'none';
                 this.bodyVisible = false;
-            } else {
-                body.style.animation = "show 1s ease-in-out";
-                body.style.display = 'block';
+            }
+            else{
+                containerBody.style.animation = 'show 1s ease-in-out';
+                icon.classList.remove('close-calendar');
+                icon.classList.add('open-calendar');
+                containerBody.style.display = 'flex';
                 this.bodyVisible = true;
             }
+        })
+    }
+
+    #renderIcon(objOption){
+        return new Promise(async (resolve, reject) => {
+            try {
+                let key = this.id+'_'+objOption.iconname+'_'+objOption.order;
+                if(objOption.coloricon){this.coloricon = objOption.coloricon}
+                let i = await fast.createInstance("FastIcon", {
+                    'id': key,
+                    'iconname' : objOption.iconname,
+                    'style' : {
+                        'position'          : 'relative',
+                        'box-shadow'        : 'none', 
+                        'border-style'      : 'none',
+                        'width'             : this.sizeIconMenu+'px',
+                        'height'            : this.sizeIconMenu+'px',
+                        'fill'              : this._coloricon,
+                        'background-color'  : 'rgba(0,0,0,0)',
+                    }
+                });
+                resolve(i);      
+            } 
+            catch (error) { reject(error); }
         })
     }
 

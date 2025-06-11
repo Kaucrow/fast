@@ -4,11 +4,12 @@
     justify-content: space-between;
     align-items: center;
 
-    width: 20%;
-    height: 40%;
+    width: 25%;
+    height:auto;
 
     padding: 2%;
     background-color: rgba(0, 0, 0, 0.2);
+    transition: all 1s ease-in-out;
 }
 
 .FastCalendarHeader {
@@ -16,9 +17,9 @@
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    height: 20%;
+    height: 10%;
     padding: 4%;
-    background-color: #add8e6;
+    background-color: #1d46eb;
     border-radius: 0vw;
     box-shadow: 0 0 .2vw rgba(0, 0, 0, 0.2);
     z-index: 2;
@@ -28,33 +29,89 @@
     display: flex;
     justify-content: start;
     align-items: center;
+    align-self: center;
     width: 55%;
-    height: 100%;
+    height: 2vw;
     font-size: 1em;
+    padding: 3%;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 1vw;
+    position: relative;
 }
 
 .input{
     width: 100%;
-    height: 100%;
+    height: 70%;
     text-align: center;
-    padding: 2%;
     margin: auto 2%;
     border-radius: .3vw;
     border: none;
+    color: #000;
     box-shadow: 0 0 .2vw rgba(0, 0, 0, 0.2);
     background: #ffffff;
 }
 
+.label-input{
+    position: absolute;
+    top: -20%;
+    font-size: .8vw;
+    font-weight: bold;
+    color: #FFF;
+}
+
+.lb-yyyy {
+    left: 12%;
+}
+
+.lb-rigth {
+    right: 15%; 
+}
+
+.label-left{
+    left: 16%;
+}
+
+.label-center{
+    left: 46.5%;
+}
+
+.label-rigth{
+    top: -20%;
+    right: 12%;
+}
+
+.open-calendar{
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 4% 3%;
+    border-radius: 1.5vw;
+    text-align: center;
+    margin-top: .1vw;
+    transform: rotateZ(90deg);
+    cursor: pointer;
+}
+
+.close-calendar{
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 4% 3%;
+    border-radius: 1.5vw;
+    text-align: center;
+    margin-top: .1vw;
+    transform: rotateZ(-90deg);
+    cursor: pointer;
+}
+
 .FastCalendarBody {
-    display: flex;
+    display: none;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     width: 100%;
-    height: 1;
+    height: 100%;
     padding: 4%;
-    background-color: #0a83ed;
-    box-shadow: 0 0 .2vw rgba(0, 0, 0, 0.2);
+    border-radius:0 0 1vw 1vw;
+    background-color: #FFF;
+    box-shadow: .2vw .2vw rgba(0, 0, 0, 0.1);
+    transition: all 1s ease-in-out;
 }
 
 .FastCalendarSelect{
@@ -64,11 +121,41 @@
     width: 100%;
 }
 
-.FastCalendarDays {
-    border: 1px dashed #999;
-    padding: 0.5em;
-    min-height: 100px;
-    background-color: #eee;
+.container-select-month, .container-select-year{
+    border: none;
+    border-bottom: .1vw solid #1d46eb;
+    padding: .5vw;
+    margin-bottom: .5vw;
+}
+
+.container-header-days{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 5vh;
+    width: 100%;
+    color: #FFF;
+    background-color: #1d46eb;
+    margin: 0 1vw;
+    padding: 0 1vw;
+}
+
+.container-body-days{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.container-days{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    align-self: start;
+    width: 2vw;
+    height: 100%;
+    max-height: 38vh;
 }
 
 .input[type="number"]::-webkit-inner-spin-button,
@@ -77,7 +164,7 @@
   margin: 0;
 }
 
-@keyframes hidden {
+@keyframes ocultar {
     from {
         opacity: 1;
     }
@@ -90,7 +177,7 @@
     from {
         opacity: 0;
     }
-    to {
+    to{
         opacity: 1;
     }
 }
