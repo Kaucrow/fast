@@ -22,9 +22,7 @@ export const FastFindSelect = class extends Fast{
     #getTemplate(){ return `
         <div class='FastFindSelect'>
             <div class = 'FastFindSelectInputContainer'>
-                <input class = 'FastFindSelectInput'>
                 <div class = 'FastFindSelectButtonDown'></div>
-                <label class = 'FastLabel'></label>
             </div>
             <div class = 'FastFindSelectPanel'></div>
         </div>
@@ -47,7 +45,8 @@ export const FastFindSelect = class extends Fast{
                         for(let attrevent in this.props.events) this.mainElement.addEventListener(attrevent, this.props.events[attrevent]);
                         break;
                     case 'id' : 
-                        await fast.createInstance('FastFindSelect', {'id': this.props[attr]});
+                        this.id = this.props[attr];
+                        // await fast.createInstance('FastFindSelect', {'id': this.props[attr]});
                         break;
                     default : 
                         this[attr] = this.props[attr];                                
@@ -58,7 +57,7 @@ export const FastFindSelect = class extends Fast{
     }
     
     #render(css){   
-        return new Promise((resolve)=>{
+        return new Promise(async (resolve) => {
             this.template = document.createElement('template');
             this.template.innerHTML = this.#getTemplate();
             let sheet = new CSSStyleSheet();
@@ -66,16 +65,42 @@ export const FastFindSelect = class extends Fast{
             this.shadowRoot.adoptedStyleSheets = [sheet];
             
             let tpc = this.template.content.cloneNode(true);  
-            this.mainElement = tpc.querySelector('.FastFindSelect');
-            this.inputElement = tpc.querySelector('.FastFindSelectInput');
-            this.labelElement = tpc.querySelector('.FastLabel');                                          
-            this.buttonComboCheck = tpc.querySelector('.FastFindSelectButtonDown');                
-            this.panel = tpc.querySelector('.FastFindSelectPanel');
-            this.shadowRoot.appendChild(this.mainElement);  
+            this.shadowRoot.appendChild(tpc);
+
+            this.mainElement = this.shadowRoot.querySelector('.FastFindSelect');
+            this.inputContainer = this.shadowRoot.querySelector('.FastFindSelectInputContainer');
+            this.buttonComboCheck = this.shadowRoot.querySelector('.FastFindSelectButtonDown');                
+            this.panel = this.shadowRoot.querySelector('.FastFindSelectPanel');
+
+            this.fastEdit = await fast.createInstance('FastEdit', {
+                id: this.id + '_edit',
+                caption: this._caption,
+            })
+
+            this.inputContainer.insertBefore(this.fastEdit, this.inputContainer.firstChild);
+            await new Promise((resolveFastEdit) => {
+                this.fastEdit.built = resolveFastEdit; 
+            })
+                
+
+            this.inputElement = this.fastEdit.getEdit() //getEdit() returns the input element
+
+
+            //this.labelElement = tpc.querySelector('.FastLabel');                                          
+            //this.shadowRoot.appendChild(this.mainElement);  
             this.mainElement.id = this.id;
             resolve(this);
         })        
     }
+
+    get caption (){ return this.fastEdit.caption; }
+    set caption (val) {
+        this._caption = val;
+        if (this.fastEdit) {
+            this.fastEdit.caption = val;
+        }
+    }
+
 
     /**
      * Adds a selectable option to the list.
@@ -93,7 +118,7 @@ export const FastFindSelect = class extends Fast{
         
         optionEl.addEventListener('click', (e) => {
             e.stopPropagation();
-            this.inputElement.value = optionData.text; // Set input text
+            this.fastEdit.value = optionData.text; // Set input text
             this._selectedValue = optionData.value;   // Internally store the selected value
             this.hideOptions();
             // Dispatch a change event for external listeners
@@ -117,8 +142,8 @@ export const FastFindSelect = class extends Fast{
         if (visibleOptions.length > 0) {
             // Adjust height based on visible items
             const itemHeight = parseInt(window.getComputedStyle(visibleOptions[0].element).height, 25);
-            const h = itemHeight * visibleOptions.length;
-            this.panel.animate([{ visibility: 'visible', height: h + 'px' }], { duration: 300, fill: 'both' });
+            const calculatedHeight = itemHeight * visibleOptions.length;
+            this.panel.animate([{ visibility: 'visible', height: calculatedHeight + 'px' }], { duration: 300, fill: 'both' });
         } else {
             this.panel.animate([{ visibility: 'hidden', height: '0px' }], { duration: 300, fill: 'both' });
         }
@@ -126,7 +151,7 @@ export const FastFindSelect = class extends Fast{
     }    
 
     hideOptions(){
-        if(this.inputElement.value.trim()==='') this.labelElement.style.animationName = 'labelDown';
+        //if(this.inputElement.value.trim()==='') this.labelElement.style.animationName = 'labelDown';
         this.panel.animate([{ visibility: 'hidden', height:'0px' }],{duration:300, fill:'both'});
         this.isShow = false;
     };
@@ -143,10 +168,13 @@ export const FastFindSelect = class extends Fast{
         });
 
         //Toggle with button
-        this.buttonComboCheck.addEventListener('click', (e) => {
+        if (this.buttonComboCheck) {
+            this.buttonComboCheck.addEventListener('click', (e) => {
             e.stopImmediatePropagation();
             if(!this.isShow) { this.showOptions(); } else { this.hideOptions(); } 
         });
+        }
+        
 
         // Hide list when clicking elsewhere
         document.body.addEventListener('click', (e) => {
@@ -159,25 +187,24 @@ export const FastFindSelect = class extends Fast{
 
     async connectedCallback(){
         await this.#render(await this.#getCss());
-        await this.#checkProps();        
+        await this.#checkProps();     
         this.#events();
         this.built(this);
     }
 
     addToBody(){document.body.appendChild(this); return this;}
     
-    get caption (){return this._caption}
-    set caption (val){ 
-        this._caption = val;
-        this.labelElement.innerText = val;
-    }
     
     get value() { return this._selectedValue; }
     set value(val) {
         const opt = this._options.find(o => o.value == val);
         if (opt) {
             this._selectedValue = opt.value;
-            this.inputElement.value = opt.text;
+            //this.inputElement.value = opt.text;
+            if (this.fastEdit) {
+                this.fastEdit.value = opt.text; // Update FastEdit value
+                this.fastEdit.caption = opt.text; // Update FastEdit caption
+            }
         }
     }
 }
