@@ -1,0 +1,37 @@
+<html>
+    <head>
+        <script type="module" src="../js/com/Fast.js"></script>
+        <link rel="icon" href="../images/icons/favicon.png" sizes="32x32" type="image/png">
+    </head>
+    <body>
+        <script>
+            let fastInit = async () => {
+                let findSelect = await fast.createInstance("FastFindSelect", {
+                    'id':'myFindSelect', 
+                    'style' : {'left':'100px', 'top':'50px', 'width':'300px'},
+                    'caption' : 'Search for a programming language:',
+                });                
+                
+                findSelect.built = () => {
+                    console.log('FindSelect component is ready.');
+                    findSelect.addOption({ 'text': 'JavaScript', 'value': 'js' });
+                    findSelect.addOption({ 'text': 'Python', 'value': 'py' });
+                    findSelect.addOption({ 'text': 'Java', 'value': 'java' });
+                    findSelect.addOption({ 'text': 'C++', 'value': 'cpp' });
+                    findSelect.addOption({ 'text': 'Ruby', 'value': 'rb' });
+                    findSelect.addOption({ 'text': 'Rust', 'value': 'rs' });
+                    findSelect.addOption({ 'text': 'Pascal', 'value': 'pas' });
+                };
+
+                findSelect.addEventListener('change', (e) => {
+                    console.log('New language selected!');
+                    console.log('Text:', e.detail.text);
+                    console.log('Value:', e.detail.value);
+                });
+
+                findSelect.addToBody();
+            };
+        </script>
+        
+    </body>
+</html>
