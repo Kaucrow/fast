@@ -125,10 +125,30 @@ export const FastPopUpMenu = class extends Fast {
 
     show(event) {
         const popupMenu = this.shadowRoot.querySelector('#fast-popup-menu');
-        popupMenu.style.top = `${event.clientY}px`;
-        popupMenu.style.left = `${event.clientX}px`;
         popupMenu.style.display = 'block';
         popupMenu.style.zIndex = fast.getMaxZIndex();
+
+        const menuRect = popupMenu.getBoundingClientRect();
+        const menuWidth = menuRect.width;
+        const menuHeight = menuRect.height;
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+
+        let left = event.clientX;
+        let top = event.clientY;
+
+        if (left + menuWidth > viewportWidth) {
+            left = viewportWidth - menuWidth;
+            if (left < 0) left = 0;
+        }
+  
+        if (top + menuHeight > viewportHeight) {
+            top = viewportHeight - menuHeight;
+            if (top < 0) top = 0;
+        }
+
+        popupMenu.style.left = `${left}px`;
+        popupMenu.style.top = `${top}px`;
     }
 
     hide() {
