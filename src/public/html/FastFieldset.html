@@ -15,33 +15,32 @@
                 style: {},
             });
 
-            d.built = () => {
-                const createRow = (labelText, inputType = 'text') => {
-                    let label = document.createElement('label');
-                    label.textContent = labelText;
+            d.built = (self) => {
+                let ele1 = document.createElement('input');
+                let ele2 = document.createElement('input');
 
-                    let input;
-                    if (inputType === 'textarea') {
-                        input = document.createElement('textarea');
-                    } else {
-                        input = document.createElement('input');
-                        input.type = inputType;
+                d.addRow({
+                    elements: [ele1, ele2],
+                    styleRow: {
+                        'align-items': 'center',
+                        'justify-content': 'center',
+                        'height': '25px',
+                        'gap': '5px',
                     }
-
-                    d.addRowBody({ elements: [label, input] });
-                };
-
-                createRow('Nombre:');
-                createRow('Apellido:');
-                createRow('Email:', 'email');
-                createRow('Mensaje:', 'textarea');
+                });
             };
 
             d.addToBody();
         };
 
-        fastInit();
+        //fastInit(); -> inicia el componente FastFieldSet de forma programática
     </script>
+    <fast-fieldset 
+        id= "FieldSetJS" 
+        title= "Firmas" 
+        data= '{"nombre":"Juan", "email":"a@a.com", "telefono":"123456789"}'
+        style="width: 100%; height: 400px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+    </fast-fieldset>
 </body>
 </html>
 

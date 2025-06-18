@@ -26,12 +26,20 @@ export const FastFieldSet = class extends Fast {
     #checkAttributes() {
         return new Promise((resolve, reject) => {
             try {
+                this.props = this.props || {};
                 for (let attr of this.getAttributeNames()) {
                     if (!attr.startsWith('on')) {
-                        this[attr] = this.getAttribute(attr);
-                    }
-                    if (attr === 'id') {
-                        fast.createInstance('FastFieldSet', { 'id': this[attr] });
+                        let val = this.getAttribute(attr);
+
+                        // Intenta convertir JSON si es válido (opcional)
+                        try {
+                            this.props[attr] = JSON.parse(val);
+                        } catch {
+                            this.props[attr] = val;
+                        }
+
+                        // También ponlo directamente como propiedad del elemento
+                        this[attr] = this.props[attr];
                     }
                 }
                 resolve(this);
@@ -40,6 +48,7 @@ export const FastFieldSet = class extends Fast {
             }
         });
     }
+
 
     #checkProps() {
         return new Promise((resolve, reject) => {
@@ -52,20 +61,30 @@ export const FastFieldSet = class extends Fast {
                                     this.shadowRoot.querySelector('.FieldSet').style[cssProp] = this.props.style[cssProp];
                                 }
                                 break;
-                            case 'events':
-                                for (let eventName in this.props.events) {
-                                    this.shadowRoot.querySelector('.FieldSet').addEventListener(eventName, this.props.events[eventName]);
+
+                            case 'title':
+                                const titleDiv = this.shadowRoot.querySelector('.Title');
+                                if (titleDiv) titleDiv.textContent = this.props.title;
+                                break;
+                            case 'data':
+                                for (let key in this.props.data) {
+                                    let label = document.createElement('label');
+                                    label.textContent = key;
+
+                                    let input = document.createElement('input');
+                                    input.name = key;
+                                    input.value = this.props.data[key];
+
+                                    this.addRow({
+                                        elements: [label, input],
+                                        styleRow: { 'gap': '10px', 'margin-bottom': '8px' }
+                                    });
                                 }
                                 break;
-                            case 'title':
-                                this.shadowRoot.querySelector('.Title').textContent = this.props[prop];
-                                break;
+
                             default:
                                 this[prop] = this.props[prop];
                                 this.setAttribute(prop, this.props[prop]);
-                                if (prop === 'id') {
-                                    fast.createInstance('FastFieldSet', { 'id': this[prop] });
-                                }
                         }
                     }
                 }
@@ -75,6 +94,7 @@ export const FastFieldSet = class extends Fast {
             }
         });
     }
+
 
     #render(css) {
         return new Promise((resolve, reject) => {
@@ -111,7 +131,7 @@ export const FastFieldSet = class extends Fast {
         return this;
     }
 
-    addRowBody({ elements = [], style = {} }, index = null) {
+    addRow({ elements = [], styleRow = {} }, index = null) {
         let row = document.createElement('div');
         row.classList.add('Row');
 
@@ -126,7 +146,7 @@ export const FastFieldSet = class extends Fast {
             row.appendChild(field);
         }
 
-        Object.assign(row.style, style);
+        Object.assign(row.style, styleRow); // Usa styleRow en vez de style
 
         if (index === null || index >= this.rowsContainer.children.length) {
             this.rowsContainer.appendChild(row);
@@ -136,6 +156,7 @@ export const FastFieldSet = class extends Fast {
 
         return this;
     }
+
 };
 
 if (!customElements.get('fast-fieldset')) {
