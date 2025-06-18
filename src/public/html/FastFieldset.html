@@ -13,35 +13,47 @@
                 id: 'FieldSetJS',
                 title: 'Contacto',
                 style: {},
+                data: {
+                    nombre: 'Juan',
+                    email: 'a@a.com',
+                    telefono: '123456789'
+                }
             });
 
             d.built = (self) => {
-                let ele1 = document.createElement('input');
-                let ele2 = document.createElement('input');
+                const agregarBotones = () => {
+                    const btnGuardar = document.createElement('button');
+                    btnGuardar.textContent = 'Guardar';
+                    btnGuardar.onclick = () => self.saveData();
 
-                d.addRow({
-                    elements: [ele1, ele2],
-                    styleRow: {
-                        'align-items': 'center',
-                        'justify-content': 'center',
-                        'height': '25px',
-                        'gap': '5px',
-                    }
-                });
+                    const btnReset = document.createElement('button');
+                    btnReset.textContent = 'Restablecer';
+                    btnReset.onclick = () => self.resetData();
+
+                    self.addRow({
+                        elements: [btnGuardar, btnReset],
+                        styleRow: {
+                            display: 'flex',
+                            flexDirection: 'row',
+                            justifyContent: 'start',
+                            gap: '10px',
+                            marginTop: '10px'
+                        }
+                    });
+                };
+
+                self.agregarBotones = agregarBotones;
+                agregarBotones();
             };
+
+            d.addEventListener("status", e => {
+                alert(e.detail);
+            });
 
             d.addToBody();
         };
 
-        //fastInit(); -> inicia el componente FastFieldSet de forma programática
+        fastInit();
     </script>
-    <fast-fieldset 
-        id= "FieldSetJS" 
-        title= "Firmas" 
-        data= '{"nombre":"Juan", "email":"a@a.com", "telefono":"123456789"}'
-        style="width: 100%; height: 400px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-    </fast-fieldset>
 </body>
 </html>
-
-

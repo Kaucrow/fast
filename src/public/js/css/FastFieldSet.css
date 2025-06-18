@@ -28,13 +28,10 @@
     opacity: 0;
 }
 
-
-/* Cuando tiene contenido, se activa animación */
 .Title:not(:empty) {
     animation: enterFromRight 0.5s ease forwards;
 }
 
-/* Definición de la animación */
 @keyframes enterFromRight {
     0% {
         transform: translateX(100%) rotate(0deg);
@@ -45,8 +42,6 @@
         opacity: 1;
     }
 }
-
-
 
 .Row {
     display: flex;
@@ -70,6 +65,7 @@
     border: 2px solid rgba(128, 128, 128, 0.269);
     border-radius: 8px;
     background-color: white;
+    animation: enterFromRight 0.5s ease forwards;
 }
 
 .Field input:focus,
@@ -77,7 +73,26 @@
     border: 3px solid gray;
 }
 
-.Field input,
-.Field textarea {
+.Field button {
+    width: 120px;
+    padding: 6px 12px;
+    font-size: 1em;
+    font-family: 'Roboto', sans-serif;
+    background-color: white;
+    border: 2px solid rgba(128, 128, 128, 0.269);
+    border-radius: 8px;
+    cursor: pointer;
     animation: enterFromRight 0.5s ease forwards;
+    transition: border 0.3s, background-color 0.3s;
+}
+
+.Field button:hover {
+    border: 2px solid gray;
+    background-color: #f0f0f0;
+}
+
+.ButtonRow {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
 }

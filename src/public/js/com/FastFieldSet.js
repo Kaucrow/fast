@@ -30,15 +30,11 @@ export const FastFieldSet = class extends Fast {
                 for (let attr of this.getAttributeNames()) {
                     if (!attr.startsWith('on')) {
                         let val = this.getAttribute(attr);
-
-                        // Intenta convertir JSON si es válido (opcional)
                         try {
                             this.props[attr] = JSON.parse(val);
                         } catch {
                             this.props[attr] = val;
                         }
-
-                        // También ponlo directamente como propiedad del elemento
                         this[attr] = this.props[attr];
                     }
                 }
@@ -48,7 +44,6 @@ export const FastFieldSet = class extends Fast {
             }
         });
     }
-
 
     #checkProps() {
         return new Promise((resolve, reject) => {
@@ -66,14 +61,18 @@ export const FastFieldSet = class extends Fast {
                                 const titleDiv = this.shadowRoot.querySelector('.Title');
                                 if (titleDiv) titleDiv.textContent = this.props.title;
                                 break;
+
                             case 'data':
-                                for (let key in this.props.data) {
+                                let localData = localStorage.getItem(this.id || 'FastFieldSetData');
+                                let dataObj = localData ? JSON.parse(localData) : this.props.data;
+
+                                for (let key in dataObj) {
                                     let label = document.createElement('label');
                                     label.textContent = key;
 
                                     let input = document.createElement('input');
                                     input.name = key;
-                                    input.value = this.props.data[key];
+                                    input.value = dataObj[key];
 
                                     this.addRow({
                                         elements: [label, input],
@@ -94,7 +93,6 @@ export const FastFieldSet = class extends Fast {
             }
         });
     }
-
 
     #render(css) {
         return new Promise((resolve, reject) => {
@@ -146,7 +144,7 @@ export const FastFieldSet = class extends Fast {
             row.appendChild(field);
         }
 
-        Object.assign(row.style, styleRow); // Usa styleRow en vez de style
+        Object.assign(row.style, styleRow);
 
         if (index === null || index >= this.rowsContainer.children.length) {
             this.rowsContainer.appendChild(row);
@@ -157,6 +155,43 @@ export const FastFieldSet = class extends Fast {
         return this;
     }
 
+    getData() {
+        const data = {};
+        const inputs = this.shadowRoot.querySelectorAll('input, textarea');
+        inputs.forEach(input => {
+            if (input.name) {
+                data[input.name] = input.value;
+            }
+        });
+        return data;
+    }
+
+    saveData() {
+        const data = this.getData();
+        localStorage.setItem(this.id || 'FastFieldSetData', JSON.stringify(data));
+        this.showStatus("✅ Datos guardados");
+    }
+
+    resetData() {
+        localStorage.removeItem(this.id || 'FastFieldSetData');
+        this.rowsContainer.innerHTML = '';
+        this.#checkProps();
+
+        // Restaurar los botones si se definió la función
+        if (typeof this.agregarBotones === 'function') {
+            this.agregarBotones();
+        }
+
+        this.showStatus("🔄 Datos restablecidos");
+    }
+
+    showStatus(message) {
+        this.dispatchEvent(new CustomEvent('status', {
+            bubbles: true,
+            composed: true,
+            detail: message
+        }));
+    }
 };
 
 if (!customElements.get('fast-fieldset')) {
