@@ -73,7 +73,7 @@
     border: 3px solid gray;
 }
 
-.Field button {
+.StyledButton {
     width: 120px;
     padding: 6px 12px;
     font-size: 1em;
@@ -86,7 +86,7 @@
     transition: border 0.3s, background-color 0.3s;
 }
 
-.Field button:hover {
+.StyledButton:hover {
     border: 2px solid gray;
     background-color: #f0f0f0;
 }

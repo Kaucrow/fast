@@ -24,10 +24,12 @@
                 const agregarBotones = () => {
                     const btnGuardar = document.createElement('button');
                     btnGuardar.textContent = 'Guardar';
+                    btnGuardar.classList.add('StyledButton');
                     btnGuardar.onclick = () => self.saveData();
 
                     const btnReset = document.createElement('button');
                     btnReset.textContent = 'Restablecer';
+                    btnReset.classList.add('StyledButton');
                     btnReset.onclick = () => self.resetData();
 
                     self.addRow({
