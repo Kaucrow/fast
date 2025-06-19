@@ -19,7 +19,8 @@
     width: 100%;
     height: 10%;
     padding: 4%;
-    background-color: #1d46eb;
+    /*background-color: #1d46eb;*/
+    background-color : rgb(8, 143, 136);
     border-radius: 0vw;
     box-shadow: 0 0 .2vw rgba(0, 0, 0, 0.2);
     z-index: 2;
@@ -30,74 +31,84 @@
     justify-content: start;
     align-items: center;
     align-self: center;
-    width: 55%;
-    height: 2vw;
+    width: 40%;
+    height: 1.5vw;
     font-size: 1em;
     padding: 3%;
     background-color: rgba(0, 0, 0, 0.2);
+    border: none;
     border-radius: 1vw;
     position: relative;
 }
 
 .input{
-    width: 100%;
+    width: 85%;
     height: 70%;
     text-align: center;
-    margin: auto 2%;
-    border-radius: .3vw;
+    margin: auto 4%;
+    /*border-radius: .3vw;*/
     border: none;
-    color: #000;
-    box-shadow: 0 0 .2vw rgba(0, 0, 0, 0.2);
-    background: #ffffff;
+    border-bottom: .1vw solid #FFF;
+    color: #FFF;
+    background: none;
+}
+
+.firts-input{
+  margin:auto 4% auto -.2vw;
+}
+
+.last-input{
+  margin:auto 0 auto .5vw;
 }
 
 .label-input{
     position: absolute;
-    top: -20%;
-    font-size: .8vw;
+    top: -30%;
+    font-size: 1.5vw;
     font-weight: bold;
     color: #FFF;
 }
 
-.lb-yyyy {
-    left: 12%;
-}
-
-.lb-rigth {
-    right: 15%; 
-}
 
 .label-left{
-    left: 16%;
+    left: 32%;
 }
 
 .label-center{
-    left: 46.5%;
+    left: 64%;
 }
 
-.label-rigth{
-    top: -20%;
-    right: 12%;
+.header-select{
+  background: none;
+  border: none;
+  color: #FFF;
 }
 
-.open-calendar{
+.header-select:focus{
+  background: none;
+  border: none;
+  color: #000;
+}
+
+
+
+.toggle-button{
     background-color: rgba(0, 0, 0, 0.2);
     padding: 4% 3%;
     border-radius: 1.5vw;
+    border: none;
     text-align: center;
     margin-top: .1vw;
+    transition: all .5s ease;
+    cursor: pointer;
+}
+
+.arrow-up{
     transform: rotateZ(90deg);
-    cursor: pointer;
 }
 
-.close-calendar{
-    background-color: rgba(0, 0, 0, 0.2);
-    padding: 4% 3%;
-    border-radius: 1.5vw;
-    text-align: center;
-    margin-top: .1vw;
+.arrow-down{
     transform: rotateZ(-90deg);
-    cursor: pointer;
 }
 
 .FastCalendarBody {
@@ -111,7 +122,10 @@
     border-radius:0 0 1vw 1vw;
     background-color: #FFF;
     box-shadow: .2vw .2vw rgba(0, 0, 0, 0.1);
-    transition: all 1s ease-in-out;
+    transform-origin: top;
+    overflow: hidden;
+    animation-fill-mode: forwards;
+    transition: all 2s ease;
 }
 
 .FastCalendarSelect{
@@ -123,7 +137,8 @@
 
 .container-select-month, .container-select-year{
     border: none;
-    border-bottom: .1vw solid #1d46eb;
+    /*border-bottom: .1vw solid #1d46eb;*/
+    border-bottom: .1vw solid rgb(8, 143, 136);
     padding: .5vw;
     margin-bottom: .5vw;
 }
@@ -135,7 +150,8 @@
     height: 5vh;
     width: 100%;
     color: #FFF;
-    background-color: #1d46eb;
+    /*background-color: #1d46eb;*/
+    background-color: rgb(8, 143, 136);
     margin: 0 1vw;
     padding: 0 1vw;
 }
@@ -156,6 +172,7 @@
     width: 2vw;
     height: 100%;
     max-height: 38vh;
+    text-align: center;
 }
 
 .input[type="number"]::-webkit-inner-spin-button,
@@ -164,20 +181,58 @@
   margin: 0;
 }
 
-@keyframes ocultar {
-    from {
-        opacity: 1;
-    }
-    to {
-        opacity: 0;
-    }
+.toggle-button:hover{
+  scale: 1.2;
 }
 
+
+
+
+
 @keyframes show {
-    from {
-        opacity: 0;
-    }
-    to{
-        opacity: 1;
-    }
+  0% {
+    height: 0;
+    transform: scaleY(0);
+    opacity: 0;
+  }
+  25% {
+    height: 25%;
+    opacity: 1;
+  }
+  50% {
+    height: 50%;
+  }
+
+  75% {
+    height: 75%;
+  }
+
+  100% {
+    height: 100%;
+    transform: scaleY(1);
+  }
+}
+
+@keyframes hiden {
+  0% {
+    height: 100%;
+    transform: scaleY(1);
+    opacity: 1;
+  }
+  25% {
+    height: 75%;
+  }
+  50% {
+    height: 50%;
+  }
+
+  75% {
+    height: 25%;
+  }
+
+  100% {
+    height: 0%;
+    opacity: 0;
+    transform: scaleY(0);
+  }
 }

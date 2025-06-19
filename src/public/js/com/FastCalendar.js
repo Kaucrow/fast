@@ -20,6 +20,12 @@ export class FastCalendar extends Fast {
       <div class="FastCalendar">
         <div class="FastCalendarHeader">
           <div class="container-inputs-date"></div>
+          <!--<select class="header-select">
+            <option>dd/mm/yyyy</option>
+            <option>mm/dd/yyyy</option>
+            <option>yyyy/mm/dd</option>
+            <option>yyyy/dd/mm</option>
+          </select>-->
           <button class="FastCalendarHeader-Button-Update">Seleccionar</button>
         </div>
         <div class="FastCalendarBody">
@@ -177,9 +183,10 @@ export class FastCalendar extends Fast {
         dayInput.placeholder = 'DD';
         dayInput.min = 1;
         dayInput.max = 31;
-        const labelDay = document.createElement('p');
-        labelDay.classList.add('label-input');
-        labelDay.innerHTML = 'DD';
+        dayInput.disabled = true
+        const barLeft = document.createElement('p');
+        barLeft.classList.add('label-input');
+        barLeft.innerHTML = '/';
 
         const monthInput = document.createElement('input');
         monthInput.className = 'input-month input';
@@ -187,9 +194,10 @@ export class FastCalendar extends Fast {
         monthInput.placeholder = 'MM';
         monthInput.min = 1;
         monthInput.max = 12;
-        const labelMont = document.createElement('p');
-        labelMont.classList.add('label-input');
-        labelMont.innerHTML = 'MM'
+        monthInput.disabled = true;
+        const barCenter = document.createElement('p');
+        barCenter.classList.add('label-input');
+        barCenter.innerHTML = '/'
 
         const yearInput = document.createElement('input');
         yearInput.className = 'input-year input';
@@ -197,49 +205,34 @@ export class FastCalendar extends Fast {
         yearInput.placeholder = 'YYYY';
         yearInput.min = 1900;
         yearInput.max = 2100;
-        const labelYear = document.createElement('p');
-        labelYear.classList.add('label-input');
-        labelYear.innerHTML = "YYYY";
+        yearInput.disabled = true;
 
-        const inputsMap = {
+        const inputs = {
             'dd': dayInput,
             'mm': monthInput,
             'yyyy': yearInput
         };
 
-        const labelMap = {
-            'dd' : labelDay,
-            'mm' : labelMont,
-            'yyyy' : labelYear
-        }
-        let x = 0;
-        let y = false;
+        let countBar = 0;
         this.dateOrder.split('-').forEach(part => {
-            if (inputsMap[part] && labelMap[part]) {
-                if (x === 0) {
-                    let a = part;
-                    if (a === 'yyyy'){
-                        labelMap[part].classList.add('lb-yyyy');
-                        y = true;
-                    }
-                    else{
-                        labelMap[part].classList.add('label-left');
-                        console.log(labelMap[part].content);
-                    }
+            if (inputs[part]) {
+                if (countBar === 0) {
+                    barLeft.classList.add('label-left');
+                    divInput.appendChild(barLeft);
+                    inputs[part].classList.add('firts-input');
                 };
-                if (x === 1) labelMap[part].classList.add('label-center');
-                if (x === 2) {
-                    if (y){
-                        labelMap[part].classList.add('lb-rigth');
-                    }
-                    else{
-                        labelMap[part].classList.add('label-rigth');
-                    }
+                
+                if (countBar === 1) {
+                    barCenter.classList.add('label-center')
+                    divInput.appendChild(barCenter);
                 }
-                divInput.appendChild(labelMap[part]);
-                divInput.appendChild(inputsMap[part]);
+
+                if (countBar === 2){
+                    inputs[part].classList.add('last-input')
+                }
+                divInput.appendChild(inputs[part]);
             }
-            x++;
+            countBar++;
         });
     }
     
@@ -383,29 +376,37 @@ export class FastCalendar extends Fast {
         const containerHeader = this.shadowRoot.querySelector('.FastCalendarHeader');
         const containerBody = this.shadowRoot.querySelector('.FastCalendarBody');
 
-        let icon = null;
-        if(this.props.iconname) icon = await this.#renderIcon(this.props);
-        icon.classList.add('open-calendar');
+        if (!this.props.iconname) return;
 
-        containerHeader.appendChild(icon);
+        const icon = await this.#renderIcon(this.props);
+        icon.classList.add('toggle-button');
+
+        this.bodyVisible = this.bodyVisible ?? true;
+        this.#changeIcon(icon, containerBody, this.bodyVisible);
 
         icon.addEventListener('click', () => {
-            if(this.bodyVisible){
-                containerBody.style.animation = 'ocultar 2s ease-in-out';
-                icon.classList.remove('open-calendar');
-                icon.classList.add('close-calendar');
-                containerBody.style.display = 'none';
-                this.bodyVisible = false;
-            }
-            else{
-                containerBody.style.animation = 'show 1s ease-in-out';
-                icon.classList.remove('close-calendar');
-                icon.classList.add('open-calendar');
-                containerBody.style.display = 'flex';
-                this.bodyVisible = true;
-            }
-        })
+            this.bodyVisible = !this.bodyVisible;
+            this.#changeIcon(icon, containerBody, this.bodyVisible);
+        });
+
+        containerHeader.appendChild(icon);
     }
+
+    #changeIcon(icon, containerBody, isVisible) {
+        if (isVisible) {
+            containerBody.style.display = 'flex';
+            containerBody.style.animation = 'show .4s ease-out forwards';
+            icon.classList.remove('arrow-up');
+            icon.classList.add('arrow-down');
+        }
+        else {  
+            containerBody.style.animation = 'hidden 0.6s ease-in forwards';
+            icon.classList.remove('arrow-down');
+            icon.classList.add('arrow-up');
+            containerBody.style.display = 'none';
+        }
+    }
+
 
     #renderIcon(objOption){
         return new Promise(async (resolve, reject) => {
