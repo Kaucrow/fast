@@ -20,14 +20,31 @@
   */
   let fastInit = async () => {
     let c = await fast.createInstance("FastCalendar", {
-      'id' : 'my-fastCalendar-js',
-      'date-order' : 'dd-mm-yyyy',
-      'current-date' : 'true',
-      'iconname' : 'arrowRight',
+      id: "cal-1",
+      "date-order": "dd-mm-yyyy",
+      "current-date": "true",
+      iconname: "arrowRight",
       //'style' : {'background-color' : 'blue'},
       //'events' : {'click' : () => {alert('Se creo el calendario.')}}
-    })
+    });
+    c.built = () => {
+      console.log("c listo:", c.getDate());
+    };
     c.addBody();
+
+    let cal = await fast.createInstance("FastCalendar", {
+      id: "cal-2",
+      "date-order": "yyyy-mm-dd",
+      "current-date": "false",
+      "body-visible": "false",
+      iconname: "arrowRight"
+    });
+    cal.built = () => {
+      console.log("cal listo:", cal.getDate());
+      console.log("c vs cal →", c.compareCalendars(cal));
+      console.log("cal vs c →", cal.compareCalendars(c));
+    };
+    cal.addBody();
   }
 </script>
 </body>

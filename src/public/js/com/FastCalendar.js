@@ -11,7 +11,16 @@ export class FastCalendar extends Fast {
         this.widthCharMenu = 7;
         this.sizeIconMenu = 14;
         this.currentDate = true;
-        this.bodyVisible = false;
+        this.bodyVisible = true;
+
+        this.day = 1;
+        this.month = 1;
+        this.year = 2025;
+
+        this.currentDay = this.day;
+        this.currentMonth = this.month;
+        this.currentYear = this.year
+
         this._isBuilt = false;
     }
 
@@ -20,13 +29,12 @@ export class FastCalendar extends Fast {
       <div class="FastCalendar">
         <div class="FastCalendarHeader">
           <div class="container-inputs-date"></div>
-          <!--<select class="header-select">
-            <option>dd/mm/yyyy</option>
-            <option>mm/dd/yyyy</option>
-            <option>yyyy/mm/dd</option>
-            <option>yyyy/dd/mm</option>
-          </select>-->
-          <button class="FastCalendarHeader-Button-Update">Seleccionar</button>
+          <select class="header-select">
+            <option value="dd-mm-yyyy">dd/mm/yyyy</option>
+            <option value="mm-dd-yyyy">mm/dd/yyyy</option>
+            <option value="yyyy-mm-dd">yyyy/mm/dd</option>
+            <option value="yyyy-dd-mm">yyyy/dd/mm</option>
+          </select>
         </div>
         <div class="FastCalendarBody">
           <div class="FastCalendarSelect">
@@ -103,6 +111,9 @@ export class FastCalendar extends Fast {
                         this[attr] = this.getAttribute(attr);
                     }
                     switch(attr){
+                        case 'body-visible':
+                            if (this[attr] === "false") this.bodyVisible = false;
+                            break;
                         case 'date-order':
                             this.dateOrder = this[attr].toLowerCase();
                             break;
@@ -145,6 +156,8 @@ export class FastCalendar extends Fast {
                                     this.dateOrder = this[attr].toLowerCase();
                                 } else if(attr === 'current-date') {
                                     if (this[attr] === "false") this.currentDate = false;
+                                } else if(attr === 'body-visible') {
+                                    if (this[attr] === "false") this.bodyVisible = false;
                                 }
                         }
                     }
@@ -173,9 +186,11 @@ export class FastCalendar extends Fast {
     }
     #formatDate() {
         const divInput = this.shadowRoot.querySelector('.container-inputs-date');
+        const selectorFormat = this.shadowRoot.querySelector('.header-select');
         if (!divInput) return;
 
         divInput.innerHTML = '';
+        selectorFormat.value = this.dateOrder;
 
         const dayInput = document.createElement('input');
         dayInput.className = 'input-day input';
@@ -183,7 +198,7 @@ export class FastCalendar extends Fast {
         dayInput.placeholder = 'DD';
         dayInput.min = 1;
         dayInput.max = 31;
-        dayInput.disabled = true
+        dayInput.disabled = false
         const barLeft = document.createElement('p');
         barLeft.classList.add('label-input');
         barLeft.innerHTML = '/';
@@ -194,7 +209,7 @@ export class FastCalendar extends Fast {
         monthInput.placeholder = 'MM';
         monthInput.min = 1;
         monthInput.max = 12;
-        monthInput.disabled = true;
+        monthInput.disabled = false;
         const barCenter = document.createElement('p');
         barCenter.classList.add('label-input');
         barCenter.innerHTML = '/'
@@ -205,7 +220,7 @@ export class FastCalendar extends Fast {
         yearInput.placeholder = 'YYYY';
         yearInput.min = 1900;
         yearInput.max = 2100;
-        yearInput.disabled = true;
+        yearInput.disabled = false;
 
         const inputs = {
             'dd': dayInput,
@@ -248,8 +263,14 @@ export class FastCalendar extends Fast {
         const year  = date.getFullYear();
 
         dayInput.value   = day;
+        this.day = day;
+        this.currentDay = day;
         monthInput.value = month;
+        this.month = month;
+        this.currentMonth = month;
         yearInput.value  = year;
+        this.year = year;
+        this.currentYear = year;
     }
 
     #isLeapYear(year) {
@@ -284,6 +305,21 @@ export class FastCalendar extends Fast {
         return weekDays[h];
     }
 
+    #fillLeadingEmptyDays(month, year) {
+        const calendarDays = this.shadowRoot.querySelector('.container-body-days').children;
+        if (!calendarDays) return;
+
+        const firstDayOfWeek = this.#getDayOfWeek(1, month, year);
+        const weekDays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        const firstDayIndex = weekDays.indexOf(firstDayOfWeek);
+
+        for (let i = 0; i <= firstDayIndex; i++) {
+            const empty = document.createElement('p');
+            empty.textContent = '.';
+            calendarDays[i].appendChild(empty);
+        }
+    }
+
     #getCalendar(month, year) {
         const m = Number(month);
         const y = Number(year);
@@ -306,6 +342,18 @@ export class FastCalendar extends Fast {
             const currentDay = this.#getDayOfWeek(i, m, y);
             const date = document.createElement('p');
             date.textContent = i.toString();
+
+            if (i === 1 && currentDay !== "Sunday") {
+                this.#fillLeadingEmptyDays(m, y);
+            }
+
+            if (this.currentDate) {
+                if (m === this.currentMonth && y === this.currentYear) {
+                    if (i === this.currentDay) {
+                        date.classList.add('current-day');
+                    }
+                }
+            }
 
             switch (currentDay) {
                 case "Sunday": {
@@ -340,32 +388,55 @@ export class FastCalendar extends Fast {
         }
     }
 
-    #UpdateCalendar() {
-        const button = this.shadowRoot.querySelector('.FastCalendarHeader-Button-Update');
+    #updateCalendar() {
+        const dayInput = this.shadowRoot.querySelector('.input-day');
         const monthInput = this.shadowRoot.querySelector('.input-month');
         const yearInput  = this.shadowRoot.querySelector('.input-year');
         const selectMonth = this.shadowRoot.querySelector('.container-select-month');
         const selectYear  = this.shadowRoot.querySelector('.container-select-year');
+        const selectFormat = this.shadowRoot.querySelector('.header-select');
 
         if (monthInput && selectMonth) {
             if (this.currentDate) {
                 selectMonth.value = monthInput.value;
+            } else {
+                monthInput.value = this.month;
+                selectMonth.value = this.month;
             }
         } else return;
         if (yearInput && selectYear) {
             if (this.currentDate) {
                 selectYear.value = yearInput.value;
+            } else {
+                yearInput.value = this.year;
+                selectYear.value = this.year;
             }
         } else return;
+        if (!this.currentDate) {
+            dayInput.value = this.day;
+        }
 
         const updateCalendar = () => this.#getCalendar(selectMonth.value, selectYear.value);
         const updateSelector = () => {
-            selectYear.value = yearInput.value;
+            selectYear.value  = yearInput.value;
             selectMonth.value = monthInput.value;
-            updateCalendar();
-        }
 
-        button.addEventListener('click', updateSelector);
+            this.day   = +dayInput.value;
+            this.month = +monthInput.value;
+            this.year  = +yearInput.value;
+            updateCalendar();
+        };
+        const updateFormat = () => {
+            this.dateOrder = selectFormat.value;
+            this.#formatDate();
+            if (this.currentDate) this.#getCurrentDay();
+            return this.#updateCalendar();
+        };
+
+        selectFormat.addEventListener('change', updateFormat);
+        dayInput.addEventListener('change', updateSelector);
+        monthInput.addEventListener('change', updateSelector);
+        yearInput.addEventListener('change', updateSelector);
         selectMonth.addEventListener('change', updateCalendar);
         selectYear.addEventListener('change', updateCalendar);
 
@@ -432,6 +503,29 @@ export class FastCalendar extends Fast {
         })
     }
 
+    getDate() {
+        return `${this.day}/${this.month}/${this.year}`;
+    }
+
+    compareCalendars(calendar) {
+        if (typeof calendar !== 'object') return;
+
+        if (this._isBuilt && calendar._isBuilt) {
+            if (this.year > calendar.year) return 1;
+            if (this.year < calendar.year) return -1;
+
+            if (this.month > calendar.month) return 1;
+            if (this.month < calendar.month) return -1;
+
+            if (this.day > calendar.day) return 1;
+            if (this.day < calendar.day) return -1;
+
+            return 0;
+        } else {
+            return this.compareCalendars(calendar);
+        }
+    }
+
     async connectedCallback() {
         await this.#render();
         await this.#checkAttributes();
@@ -439,9 +533,9 @@ export class FastCalendar extends Fast {
         await this.#applyProps();
 
         this.#formatDate();
-        this.#hideCalendar();
+        await this.#hideCalendar();
         if (this.currentDate === true) this.#getCurrentDay();
-        this.#UpdateCalendar();
+        this.#updateCalendar();
 
         this._isBuilt = true;
         this.built();
