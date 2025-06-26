@@ -1,6 +1,5 @@
 export const FastCard = class extends Fast {
-    // 1. Añadimos 'layout' a los atributos observados
-    static observedAttributes = ["title", "content", "img", "layout"];
+    static observedAttributes = ["title", "content", "img"];
 
     constructor(props) {
         super();
@@ -11,88 +10,158 @@ export const FastCard = class extends Fast {
         this.attachShadow({ mode: "open" });
         this._isBuilt = false;
         this.objectProps = new Map();
+        this._layoutDefined = false;
+        this._deferredActions = [];
     }
 
     #getTemplate() {
         return `
-            <div class="FastCard">
+            <template id="elements-template">
                 <img class="card-img" style="display: none;" />
-                <div class="card-text-wrapper">
-                    <h3 class="card-title"></h3>
-                    <div class="card-content"></div>
-                </div>
-            </div>
+                <h3 class="card-title"></h3>
+                <div class="card-content"></div>
+            </template>
         `;
     }
 
     async #getCss() {
-        let baseCss = await fast.getCssFile("FastCard"); 
-        const layoutCss = `
-            .FastCard {
+        let baseCss = await fast.getCssFile("FastCard");
+        const additionalCss = `
+            .card-img {
+                width: 80px;
+                height: 80px;
+                object-fit: contain;
+                flex-shrink: 0;
+            }
+            .card-row {
                 display: flex;
-                gap: 1em;
+                align-items: center;
+                gap: 10px;
             }
-            .card-text-wrapper {
+            .card-column {
                 display: flex;
                 flex-direction: column;
-                gap: 0.5em;
+                justify-content: center;
+                flex: 1;
+                min-width: 0;
+                overflow: hidden;
             }
-            /* Layout por defecto (imagen arriba) */
-            .FastCard, .FastCard[layout="image-top"] {
-                flex-direction: column;
+            .card-title {
+                font-weight: bold;
+                margin: 0;
             }
-            /* Layout con imagen abajo */
-            .FastCard[layout="image-bottom"] {
-                flex-direction: column;
-            }
-            .FastCard[layout="image-bottom"] .card-img {
-                order: 1; /* Mueve la imagen al final */
-            }
-            /* Layout con imagen a la izquierda */
-            .FastCard[layout="image-left"] {
-                flex-direction: row;
-                align-items: center;
-                text-align: left;
-            }
-            /* Layout con imagen a la derecha */
-            .FastCard[layout="image-right"] {
-                flex-direction: row-reverse;
-                align-items: center;
-                text-align: right;
-            }
-            .card-img[hidden], .card-img:not([src]), .card-img[src=""] {
-                display: none !important;
+            .card-content {
+                font-size: 14px;
+                color: #333;
             }
         `;
-        return baseCss + layoutCss;
+        return baseCss + additionalCss;
     }
 
     #render() {
-        return new Promise(async (resolve, reject) => {
-            try {
-                let sheet = new CSSStyleSheet();
-                let css = await this.#getCss();
-                sheet.replaceSync(css);
+        return new Promise(async (resolve) => {
+            let sheet = new CSSStyleSheet();
+            sheet.replaceSync(await this.#getCss());
+            this.shadowRoot.adoptedStyleSheets = [sheet];
+            
+            this.template = document.createElement('template');
+            this.template.innerHTML = this.#getTemplate();
+            this.shadowRoot.appendChild(this.template.content.cloneNode(true));
+            
+            this.mainElement = this.shadowRoot;
+            
+            const elementsTemplate = this.shadowRoot.querySelector('#elements-template');
+            this.titleElement = elementsTemplate.content.querySelector('.card-title').cloneNode(true);
+            this.contentElement = elementsTemplate.content.querySelector('.card-content').cloneNode(true);
+            this.imgElement = elementsTemplate.content.querySelector('.card-img').cloneNode(true);
 
-                this.shadowRoot.adoptedStyleSheets = [sheet];
-                this.template = document.createElement('template');
-                this.template.innerHTML = this.#getTemplate();
-                let tpc = this.template.content.cloneNode(true); 
-                this.shadowRoot.appendChild(tpc);
-                
-                // Enlazamos los elementos internos
-                this.mainElement = this.shadowRoot.querySelector('.FastCard');
-                this.titleElement = this.shadowRoot.querySelector('.card-title');
-                this.contentElement = this.shadowRoot.querySelector('.card-content');
-                this.imgElement = this.shadowRoot.querySelector('.card-img');
-                resolve(this);
-            } catch (error) {
-                reject(error);
-            }
+            resolve(this);
         });
     }
 
-    #updateImageVisibility(imgSrc) {
+    #getElementByName(name) {
+        switch (name) {
+            case 'title': return this.titleElement;
+            case 'content': return this.contentElement;
+            case 'img': return this.imgElement;
+            default:
+                const custom = document.createElement('div');
+                custom.className = 'card-extra';
+                custom.textContent = name;
+                return custom;
+        }
+    }
+
+    
+    addRow(config = { elements: [], style: {} }) {
+        if (!this._isBuilt) {
+            this._deferredActions.push(() => this.addRow(config));
+            return this;
+        }
+
+        if (!this._layoutDefined) {
+            while (this.mainElement.firstChild?.tagName !== 'TEMPLATE' && this.mainElement.firstChild?.tagName !== 'STYLE') {
+                if (!this.mainElement.firstChild) break;
+                this.mainElement.removeChild(this.mainElement.firstChild);
+            }
+            this._layoutDefined = true;
+        }
+
+        const row = document.createElement('div');
+        row.className = 'card-row';
+        if (config.style) Object.assign(row.style, config.style); 
+
+        for (const item of config.elements) {
+    if (Array.isArray(item)) {
+        const column = document.createElement('div'); 
+        column.className = 'card-column'; 
+
+        for (const subItem of item) {
+            let element, style = {};
+
+            if (typeof subItem === 'object' && subItem.name) { 
+                element = this.#getElementByName(subItem.name);
+                style = subItem.style || {};
+            } else {
+                element = this.#getElementByName(subItem);
+            }
+
+            if (element) { 
+                Object.assign(element.style, style); 
+                column.appendChild(element);
+            }
+        }
+
+        row.appendChild(column);
+    } else {
+        let element, style = {};
+
+        if (typeof item === 'object' && item.name) {
+            element = this.#getElementByName(item.name);
+            style = item.style || {};
+        } else {
+            element = this.#getElementByName(item);
+        }
+
+        if (element) {
+            Object.assign(element.style, style);
+            row.appendChild(element);
+        }
+    }
+}
+
+        this.mainElement.appendChild(row);
+        return this;
+    }
+
+
+    #applyDefaultLayout() {
+        this.mainElement.appendChild(this.imgElement);
+        this.mainElement.appendChild(this.titleElement);
+        this.mainElement.appendChild(this.contentElement);
+    }
+
+    #updateImageVisibility(imgSrc) { 
         if (this.imgElement) {
             if (imgSrc && imgSrc.trim() !== "") {
                 this.imgElement.src = imgSrc;
@@ -106,7 +175,6 @@ export const FastCard = class extends Fast {
         }
     }
 
-    // Actualizamos #checkAttributes para que maneje el atributo 'layout'
     #checkAttributes() {
         return new Promise(async (resolve, reject) => {
             try {
@@ -123,12 +191,6 @@ export const FastCard = class extends Fast {
                             case 'img':
                                 this.#updateImageVisibility(this[attr]);
                                 break;
-                            case 'layout':
-                                if (this.mainElement) this.mainElement.setAttribute('layout', this[attr]);
-                                break;
-                            case 'id':
-                                await fast.createInstance('FastCard', { id: this[attr] });
-                                break;
                         }
                     }
                 }
@@ -144,17 +206,25 @@ export const FastCard = class extends Fast {
             try {
                 if (this.props) {
                     for (let attr in this.props) {
-                        this[attr] = this.props[attr]; 
                         switch (attr) {
                             case 'style':
-                                for (let k in this.props.style) this.mainElement.style[k] = this.props.style[k];
+                                for (let k in this.props.style)
+                                    this.style[k] = this.props.style[k];
                                 break;
                             case 'events':
-                                for (let e in this.props.events) this.mainElement.addEventListener(e, this.props.events[e]);
+                                for (let e in this.props.events)
+                                    this.addEventListener(e, this.props.events[e]);
                                 break;
-                            case 'layout':
+                            case 'title': 
+                            case 'content':
+                            case 'img':
                                 this.setAttribute(attr, this.props[attr]);
+                                this[attr] = this.props[attr];
+                                if (attr === 'img') this.#updateImageVisibility(this.props[attr]);
                                 break;
+                            default:
+                                this.setAttribute(attr, this.props[attr]);
+                                this[attr] = this.props[attr];
                         }
                     }
                 }
@@ -170,31 +240,59 @@ export const FastCard = class extends Fast {
         await this.#checkAttributes();
         await this.#checkProps();
         this._isBuilt = true;
+
+        if (this._deferredActions.length > 0) { 
+            this._deferredActions.forEach(action => action());
+            this._deferredActions = [];
+        }
+
+        if (!this._layoutDefined) {
+            this.#applyDefaultLayout();
+        }
+
+        await this.#applyProps();
         this.built();
     }
-    
-    get layout() { return this.getAttribute('layout'); }
-    set layout(val) {
-        this.setAttribute('layout', val);
-        if (this.mainElement) {
-            this.mainElement.setAttribute('layout', val);
-        }
+
+    #applyProps() {
+        return new Promise((resolve, reject) => {
+            try {
+                for (const [key, value] of this.objectProps.entries()) {
+                    this[key] = value;
+                    this.objectProps.delete(key);
+                }
+                resolve(this);
+            } catch (e) {
+                reject(e);
+            }
+        });
     }
 
+    addToBody() {
+        document.body.appendChild(this);
+    }
+    
     get title() { return this.titleElement?.innerText || ""; }
     set title(val) {
         this.setAttribute("title", val);
         if (this.titleElement) this.titleElement.innerText = val;
+        else this.objectProps.set("title", val);
     }
+
     get content() { return this.contentElement?.innerText || ""; }
     set content(val) {
         this.setAttribute("content", val);
         if (this.contentElement) this.contentElement.innerText = val;
+        else this.objectProps.set("content", val);
     }
+
     get img() { return this.imgElement?.src || ""; }
     set img(val) {
         this.setAttribute("img", val);
         this.#updateImageVisibility(val);
+        if (!this.imgElement) {
+            this.objectProps.set("img", val);
+        }
     }
 };
 
