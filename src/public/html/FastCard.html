@@ -6,6 +6,9 @@
     <title>Fast Card Test</title>
     <script type="module" src="../js/com/Fast.js"></script>
     <style>
+        body{
+            background-color: black;
+        }
         .cards-container {
             display: flex;
             gap: 20px;
@@ -17,6 +20,28 @@
 <body>
     <div class="cards-container">
         <fast-card id="cardHTML" title="Card 1" content="This card was created with html" ></fast-card>
+        <fast-card 
+            id="card2" 
+            layout="image-left"
+            title="Image Left" 
+            content="La imagen está a la izquierda del texto." 
+            img="../images/card-image.png">
+        </fast-card>
+        <fast-card 
+            id="card2" 
+            layout="image-right"
+            title="Image Right" 
+            content="La imagen está a la derecha del texto." 
+            img="../images/card-image.png">
+        </fast-card>
+
+        <fast-card 
+            id="card3" 
+            layout="image-bottom"
+            title="Image Bottom" 
+            content="La imagen ahora aparece en la parte inferior." 
+            img="../images/card-image.png">
+        </fast-card>
     </div>
     <script>
         let fastInit = async () => {          
