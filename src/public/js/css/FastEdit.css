@@ -9,22 +9,23 @@
 }
 .FastEditContainer {
     display : flex;
-    position : absolute;
+    position : relative; 
     background-color: rgba(0,0,0,0);
     border-width : 1px;
     border-style: solid;
     border-color : rgba(40,120,160,1);
     border-radius : 1em;
     height : 40px; 
-    width : 200px;
+    width : 100%; 
     align-items : center;
     justify-content: center;
+    box-sizing: border-box; 
 }
 
 .FastEdit{
     height : 100%; 
     width : 100%;
-    position : absolute;
+    position : relative; 
     border-width: 0px;
     outline: none;
     padding-left: 10px; 
@@ -33,7 +34,7 @@
     font-size : 14px;
     color : black;            
     border-radius : 1em;
-    
+    background-color: transparent; 
 }
 
 .FastEditLabel{

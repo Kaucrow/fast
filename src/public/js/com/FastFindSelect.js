@@ -19,6 +19,8 @@ export const FastFindSelect = class extends Fast{
         this._selectedValue = null;
     }
 
+    static observedAttributes = ["caption", "value"];
+
     #getTemplate(){ return `
         <div class='FastFindSelect'>
             <div class = 'FastFindSelectInputContainer'>
@@ -46,7 +48,6 @@ export const FastFindSelect = class extends Fast{
                         break;
                     case 'id' : 
                         this.id = this.props[attr];
-                        // await fast.createInstance('FastFindSelect', {'id': this.props[attr]});
                         break;
                     default : 
                         this[attr] = this.props[attr];                                
@@ -84,6 +85,7 @@ export const FastFindSelect = class extends Fast{
                 
 
             this.inputElement = this.fastEdit.getEdit() //getEdit() returns the input element
+            this.inputElement.style.paddingRight = '30px'; // Space for the button
 
 
             //this.labelElement = tpc.querySelector('.FastLabel');                                          
@@ -170,8 +172,8 @@ export const FastFindSelect = class extends Fast{
         //Toggle with button
         if (this.buttonComboCheck) {
             this.buttonComboCheck.addEventListener('click', (e) => {
-            e.stopImmediatePropagation();
-            if(!this.isShow) { this.showOptions(); } else { this.hideOptions(); } 
+            e.stopPropagation();
+            if(!this.isShow) { this.showOptions(); this.inputElement.focus()} else { this.hideOptions(); } 
         });
         }
         
@@ -183,12 +185,47 @@ export const FastFindSelect = class extends Fast{
             } 
         });
 
+        this.inputElement.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.isShow) {
+                this.hideOptions();
+                this.inputElement.blur(); 
+            }
+        })
+
+        this.mainElement.addEventListener('focusout', (e) => {
+            if (!this.mainElement.contains(e.relatedTarget)) {
+                this.hideOptions();
+            }
+        })
+        
+
+    }
+
+    attributeChangedCallback(name, oldValue, newValue) {
+        if (name === 'caption') {
+            this.caption = newValue;
+        } else if (name === 'value') {
+            this.value = newValue;
+        }
     }
 
     async connectedCallback(){
         await this.#render(await this.#getCss());
         await this.#checkProps();     
         this.#events();
+        
+        const options = this.querySelectorAll('option');
+        options.forEach(opt => {
+            this.addOption({ 
+                text: opt.textContent, 
+                value: opt.value || opt.textContent
+            });
+        });
+
+        if (this.hasAttribute('value')) {
+            this.value = this.getAttribute('value'); 
+        }
+
         this.built(this);
     }
 
@@ -197,16 +234,12 @@ export const FastFindSelect = class extends Fast{
     
     get value() { return this._selectedValue; }
     set value(val) {
-        const opt = this._options.find(o => o.value == val);
-        if (opt) {
-            this._selectedValue = opt.value;
-            //this.inputElement.value = opt.text;
-            if (this.fastEdit) {
-                this.fastEdit.value = opt.text; // Update FastEdit value
-                this.fastEdit.caption = opt.text; // Update FastEdit caption
-            }
-        }
+    this._selectedValue = val;
+    if (this.fastEdit) {
+      const opt = this._options.find(o => o.value == val);
+      if (opt) this.fastEdit.value = opt.text;
     }
+  }
 }
 
 if (!customElements.get ('fast-findselect')) { customElements.define ('fast-findselect', FastFindSelect); }
