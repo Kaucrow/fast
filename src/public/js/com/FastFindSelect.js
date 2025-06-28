@@ -85,7 +85,7 @@ export const FastFindSelect = class extends Fast{
                 
 
             this.inputElement = this.fastEdit.getEdit() //getEdit() returns the input element
-            this.inputElement.style.paddingRight = '30px'; // Space for the button
+            this.inputElement.style.paddingRight = '30px'; 
 
 
             //this.labelElement = tpc.querySelector('.FastLabel');                                          
@@ -104,10 +104,6 @@ export const FastFindSelect = class extends Fast{
     }
 
 
-    /**
-     * Adds a selectable option to the list.
-     * @param {object} option - An object like {'text': 'Display Text', 'value': 'someValue'}
-     */
     addOption(option){
         const optionEl = document.createElement('div');
         optionEl.className = 'FastFindSelectOption'; 
@@ -115,7 +111,7 @@ export const FastFindSelect = class extends Fast{
         optionEl.dataset.value = option.value;
 
         // Store the element with the option data
-        const optionData = { ...option, element: optionEl };
+        const optionData = { ...option, element: optionEl };    
         this._options.push(optionData);
         
         optionEl.addEventListener('click', (e) => {
