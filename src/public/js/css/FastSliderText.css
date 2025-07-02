@@ -1,0 +1,100 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(120deg, rgb(64, 66, 69) 0%, hrgb(64, 66, 68)100%);
+    color: #f5f6fa;
+    margin: 0;
+}
+
+.slider-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 370px;
+    padding: 28px 28px 22px 28px;
+    background: rgba(34, 40, 49, 0.95);
+    border-radius: 18px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    border: 1.5px solid rgba(255,255,255,0.08);
+    backdrop-filter: blur(4px);
+}
+
+.slide {
+    width: 100%;
+    opacity: 0;
+    transition: opacity 0.7s cubic-bezier(.4,0,.2,1);
+    text-align: center;
+    font-size: 20px;
+    padding: 22px 10px;
+    background: linear-gradient(90deg, #00c6ff 0%, #0072ff 100%);
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(219, 2, 2, 0.1);
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+}
+
+.slide.active {
+    opacity: 1;
+    animation: fadeInUp 0.7s;
+}
+
+@keyframes fadeInUp {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.controls {
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+}
+
+button {
+    padding: 12px 22px;
+    background: linear-gradient(90deg, #00c6ff 0%, #0072ff 100%);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 0 2px;
+    border-radius: 7px;
+    box-shadow: 0 2px 8px rgba(0,123,255,0.10);
+    transition: background 0.3s, transform 0.2s;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+button:hover, button:focus {
+    background: linear-gradient(90deg, #0072ff 0%, #00c6ff 100%);
+    transform: translateY(-2px) scale(1.04);
+    outline: none;
+}
+
+.indicators {
+    display: flex;
+    justify-content: center;
+    margin-top: 18px;
+    gap: 8px;
+}
+
+.indicators span {
+    width: 13px;
+    height: 13px;
+    background: #393e46;
+    border-radius: 50%;
+    display: inline-block;
+    transition: background 0.3s, transform 0.2s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.10);
+    cursor: pointer;
+}
+
+.indicators .active {
+    background: linear-gradient(90deg, #00c6ff 0%, #0072ff 100%);
+    transform: scale(1.2);
+    box-shadow: 0 2px 8px rgba(0,123,255,0.18);
+}
