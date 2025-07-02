@@ -26,36 +26,7 @@ export const FastCard = class extends Fast {
 
     async #getCss() {
         let baseCss = await fast.getCssFile("FastCard");
-        const additionalCss = `
-            .card-img {
-                width: 80px;
-                height: 80px;
-                object-fit: contain;
-                flex-shrink: 0;
-            }
-            .card-row {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-            }
-            .card-column {
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                flex: 1;
-                min-width: 0;
-                overflow: hidden;
-            }
-            .card-title {
-                font-weight: bold;
-                margin: 0;
-            }
-            .card-content {
-                font-size: 14px;
-                color: #333;
-            }
-        `;
-        return baseCss + additionalCss;
+        return baseCss;
     }
 
     #render() {

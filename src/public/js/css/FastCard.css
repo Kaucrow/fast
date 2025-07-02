@@ -38,3 +38,40 @@
 .card-img[hidden] {
     display: none;
 }
+
+.card-img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+.card-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.card-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+}
+.card-title {
+    font-weight: bold;
+    margin: 0;
+    user-select: none;
+}
+.card-content {
+    font-size: 14px;
+    color: #333;
+    user-select: none;
+}
+:host {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    width: 250px;
+}
