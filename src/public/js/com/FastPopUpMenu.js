@@ -98,6 +98,12 @@ export const FastPopUpMenu = class extends Fast {
         await this.#checkProps();
         this._isBuilt = true;
         await this.#applyProps();
+        if (this.props && this.props.style) {
+            const popupMenu = this.shadowRoot.querySelector('#fast-popup-menu');
+            for (let key in this.props.style) {
+                popupMenu.style[key] = this.props.style[key];
+            }
+        }
         this.built();
     }
 
