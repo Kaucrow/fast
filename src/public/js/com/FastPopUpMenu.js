@@ -121,10 +121,27 @@ export const FastPopUpMenu = class extends Fast {
         });
     }
 
-    addItem(text, callback) {
+    addItem(text, callback, imgSrc) {
         const ul = this.shadowRoot.querySelector('ul');
         const li = document.createElement('li');
-        li.textContent = text;
+        li.style.display = 'flex';
+        li.style.alignItems = 'center';
+        li.style.justifyContent = 'space-between';
+
+        const span = document.createElement('span');
+        span.textContent = text;
+        li.appendChild(span);
+
+        if (imgSrc) {
+            const img = document.createElement('img');
+            img.src = imgSrc;
+            img.style.height = '16px';
+            img.style.width = '16px';
+            img.style.marginLeft = '10px';
+            img.style.marginRight = '0';
+            li.appendChild(img);
+        }
+
         li.addEventListener('click', callback);
         ul.appendChild(li);
     }

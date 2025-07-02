@@ -15,9 +15,9 @@
                     }
                 });
                 popupMenu.built = async () => {
-                    popupMenu.addItem('Example 1', () => alert('Example 1 selected'));
-                    popupMenu.addItem('Example 2', () => alert('Example 2 selected'));
-                    popupMenu.addItem('Example 3', () => alert('Example 3 selected'));
+                    popupMenu.addItem('Save', () => alert('Save selected'), '../images/icons/save.svg');
+                    popupMenu.addItem('Share', () => alert('Share selected'), '../images/icons/arrowRight.svg');
+                    popupMenu.addItem('Options', () => alert('Options selected'), '../images/icons/config.svg');
                 };
                 popupMenu.addToBody();
 
