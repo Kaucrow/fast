@@ -13,6 +13,7 @@ export const FastSlider = class extends Fast{
     this._max = 100;
     this._step = 1;
     this._isBuilt = false;
+    this.orientation = (props && props.orientation) ? props.orientation : (this.getAttribute('orientation') || 'horizontal');
     this.objectProps = new Map();
     this._readyPromise = new Promise(resolve => {
       this._resolveReady = resolve;
@@ -21,8 +22,8 @@ export const FastSlider = class extends Fast{
 
   #getTemplate() {
     return `
-      <div class="slider-container">
-        <div class="slider-track">
+      <div class="slider-container${this.orientation === 'vertical' ? ' vertical' : ''}">
+        <div class="slider-track${this.orientation === 'vertical' ? ' vertical' : ''}">
           <div class="slider-thumb"></div>
         </div>
         <div class="slider-value"></div>
@@ -77,6 +78,9 @@ export const FastSlider = class extends Fast{
             case 'step':
               this.step = Number(this.getAttribute('step'));
               break;
+            case 'orientation':
+              this.orientation = this.getAttribute('orientation');
+              break;
           }
         }
         resolve(this);
@@ -106,6 +110,7 @@ export const FastSlider = class extends Fast{
                 if (attr === 'min') { this.min = Number(this.props[attr]); }
                 if (attr === 'max') { this.max = Number(this.props[attr]); }
                 if (attr === 'step') { this.step = Number(this.props[attr]); }
+                if (attr === 'orientation') { this.orientation = this.props[attr]; }
             }
           }
           resolve(this);
@@ -168,14 +173,27 @@ export const FastSlider = class extends Fast{
 
     const setThumbPosition = (value) => {
       const percent = (value - this.min) / (this.max - this.min);
-      const trackWidth = track.offsetWidth;
-      thumb.style.left = `${percent * trackWidth}px`;
-      valueDisplay.textContent = `Value: ${Math.round(value)}`;
+      if (this.orientation === 'vertical') {
+        const trackHeight = track.offsetHeight;
+        thumb.style.top = `${(1 - percent) * trackHeight}px`;
+        thumb.style.left = '50%';
+        valueDisplay.textContent = `Value: ${Math.round(value)}`;
+      } else {
+        const trackWidth = track.offsetWidth;
+        thumb.style.left = `${percent * trackWidth}px`;
+        thumb.style.top = '50%';
+        valueDisplay.textContent = `Value: ${Math.round(value)}`;
+      }
     };
 
-    const getValueFromPosition = (x) => {
+    const getValueFromPosition = (evt) => {
       const rect = track.getBoundingClientRect();
-      let percent = (x - rect.left) / rect.width;
+      let percent;
+      if (this.orientation === 'vertical') {
+        percent = 1 - ((evt.clientY - rect.top) / rect.height);
+      } else {
+        percent = (evt.clientX - rect.left) / rect.width;
+      }
       percent = Math.max(0, Math.min(1, percent));
       let val = this.min + percent * (this.max - this.min);
       // Snap to step
@@ -190,7 +208,7 @@ export const FastSlider = class extends Fast{
 
     document.addEventListener('mousemove', (e) => {
       if (!dragging) return;
-      const value = getValueFromPosition(e.clientX);
+      const value = getValueFromPosition(e);
       this.value = value;
       setThumbPosition(this.value);
       this.dispatchEvent(new CustomEvent('slider-change', { detail: { value: this.value } }));
@@ -203,7 +221,7 @@ export const FastSlider = class extends Fast{
 
     // Click on track to move thumb
     track.addEventListener('click', (e) => {
-      const value = getValueFromPosition(e.clientX);
+      const value = getValueFromPosition(e);
       this.value = value;
       setThumbPosition(this.value);
       this.dispatchEvent(new CustomEvent('slider-change', { detail: { value: this.value } }));
@@ -219,9 +237,17 @@ export const FastSlider = class extends Fast{
     const valueDisplay = this.shadowRoot.querySelector('.slider-value');
     if (!track || !thumb || !valueDisplay) return;
     const percent = (this.value - this.min) / (this.max - this.min);
-    const trackWidth = track.offsetWidth;
-    thumb.style.left = `${percent * trackWidth}px`;
-    valueDisplay.textContent = `Value: ${Math.round(this.value)}`;
+    if (this.orientation === 'vertical') {
+      const trackHeight = track.offsetHeight;
+      thumb.style.top = `${(1 - percent) * trackHeight}px`;
+      thumb.style.left = '50%';
+      valueDisplay.textContent = `Value: ${Math.round(this.value)}`;
+    } else {
+      const trackWidth = track.offsetWidth;
+      thumb.style.left = `${percent * trackWidth}px`;
+      thumb.style.top = '50%';
+      valueDisplay.textContent = `Value: ${Math.round(this.value)}`;
+    }
   }
 }
 
