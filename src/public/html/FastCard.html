@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fast Card Test</title>
+    <script type="module" src="../js/com/Fast.js"></script>
+    <style>
+        body { font-family: sans-serif; }
+        .cards-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="cards-container">
+        <fast-card id="card1" title="Card 1: Default" content="This is a default card." class="fast-card-container"></fast-card>
+    </div>
+    
+    <script>
+        let fastInit = async () => {          
+            const container = document.querySelector('.cards-container');
+
+            // --- Tarjeta Vertical ---
+            const verticalCard = await fast.createInstance("FastCard", {
+                id: "verticalCard",
+                title: "Card 2: Vertical",
+                content: "Each element is in its own row.",
+                img: "../images/card-image.png",
+            });
+            verticalCard
+                .addRow({ elements: ['title'], style: {
+                    display: 'flex',
+                    'justify-content': 'center',
+                    'align-items': 'center',     
+                    height: '50px'               
+                } })
+                .addRow({ elements: ['img'], style: { 
+                    display: 'flex',
+                    'justify-content': 'center',
+                    'align-items': 'center'
+                    } })
+                .addRow({ elements: ['content'], style :{
+                    display : 'flex',
+                    'justify-content': 'center',
+                    'align-items': 'center',
+                    'margin-top': '20px'
+                } });
+            container.appendChild(verticalCard);
+
+            // --- Tarjeta Horizontal  ---
+            const horizontalCard = await fast.createInstance("FastCard", {
+                id: "horizontalCard",
+                title: "Card 3: Horizontal",
+                content: "Text is to the right of the image.",
+                img: "../images/card-image.png",
+            });
+            horizontalCard.addRow({
+                elements: [
+                    'img',
+                    [
+                    { name: 'title', style: { fontWeight: 'bold', fontSize: '18px', color: 'navy' } },
+                    { name: 'content', style: { color: 'gray' } }
+                    ]
+                ],
+                style: { gap: '10px', alignItems: 'flex-start' }
+                });
+            horizontalCard.addEventListener('click', () => {
+                alert('Card 3 Clicked!');
+            });
+
+
+            container.appendChild(horizontalCard);
+
+            // --- CUARTA CARD ---  
+            const card = await fast.createInstance("FastCard", {
+                title: "Card 4: Custom Layout",
+                content: "Contenido principal",
+                img: "../images/card-image.png",
+                });
+
+                card.addRow({
+                elements: ['title'],
+                style: { 'justify-content': 'center' }
+                });
+
+                card.addRow({
+                elements: ['content'],
+                style: { 'flex-direction': 'column', 'gap': '6px' }
+                });
+                card.addRow({
+                elements: ['img'],
+                style: { 'justify-content': 'center' }
+                });
+
+                card.addRow({
+                    elements: ['Contenido Secundario'],
+                    style: { 'justify-content': 'center', 'align-items': 'center', 'height': '50px' }
+                })
+                
+            container.appendChild(card);
+
+        };
+    </script>
+</body>
+</html>
