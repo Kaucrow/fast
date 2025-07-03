@@ -1,0 +1,57 @@
+/* FastSlider.css */
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.slider-container {
+    width: 300px;
+    margin: 40px auto;
+    background: #fff;
+    padding: 2rem 3rem;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.slider-track {
+    width: 100%;
+    height: 6px;
+    background: #e0e0e0;
+    border-radius: 3px;
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.slider-thumb {
+    width: 24px;
+    height: 24px;
+    background: #0078d7;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    transition: background 0.2s;
+    border: 2px solid #fff;
+}
+
+.slider-thumb.active {
+    background: #005fa3;
+}
+
+.slider-value {
+    font-size: 1.5rem;
+    color: #0078d7;
+    font-weight: bold;
+    text-align: center;
+}

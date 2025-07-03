@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FastSlider Component</title>
+    <script type = "module" src="../js/com/Fast.js"></script>
+    <script src="../js/com/FastSlider.js"></script>
+</head>
+<body>
+    <fast-slider id="slider1" min="0" max="100" value="50"></fast-slider>
+    <script>
+        // Listen for slider value changes
+        let fastInit = async () => {
+            let slider = await fast.createInstance ("FastSlider", {
+                'id': "slider1" ,
+                'min' :"0",
+                'max':"100",
+                'value':"50",
+            });
+            
+        }
+    </script>
+</body>
+</html>
