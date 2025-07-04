@@ -1,61 +1,27 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Formulario con FastFieldSet</title>
-    <script type="module" src="../js/com/Fast.js"></script>
-    <script type="module" src="../js/com/FastFieldSet.js"></script>
+  <meta charset="UTF-8">
+  <title>Formulario con Fieldsets</title>
+  <!-- Carga de Fast y registro de <fast-fieldset> -->
+  <script type="module" src="../js/com/Fast.js"></script>
+  <script type="module" src="../js/com/FastFieldSet.js"></script>
 </head>
 <body>
-    <script type="module">
-        let fastInit = async () => {
-            let d = await fast.createInstance("FastFieldSet", {
-                id: 'FieldSetJS',
-                title: 'Contacto',
-                style: {},
-                data: {
-                    nombre: 'Juan',
-                    email: 'a@a.com',
-                    telefono: '123456789'
-                }
-            });
+  <fast-fieldset 
+    id="FieldSetJS" 
+    title="Datos Guardados"
+    style="margin: 20px auto; width: 80%; border-radius: 12px; padding: 20px; background-color: #f9f9f9;">
+  </fast-fieldset>
 
-            d.built = (self) => {
-                const agregarBotones = () => {
-                    const btnGuardar = document.createElement('button');
-                    btnGuardar.textContent = 'Guardar';
-                    btnGuardar.classList.add('StyledButton');
-                    btnGuardar.onclick = () => self.saveData();
+  <!-- fastInit: punto de arranque para interactuar con tu <fast-fieldset> -->
+  <script type="module">
+    window.fastInit = async () => {
+      // Recupera la instancia estática
+      const fs = document.getElementById('FieldSetJS');
+      };
 
-                    const btnReset = document.createElement('button');
-                    btnReset.textContent = 'Restablecer';
-                    btnReset.classList.add('StyledButton');
-                    btnReset.onclick = () => self.resetData();
-
-                    self.addRow({
-                        elements: [btnGuardar, btnReset],
-                        styleRow: {
-                            display: 'flex',
-                            flexDirection: 'row',
-                            justifyContent: 'start',
-                            gap: '10px',
-                            marginTop: '10px'
-                        }
-                    });
-                };
-
-                self.agregarBotones = agregarBotones;
-                agregarBotones();
-            };
-
-            d.addEventListener("status", e => {
-                alert(e.detail);
-            });
-
-            d.addToBody();
-        };
-
-        fastInit();
-    </script>
+    document.addEventListener('DOMContentLoaded', fastInit);
+  </script>
 </body>
 </html>
