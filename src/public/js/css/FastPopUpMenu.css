@@ -18,3 +18,6 @@
 #fast-popup-menu li:hover{
     background-color: lightgray;
 }
+#fast-popup-menu ul ul li:hover {
+    background-color: #9e9e9e;
+}

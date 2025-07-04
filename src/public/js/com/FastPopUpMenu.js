@@ -121,12 +121,13 @@ export const FastPopUpMenu = class extends Fast {
         });
     }
 
-    addItem(text, callback, imgSrc) {
+    addItem(text, imgSrc, callback, subItems) {
         const ul = this.shadowRoot.querySelector('ul');
         const li = document.createElement('li');
         li.style.display = 'flex';
         li.style.alignItems = 'center';
         li.style.justifyContent = 'space-between';
+        li.style.position = 'relative';
 
         const span = document.createElement('span');
         span.textContent = text;
@@ -142,8 +143,144 @@ export const FastPopUpMenu = class extends Fast {
             li.appendChild(img);
         }
 
-        li.addEventListener('click', callback);
+        if (Array.isArray(subItems) && subItems.length > 0) {
+            const arrow = document.createElement('span');
+            arrow.innerHTML = `<img src="../images/icons/arrowRight.svg" style="height: 16px; width: 16px; margin-left: 8px;">`;
+            li.appendChild(arrow);
+
+            const subMenu = document.createElement('ul');
+            subMenu.style.position = 'absolute';
+            subMenu.style.top = '0';
+            subMenu.style.left = '100%';
+            subMenu.style.minWidth = '100px';
+            subMenu.style.background = 'inherit';
+            subMenu.style.border = '1px solid #ccc';
+            subMenu.style.display = 'none';
+            subMenu.style.zIndex = '9999';
+            subMenu.style.padding = '0';
+            subMenu.style.margin = '0';
+
+            subItems.forEach(sub => {
+                const subLi = document.createElement('li');
+                subLi.style.display = 'flex';
+                subLi.style.alignItems = 'center';
+                subLi.style.justifyContent = 'space-between';
+                subLi.style.position = 'relative';
+
+                const subSpan = document.createElement('span');
+                subSpan.textContent = sub.text;
+                subLi.appendChild(subSpan);
+
+                if (sub.imgSrc) {
+                    const subImg = document.createElement('img');
+                    subImg.src = sub.imgSrc;
+                    subImg.style.height = '16px';
+                    subImg.style.width = '16px';
+                    subImg.style.marginLeft = '10px';
+                    subImg.style.marginRight = '0';
+                    subLi.appendChild(subImg);
+                }
+
+                if (Array.isArray(sub.subItems) && sub.subItems.length > 0) {
+                    const subArrow = document.createElement('span');
+                    subArrow.innerHTML = `<img src="../images/icons/arrowRight.svg" style="height: 16px; width: 16px; margin-left: 8px;">`;
+                    subLi.appendChild(subArrow);
+                    this.#appendSubMenu(subLi, sub.subItems);
+                }
+
+                if (typeof sub.callback === 'function') {
+                    subLi.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        sub.callback();
+                        this.hide();
+                    });
+                }
+                subMenu.appendChild(subLi);
+            });
+
+            li.appendChild(subMenu);
+
+            li.addEventListener('mouseenter', () => {
+                subMenu.style.display = 'block';
+            });
+            li.addEventListener('mouseleave', () => {
+                subMenu.style.display = 'none';
+            });
+        } else {
+            li.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (typeof callback === 'function') callback();
+                this.hide();
+            });
+        }
+
         ul.appendChild(li);
+    }
+
+    #appendSubMenu(parentLi, subItems) {
+        const subMenu = document.createElement('ul');
+        subMenu.style.position = 'absolute';
+        subMenu.style.top = '0';
+        subMenu.style.left = '100%';
+        subMenu.style.minWidth = '160px';
+        subMenu.style.background = 'inherit';
+        subMenu.style.border = '1px solid #ccc';
+        subMenu.style.display = 'none';
+        subMenu.style.zIndex = '9999';
+        subMenu.style.padding = '0';
+        subMenu.style.margin = '0';
+
+        subItems.forEach(sub => {
+            const subLi = document.createElement('li');
+            subLi.style.display = 'flex';
+            subLi.style.alignItems = 'center';
+            subLi.style.justifyContent = 'space-between';
+            subLi.style.position = 'relative';
+
+            const subSpan = document.createElement('span');
+            subSpan.textContent = sub.text;
+            subLi.appendChild(subSpan);
+
+            if (sub.imgSrc) {
+                const subImg = document.createElement('img');
+                subImg.src = sub.imgSrc;
+                subImg.style.height = '16px';
+                subImg.style.width = '16px';
+                subImg.style.marginLeft = '10px';
+                subImg.style.marginRight = '0';
+                subLi.appendChild(subImg);
+            }
+
+            if (Array.isArray(sub.subItems) && sub.subItems.length > 0) {
+                const subArrow = document.createElement('span');
+                subArrow.innerHTML = `<img src="../images/icons/arrowRight.svg" 
+                    style="
+                        height: 16px; 
+                        width: 16px; 
+                        margin-left: 8px;
+                    ">
+                `;
+                subLi.appendChild(subArrow);
+                this.#appendSubMenu(subLi, sub.subItems);
+            }
+
+            if (typeof sub.callback === 'function') {
+                subLi.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    sub.callback();
+                    this.hide();
+                });
+            }
+            subMenu.appendChild(subLi);
+        });
+
+        parentLi.appendChild(subMenu);
+        parentLi.addEventListener('mouseenter', () => {
+            subMenu.style.display = 'block';
+        });
+        parentLi.addEventListener('mouseleave', () => {
+            subMenu.style.display = 'none';
+        });
     }
 
     show(event) {

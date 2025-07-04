@@ -15,9 +15,35 @@
                     }
                 });
                 popupMenu.built = async () => {
-                    popupMenu.addItem('Save', () => alert('Save selected'), '../images/icons/save.svg');
-                    popupMenu.addItem('Share', () => alert('Share selected'), '../images/icons/arrowRight.svg');
-                    popupMenu.addItem('Options', () => alert('Options selected'), '../images/icons/config.svg');
+                    popupMenu.addItem('Save', '../images/icons/save.svg', () => alert('Save selected'));
+                    popupMenu.addItem(
+                        'Share',
+                        null,
+                        '',
+                        [
+                            {
+                                text: 'Profile',
+                                imgSrc: '../images/icons/user.svg',
+                                callback: () => alert('Shared via Profile')
+                            },
+                            {
+                                text: 'Group',
+                                imgSrc: '../images/icons/users.svg',
+                                callback: () => alert('Shared via Group')
+                            },
+                            {
+                                text: 'More...',
+                                callback: null,
+                                subItems: [
+                                    {
+                                        text: 'Social Media',
+                                        callback: () => alert('Shared via Social Media'),
+                                    }
+                                ]
+                            }
+                        ]
+                    );
+                    popupMenu.addItem('Options', '../images/icons/config.svg', () => alert('Options selected'));
                 };
                 popupMenu.addToBody();
 
