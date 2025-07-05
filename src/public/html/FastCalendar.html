@@ -23,7 +23,7 @@
       id: "cal-1",
       "date-order": "dd-mm-yyyy",
       "current-date": "true",
-      iconname: "arrowRight",
+      "iconname": "arrowRight",
       //'style' : {'background-color' : 'blue'},
       //'events' : {'click' : () => {alert('Se creo el calendario.')}}
     });
@@ -32,7 +32,7 @@
     };
     c.addBody();
 
-    let cal = await fast.createInstance("FastCalendar", {
+    /*let cal = await fast.createInstance("FastCalendar", {
       id: "cal-2",
       "date-order": "yyyy-mm-dd",
       "current-date": "false",
@@ -45,6 +45,7 @@
       console.log("cal vs c →", cal.compareCalendars(c));
     };
     cal.addBody();
+    */
   }
 </script>
 </body>

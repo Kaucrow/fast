@@ -5,22 +5,18 @@ export class FastCalendar extends Fast {
         this.props = props;
         this.built = ()=> {};
         this.attachShadow({mode: 'open'});
-
         this.dateOrder = 'dd-mm-yyyy';
         this._coloricon = '#FFF';
         this.widthCharMenu = 7;
         this.sizeIconMenu = 14;
         this.currentDate = true;
         this.bodyVisible = true;
-
         this.day = 1;
         this.month = 1;
         this.year = 2025;
-
         this.currentDay = this.day;
         this.currentMonth = this.month;
-        this.currentYear = this.year
-
+        this.currentYear = this.year;
         this._isBuilt = false;
     }
 
@@ -28,44 +24,45 @@ export class FastCalendar extends Fast {
         return `
       <div class="FastCalendar">
         <div class="FastCalendarHeader">
-          <div class="container-inputs-date"></div>
-          <select class="header-select">
-            <option value="dd-mm-yyyy">dd/mm/yyyy</option>
-            <option value="mm-dd-yyyy">mm/dd/yyyy</option>
-            <option value="yyyy-mm-dd">yyyy/mm/dd</option>
-            <option value="yyyy-dd-mm">yyyy/dd/mm</option>
-          </select>
+          <div class="container-inputs-date reveleaded"></div>
+            <select class="header-select hidden">
+                <option value="dd-mm-yyyy">dd/mm/yyyy</option>
+                <option value="mm-dd-yyyy">mm/dd/yyyy</option>
+                <option value="yyyy-mm-dd">yyyy/mm/dd</option>
+                <option value="yyyy-dd-mm">yyyy/dd/mm</option>
+            </select>
+            <div class= "container-options"></div>
         </div>
         <div class="FastCalendarBody">
           <div class="FastCalendarSelect">
-            <select class="container-select-month">
-                <option value="1">Enero</option>
-                <option value="2">Febrero</option>
-                <option value="3">Marzo</option>
-                <option value="4">Abril</option>
-                <option value="5">Mayo</option>
-                <option value="6">Junio</option>
-                <option value="7">Julio</option>
-                <option value="8">Agosto</option>
-                <option value="9">Septiembre</option>
-                <option value="10">Octubre</option>
-                <option value="11">Noviembre</option>
-                <option value="12">Diciembre</option>
+            <select class="select-month">
+                <option value="1" class="months">Enero</option>
+                <option value="2" class="months">Febrero</option>
+                <option value="3" class="months">Marzo</option>
+                <option value="4" class="months">Abril</option>
+                <option value="5" class="months">Mayo</option>
+                <option value="6" class="months">Junio</option>
+                <option value="7" class="months">Julio</option>
+                <option value="8" class="months">Agosto</option>
+                <option value="9" class="months">Septiembre</option>
+                <option value="10" class="months">Octubre</option>
+                <option value="11" class="months">Noviembre</option>
+                <option value="12" class="months">Diciembre</option>
             </select>
-            <select class="container-select-year">
+            <select class="select-year">
                 <option value="2025">2025</option>
                 <option value="2026">2026</option>
                 <option value="2027">2027</option>
             </select>
           </div>
           <div class="container-header-days">
-            <p>Dom</p>
-            <p>Lun</p>
-            <p>Mar</p>
-            <p>Mié</p>
-            <p>Jue</p>
-            <p>Vie</p>
-            <p>Sáb</p>
+            <p class="header-day">Dom</p>
+            <p class="header-day">Lun</p>
+            <p class="header-day">Mar</p>
+            <p class="header-day">Mié</p>
+            <p class="header-day">Jue</p>
+            <p class="header-day">Vie</p>
+            <p class="header-day">Sáb</p>
           </div>
           <div class="container-body-days">
             <div class="container-days"></div>
@@ -212,7 +209,7 @@ export class FastCalendar extends Fast {
         monthInput.disabled = false;
         const barCenter = document.createElement('p');
         barCenter.classList.add('label-input');
-        barCenter.innerHTML = '/'
+        barCenter.innerHTML = '/';
 
         const yearInput = document.createElement('input');
         yearInput.className = 'input-year input';
@@ -231,20 +228,14 @@ export class FastCalendar extends Fast {
         let countBar = 0;
         this.dateOrder.split('-').forEach(part => {
             if (inputs[part]) {
-                if (countBar === 0) {
-                    barLeft.classList.add('label-left');
+                if (countBar === 1) {
                     divInput.appendChild(barLeft);
-                    inputs[part].classList.add('firts-input');
                 };
                 
-                if (countBar === 1) {
-                    barCenter.classList.add('label-center')
+                if (countBar === 2) {
                     divInput.appendChild(barCenter);
                 }
 
-                if (countBar === 2){
-                    inputs[part].classList.add('last-input')
-                }
                 divInput.appendChild(inputs[part]);
             }
             countBar++;
@@ -315,6 +306,7 @@ export class FastCalendar extends Fast {
 
         for (let i = 0; i <= firstDayIndex; i++) {
             const empty = document.createElement('p');
+            empty.classList.add('empty-day');
             empty.textContent = '.';
             calendarDays[i].appendChild(empty);
         }
@@ -342,7 +334,7 @@ export class FastCalendar extends Fast {
             const currentDay = this.#getDayOfWeek(i, m, y);
             const date = document.createElement('p');
             date.textContent = i.toString();
-
+            
             if (i === 1 && currentDay !== "Sunday") {
                 this.#fillLeadingEmptyDays(m, y);
             }
@@ -352,9 +344,15 @@ export class FastCalendar extends Fast {
                     if (i === this.currentDay) {
                         date.classList.add('current-day');
                     }
+                    else{
+                        date.classList.add('day');
+                    }
                 }
-            }
-
+                else{
+                    date.classList.add('day');
+                }
+            } 
+            
             switch (currentDay) {
                 case "Sunday": {
                     calendarDays[0].appendChild(date);
@@ -392,8 +390,8 @@ export class FastCalendar extends Fast {
         const dayInput = this.shadowRoot.querySelector('.input-day');
         const monthInput = this.shadowRoot.querySelector('.input-month');
         const yearInput  = this.shadowRoot.querySelector('.input-year');
-        const selectMonth = this.shadowRoot.querySelector('.container-select-month');
-        const selectYear  = this.shadowRoot.querySelector('.container-select-year');
+        const selectMonth = this.shadowRoot.querySelector('.select-month');
+        const selectYear  = this.shadowRoot.querySelector('.select-year');
         const selectFormat = this.shadowRoot.querySelector('.header-select');
 
         if (monthInput && selectMonth) {
@@ -446,36 +444,63 @@ export class FastCalendar extends Fast {
     async #hideCalendar() {
         const containerHeader = this.shadowRoot.querySelector('.FastCalendarHeader');
         const containerBody = this.shadowRoot.querySelector('.FastCalendarBody');
+        const containerOptions = this.shadowRoot.querySelector('.container-options');
 
         if (!this.props.iconname) return;
+        const toggleButton = await this.#renderIcon(this.props);
+        toggleButton.classList.add('toggle-button');
 
-        const icon = await this.#renderIcon(this.props);
-        icon.classList.add('toggle-button');
+        this.bodyVisible = this.bodyVisible;
+        this.#changeIcon(toggleButton, containerBody, this.bodyVisible, containerHeader);
 
-        this.bodyVisible = this.bodyVisible ?? true;
-        this.#changeIcon(icon, containerBody, this.bodyVisible);
-
-        icon.addEventListener('click', () => {
+        toggleButton.addEventListener('click', () => {
             this.bodyVisible = !this.bodyVisible;
-            this.#changeIcon(icon, containerBody, this.bodyVisible);
+            this.#changeIcon(toggleButton, containerBody, this.bodyVisible, containerHeader);
         });
 
-        containerHeader.appendChild(icon);
+        containerOptions.appendChild(toggleButton);
     }
 
-    #changeIcon(icon, containerBody, isVisible) {
+    #changeIcon(icon, containerBody, isVisible, containerHeader) {
         if (isVisible) {
             containerBody.style.display = 'flex';
-            containerBody.style.animation = 'show .4s ease-out forwards';
+            containerBody.style.animation = 'slideDown .4s ease-out forwards';
             icon.classList.remove('arrow-up');
             icon.classList.add('arrow-down');
+            containerHeader.style.borderRadius = '10px 10px 0 0';
         }
         else {  
-            containerBody.style.animation = 'hidden 0.6s ease-in forwards';
+            containerBody.style.animation = 'slideUp .4s ease-in forwards';
             icon.classList.remove('arrow-down');
             icon.classList.add('arrow-up');
-            containerBody.style.display = 'none';
+            setTimeout(()=>{
+                containerHeader.style.borderRadius = '10px';
+                containerBody.style.display = 'none';
+            }, 399);
         }
+    }
+
+    async #alternateContainerHeader() {
+        const containerHeader = this.shadowRoot.querySelector('.FastCalendarHeader');
+        const containerHeaderInputs = this.shadowRoot.querySelector('.container-inputs-date');
+        const containerHeaderSelect = this.shadowRoot.querySelector('.header-select');
+
+        this.props.iconname = 'options';
+        const optionsButton = await this.#renderIcon(this.props);
+        optionsButton.classList.add('options-button');
+
+        optionsButton.addEventListener('click', () => {
+            if (containerHeaderInputs.classList.contains('reveleaded')) {
+                containerHeaderInputs.classList.replace('reveleaded', 'hidden');
+                containerHeaderSelect.classList.replace('hidden', 'reveleaded');
+            } else {
+                containerHeaderSelect.classList.replace('reveleaded', 'hidden');
+                containerHeaderInputs.classList.replace('hidden', 'reveleaded');
+            }
+        });
+
+
+        containerHeader.appendChild(optionsButton);
     }
 
 
@@ -534,8 +559,10 @@ export class FastCalendar extends Fast {
 
         this.#formatDate();
         await this.#hideCalendar();
+        await this.#alternateContainerHeader();
         if (this.currentDate === true) this.#getCurrentDay();
         this.#updateCalendar();
+        
 
         this._isBuilt = true;
         this.built();
