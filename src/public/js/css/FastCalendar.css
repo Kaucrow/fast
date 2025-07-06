@@ -3,7 +3,7 @@
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    width: 350px;
+    width: 325px;
     height:auto;
     padding: 2%;
     font-family: sans-serif;
@@ -92,14 +92,13 @@
     height: 35px;
     border-radius: 50%;
     border: none;
-    margin: 0;
+    margin: 0 0 0 5px;
     transition: all .5s ease;
     cursor: pointer;
 }
 
-.options-button{
-  width: 40px;
-  margin-right: 10px;
+.toggle-button{
+  order: 2;
 }
 
 .arrow-up{
@@ -170,6 +169,7 @@
   text-align: center;
   margin-left: 10px;
   margin-right: 10px;
+  user-select: none;
 }
 
 .container-body-days{
@@ -202,6 +202,7 @@
     transform: translateY(-2px);
     margin-bottom: 5px;
     transition: all .2s ease-in;
+    user-select: none;
 }
 
 .current-day {

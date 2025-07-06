@@ -446,8 +446,8 @@ export class FastCalendar extends Fast {
         const containerBody = this.shadowRoot.querySelector('.FastCalendarBody');
         const containerOptions = this.shadowRoot.querySelector('.container-options');
 
-        if (!this.props.iconname) return;
-        const toggleButton = await this.#renderIcon(this.props);
+        const icon = {'iconname' : 'arrowRight'};
+        const toggleButton = await this.#renderIcon(icon);
         toggleButton.classList.add('toggle-button');
 
         this.bodyVisible = this.bodyVisible;
@@ -458,7 +458,7 @@ export class FastCalendar extends Fast {
             this.#changeIcon(toggleButton, containerBody, this.bodyVisible, containerHeader);
         });
 
-        containerOptions.appendChild(toggleButton);
+        containerOptions.append(toggleButton);
     }
 
     #changeIcon(icon, containerBody, isVisible, containerHeader) {
@@ -481,12 +481,12 @@ export class FastCalendar extends Fast {
     }
 
     async #alternateContainerHeader() {
-        const containerHeader = this.shadowRoot.querySelector('.FastCalendarHeader');
+        const containerHeader = this.shadowRoot.querySelector('.container-options');
         const containerHeaderInputs = this.shadowRoot.querySelector('.container-inputs-date');
         const containerHeaderSelect = this.shadowRoot.querySelector('.header-select');
 
-        this.props.iconname = 'options';
-        const optionsButton = await this.#renderIcon(this.props);
+        const icon = {'iconname': 'options'};
+        const optionsButton = await this.#renderIcon(icon);
         optionsButton.classList.add('options-button');
 
         optionsButton.addEventListener('click', () => {
@@ -499,8 +499,7 @@ export class FastCalendar extends Fast {
             }
         });
 
-
-        containerHeader.appendChild(optionsButton);
+        containerHeader.append(optionsButton);
     }
 
 
