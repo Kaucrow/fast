@@ -179,7 +179,7 @@ export const FastPopUpMenu = class extends Fast {
                 backItem.style.fontWeight = 'bold';
                 backItem.innerHTML = `
                     <span style="display: flex; align-items: center;">
-                        <img src="../images/icons/leftArrow.svg" style="height: 16px; width: 16px; margin-right: 5px;">
+                        <img src="../images/icons/leftArrow.svg" style= "margin-left 8px; margin-right: 2px;">
                     </span>
                 `;
                 backItem.addEventListener('click', (e) => {
@@ -205,9 +205,6 @@ export const FastPopUpMenu = class extends Fast {
                 if (item.imgSrc) {
                     const img = document.createElement('img');
                     img.src = item.imgSrc;
-                    img.style.height = '16px';
-                    img.style.width = '16px';
-                    img.style.marginRight = '8px';
                     itemContent.appendChild(img);
                 }
                 
@@ -220,9 +217,8 @@ export const FastPopUpMenu = class extends Fast {
                 if (item.subItems && item.subItems.length > 0) {
                     const arrow = document.createElement('img');
                     arrow.src = '../images/icons/arrowRight.svg';
-                    arrow.style.height = '16px';
-                    arrow.style.width = '16px';
                     arrow.style.marginLeft = '8px';
+                    arrow.style.marginRight = '2px';
                     li.appendChild(arrow);
                     
                     li.addEventListener('click', (e) => {
@@ -307,22 +303,12 @@ export const FastPopUpMenu = class extends Fast {
             if (sub.imgSrc) {
                 const subImg = document.createElement('img');
                 subImg.src = sub.imgSrc;
-                subImg.style.height = '16px';
-                subImg.style.width = '16px';
-                subImg.style.marginLeft = '10px';
-                subImg.style.marginRight = '0';
                 subLi.appendChild(subImg);
             }
 
             if (Array.isArray(sub.subItems) && sub.subItems.length > 0) {
                 const subArrow = document.createElement('span');
-                subArrow.innerHTML = `<img src="../images/icons/arrowRight.svg" 
-                    style="
-                        height: 16px; 
-                        width: 16px; 
-                        margin-left: 8px;
-                    ">
-                `;
+                subArrow.innerHTML = `<img src="../images/icons/arrowRight.svg"> style="margin-left: 8px; margin-right: 2px;">`;
                 subLi.appendChild(subArrow);
                 this.#appendSubMenu(subLi, sub.subItems);
             }
