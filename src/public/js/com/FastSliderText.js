@@ -25,11 +25,6 @@ export const FastSliderText = class extends Fast {
                     </div>
                     <button id="nextBtn" class="arrow-btn"><img src="${rightArrowUrl}" alt="Next"></button>
                 </div>
-                <div class="indicators">
-                    ${this.slides.map((_, i) =>
-                        `<span class="${i === this.currentIndex ? 'active' : ''}"></span>`
-                    ).join('')}
-                </div>
             </div>
         `;
     }
@@ -66,9 +61,6 @@ export const FastSliderText = class extends Fast {
         // Asigna eventos a los controles
         this.shadowRoot.querySelector('#prevBtn').onclick = () => this.prevSlide();
         this.shadowRoot.querySelector('#nextBtn').onclick = () => this.nextSlide();
-        this.shadowRoot.querySelectorAll('.indicators span').forEach((el, i) => {
-            el.onclick = () => this.goToSlide(i);
-        });
 
         this.#updateView();
     }
@@ -79,15 +71,24 @@ export const FastSliderText = class extends Fast {
         if (slidesDiv) {
             slidesDiv.style.transform = `translateX(-${this.currentIndex * 100}%)`;
         }
-        this.shadowRoot.querySelectorAll('.indicators span').forEach((el, i) => {
-            el.className = (i === this.currentIndex) ? 'active' : '';
-        });
+
+        // Disparar evento cuando cambia el slide
+        this.dispatchEvent(new CustomEvent('slide-changed', {
+            detail: this.getActiveValue()
+        }));
+    }
+
+    // Obtiene el valor activo (para el calendario)
+    getActiveValue() {
+        return {
+            nombre: this.slides[this.currentIndex] || '',
+            numero: this.currentIndex + 1 // 1=Enero, 2=Febrero...
+        };
     }
 
     // Ciclo de vida: cuando el componente se agrega al DOM
     async connectedCallback() {
         await this.#render();
-        this.startAutoSlide();
         this._isBuilt = true;
     }
 
@@ -118,6 +119,13 @@ export const FastSliderText = class extends Fast {
         this.#updateView();
     }
 
+    // Devuelve el valor del texto activo
+    goToSlide(index) {
+        if (index >= 0 && index < this.slides.length) {
+            this.currentIndex = index;
+            this.#updateView();
+        }
+    }
 }
 
 customElements.define('fast-slider-text', FastSliderText);
