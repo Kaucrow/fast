@@ -8,6 +8,12 @@ export const FastPopUpMenu = class extends Fast {
         this.attachShadow({ mode: "open" });
         this._isBuilt = false;
         this.objectProps = new Map();
+        this.menuStack = [];
+        this.currentMenu = null;
+        this.mainMenu = [];
+        this.currentMenuElement = null;
+        this.menuContainer = null;
+        this.hasBuilt = false;
     }
 
     #getTemplate() {
@@ -34,6 +40,7 @@ export const FastPopUpMenu = class extends Fast {
                 let tpc = this.template.content.cloneNode(true);
                 this.mainElement = tpc.firstChild.nextSibling;
                 this.shadowRoot.appendChild(this.template.content.cloneNode(true));
+                this.menuContainer = this.shadowRoot.querySelector('#fast-popup-menu');
                 resolve(this);
             } catch (error) {
                 reject(error);
@@ -98,13 +105,21 @@ export const FastPopUpMenu = class extends Fast {
         await this.#checkProps();
         this._isBuilt = true;
         await this.#applyProps();
+        
         if (this.props && this.props.style) {
-            const popupMenu = this.shadowRoot.querySelector('#fast-popup-menu');
             for (let key in this.props.style) {
-                popupMenu.style[key] = this.props.style[key];
+                this.menuContainer.style[key] = this.props.style[key];
             }
         }
-        this.built();
+
+        await this.built();
+        this.hasBuilt = true;
+
+        if (this.mainMenu.length > 0) {
+            const menuElement = await this.#renderMenu(this.mainMenu);
+            this.currentMenu = this.mainMenu;
+            this.currentMenuElement = menuElement;
+        }
     }
 
     #applyProps() {
@@ -122,99 +137,147 @@ export const FastPopUpMenu = class extends Fast {
     }
 
     addItem(text, imgSrc, callback, subItems) {
-        const ul = this.shadowRoot.querySelector('ul');
-        const li = document.createElement('li');
-        li.style.display = 'flex';
-        li.style.alignItems = 'center';
-        li.style.justifyContent = 'space-between';
-        li.style.position = 'relative';
+        const menuItem = {
+            text,
+            imgSrc,
+            callback,
+            subItems,
+            subMenuElement: null
+        };
+        
+        if (!this.mainMenu) this.mainMenu = [];
+        this.mainMenu.push(menuItem);
 
-        const span = document.createElement('span');
-        span.textContent = text;
-        li.appendChild(span);
-
-        if (imgSrc) {
-            const img = document.createElement('img');
-            img.src = imgSrc;
-            img.style.height = '16px';
-            img.style.width = '16px';
-            img.style.marginLeft = '10px';
-            img.style.marginRight = '0';
-            li.appendChild(img);
+        if (this.hasBuilt && this.currentMenu === this.mainMenu) {
+            this.#cleanupMenus();
+            this.#renderMenu(this.mainMenu).then((menuElement) => {
+                this.currentMenuElement = menuElement;
+                if (this.menuContainer.style.display === 'block') {
+                    menuElement.style.display = 'block';
+                }
+            });
         }
+        
+        return menuItem;
+    }
 
-        if (Array.isArray(subItems) && subItems.length > 0) {
-            const arrow = document.createElement('span');
-            arrow.innerHTML = `<img src="../images/icons/arrowRight.svg" style="height: 16px; width: 16px; margin-left: 8px;">`;
-            li.appendChild(arrow);
+    #renderMenu(menuData, parentItem = null) {
+        return new Promise((resolve) => {
+            const menuDiv = document.createElement('div');
+            menuDiv.className = 'menu-level';
+            menuDiv.style.display = 'none';
+            
+            const ul = document.createElement('ul');
+            menuDiv.appendChild(ul);
 
-            const subMenu = document.createElement('ul');
-            subMenu.style.position = 'absolute';
-            subMenu.style.top = '0';
-            subMenu.style.left = '100%';
-            subMenu.style.minWidth = '100px';
-            subMenu.style.background = 'inherit';
-            subMenu.style.border = '1px solid #ccc';
-            subMenu.style.display = 'none';
-            subMenu.style.zIndex = '9999';
-            subMenu.style.padding = '0';
-            subMenu.style.margin = '0';
+            if (parentItem) {
+                const backItem = document.createElement('li');
+                backItem.style.display = 'flex';
+                backItem.style.alignItems = 'center';
+                backItem.style.padding = '8px 12px';
+                backItem.style.cursor = 'pointer';
+                backItem.style.fontWeight = 'bold';
+                backItem.innerHTML = `
+                    <span style="display: flex; align-items: center;">
+                        <img src="../images/icons/leftArrow.svg" style="height: 16px; width: 16px; margin-right: 5px;">
+                    </span>
+                `;
+                backItem.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.#navigateBack();
+                });
+                ul.appendChild(backItem);
+            }
 
-            subItems.forEach(sub => {
-                const subLi = document.createElement('li');
-                subLi.style.display = 'flex';
-                subLi.style.alignItems = 'center';
-                subLi.style.justifyContent = 'space-between';
-                subLi.style.position = 'relative';
-
-                const subSpan = document.createElement('span');
-                subSpan.textContent = sub.text;
-                subLi.appendChild(subSpan);
-
-                if (sub.imgSrc) {
-                    const subImg = document.createElement('img');
-                    subImg.src = sub.imgSrc;
-                    subImg.style.height = '16px';
-                    subImg.style.width = '16px';
-                    subImg.style.marginLeft = '10px';
-                    subImg.style.marginRight = '0';
-                    subLi.appendChild(subImg);
+            menuData.forEach(item => {
+                const li = document.createElement('li');
+                li.style.display = 'flex';
+                li.style.alignItems = 'center';
+                li.style.justifyContent = 'space-between';
+                li.style.padding = '8px 12px';
+                li.style.cursor = 'pointer';
+                
+                const itemContent = document.createElement('div');
+                itemContent.style.display = 'flex';
+                itemContent.style.alignItems = 'center';
+                itemContent.style.flexGrow = '1';
+                
+                if (item.imgSrc) {
+                    const img = document.createElement('img');
+                    img.src = item.imgSrc;
+                    img.style.height = '16px';
+                    img.style.width = '16px';
+                    img.style.marginRight = '8px';
+                    itemContent.appendChild(img);
                 }
+                
+                const textSpan = document.createElement('span');
+                textSpan.textContent = item.text;
+                itemContent.appendChild(textSpan);
+                
+                li.appendChild(itemContent);
 
-                if (Array.isArray(sub.subItems) && sub.subItems.length > 0) {
-                    const subArrow = document.createElement('span');
-                    subArrow.innerHTML = `<img src="../images/icons/arrowRight.svg" style="height: 16px; width: 16px; margin-left: 8px;">`;
-                    subLi.appendChild(subArrow);
-                    this.#appendSubMenu(subLi, sub.subItems);
-                }
-
-                if (typeof sub.callback === 'function') {
-                    subLi.addEventListener('click', (e) => {
+                if (item.subItems && item.subItems.length > 0) {
+                    const arrow = document.createElement('img');
+                    arrow.src = '../images/icons/arrowRight.svg';
+                    arrow.style.height = '16px';
+                    arrow.style.width = '16px';
+                    arrow.style.marginLeft = '8px';
+                    li.appendChild(arrow);
+                    
+                    li.addEventListener('click', (e) => {
                         e.stopPropagation();
-                        sub.callback();
+                        this.#navigateToSubmenu(item);
+                    });
+                } else {
+                    li.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        if (typeof item.callback === 'function') item.callback();
                         this.hide();
                     });
                 }
-                subMenu.appendChild(subLi);
+                
+                ul.appendChild(li);
             });
+            
+            this.menuContainer.appendChild(menuDiv);
+            resolve(menuDiv);
+        });
+    }
 
-            li.appendChild(subMenu);
+    #navigateToSubmenu(menuItem) {
+        if (this.currentMenuElement) {
+            this.currentMenuElement.style.display = 'none';
+        }
+        
+        this.menuStack.push({
+            menu: this.currentMenu,
+            element: this.currentMenuElement
+        });
 
-            li.addEventListener('mouseenter', () => {
-                subMenu.style.display = 'block';
-            });
-            li.addEventListener('mouseleave', () => {
-                subMenu.style.display = 'none';
+        if (!menuItem.subMenuElement) {
+            this.#renderMenu(menuItem.subItems, menuItem).then((newMenu) => {
+                menuItem.subMenuElement = newMenu;
+                this.currentMenu = menuItem.subItems;
+                this.currentMenuElement = newMenu;
+                newMenu.style.display = 'block';
             });
         } else {
-            li.addEventListener('click', (e) => {
-                e.stopPropagation();
-                if (typeof callback === 'function') callback();
-                this.hide();
-            });
+            this.currentMenu = menuItem.subItems;
+            this.currentMenuElement = menuItem.subMenuElement;
+            this.currentMenuElement.style.display = 'block';
         }
+    }
 
-        ul.appendChild(li);
+    #navigateBack() {
+        if (this.menuStack.length > 0) {
+            this.currentMenuElement.style.display = 'none';
+
+            const prevMenu = this.menuStack.pop();
+            this.currentMenu = prevMenu.menu;
+            this.currentMenuElement = prevMenu.element;
+            this.currentMenuElement.style.display = 'block';
+        }
     }
 
     #appendSubMenu(parentLi, subItems) {
@@ -283,12 +346,27 @@ export const FastPopUpMenu = class extends Fast {
         });
     }
 
-    show(event) {
-        const popupMenu = this.shadowRoot.querySelector('#fast-popup-menu');
-        popupMenu.style.display = 'block';
-        popupMenu.style.zIndex = fast.getMaxZIndex();
+    #cleanupMenus() {
+        while (this.menuContainer.firstChild) {
+            this.menuContainer.removeChild(this.menuContainer.firstChild);
+        }
+        this.currentMenuElement = null;
+        this.menuStack = [];
+    }
 
-        const menuRect = popupMenu.getBoundingClientRect();
+    show(event) {
+        this.menuContainer.style.display = 'block';
+        this.menuContainer.style.zIndex = fast.getMaxZIndex();
+        
+        this.#positionMenu(event);
+
+        if (this.currentMenuElement) {
+            this.currentMenuElement.style.display = 'block';
+        }
+    }
+
+      #positionMenu(event) {
+        const menuRect = this.menuContainer.getBoundingClientRect();
         const menuWidth = menuRect.width;
         const menuHeight = menuRect.height;
         const viewportWidth = window.innerWidth;
@@ -299,21 +377,24 @@ export const FastPopUpMenu = class extends Fast {
 
         if (left + menuWidth > viewportWidth) {
             left = viewportWidth - menuWidth;
-            if (left < 0) left = 0;
         }
-  
         if (top + menuHeight > viewportHeight) {
             top = viewportHeight - menuHeight;
-            if (top < 0) top = 0;
         }
 
-        popupMenu.style.left = `${left}px`;
-        popupMenu.style.top = `${top}px`;
+        this.menuContainer.style.left = `${Math.max(0, left)}px`;
+        this.menuContainer.style.top = `${Math.max(0, top)}px`;
     }
 
     hide() {
-        const popupMenu = this.shadowRoot.querySelector('#fast-popup-menu');
-        popupMenu.style.display = 'none';
+        this.menuContainer.style.display = 'none';
+
+        if (this.currentMenuElement && this.currentMenu !== this.mainMenu) {
+            this.currentMenuElement.style.display = 'none';
+            this.currentMenu = this.mainMenu;
+            this.currentMenuElement = this.menuContainer.querySelector('.menu-level');
+            this.menuStack = [];
+        }
     }
 
     addToBody() { document.body.appendChild(this); }

@@ -9,16 +9,14 @@
                     id: "main-popup",
                     style: {
                         position: "absolute",
-                        backgroundColor: "#f0f0f0",
-                        left: "100px",
-                        top: "100px",
+                        backgroundColor: "#ffffff",
                     }
                 });
                 popupMenu.built = async () => {
                     popupMenu.addItem('Save', '../images/icons/save.svg', () => alert('Save selected'));
                     popupMenu.addItem(
-                        'Share',
-                        null,
+                        'Share...',
+                        '../images/icons/exit.svg',
                         '',
                         [
                             {
@@ -33,10 +31,12 @@
                             },
                             {
                                 text: 'More...',
+                                imgSrc: '../images/icons/plus.svg',
                                 callback: null,
                                 subItems: [
                                     {
                                         text: 'Social Media',
+                                        imgSrc: '../images/icons/users.svg',
                                         callback: () => alert('Shared via Social Media'),
                                     }
                                 ]
