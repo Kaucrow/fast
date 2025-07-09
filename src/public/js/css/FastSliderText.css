@@ -5,7 +5,7 @@
     justify-content: flex-start;
     width: 100%;
     max-width: 400px;
-    padding: 28px 0 22px 0;
+    
     /* background: rgba(34, 40, 49, 0.95); */
     color: transparent;
     border-radius: 18px;
@@ -13,7 +13,7 @@
     border: 2px solid transparent;
     backdrop-filter: blur(4px);
     overflow: hidden;
-    min-height: 220px;
+    min-height: 10px;
 }
 
 .slides-list { 
@@ -33,7 +33,7 @@
 .slide {
     width: 100%;
     flex-shrink: 0; /* Evita que los slides se encojan */
-    height: auto;
+    height: 100px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -41,7 +41,7 @@
 
 .slide-content {
     display: inline-block;
-    padding: 18px 24px;
+    padding: 0 24px;
     /* background: linear-gradient(90deg, #00c6ff 0%, #0072ff 100%); */
     border-radius: 12px;
     box-shadow: 0 4px 16px rgba(0,123,255,0.10);
@@ -123,17 +123,6 @@ button:not(.arrow-btn):hover, button:not(.arrow-btn):focus {
     justify-content: center;
     margin-top: 18px;
     gap: 8px;
-}
-
-.indicators span {
-    width: 13px;
-    height: 13px;
-    background: #393e46;
-    border-radius: 50%;
-    display: inline-block;
-    transition: background 0.3s, transform 0.2s;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.10);
-    cursor: pointer;
 }
 
 .indicators .active {
