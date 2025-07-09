@@ -8,18 +8,28 @@ export const FastFieldSet = class extends Fast {
         this.built = () => {};
         this.attachShadow({ mode: 'open' });
         this._isBuilt = false;
+        this.isRoot = this.hasAttribute('is-root') || !!this.props?.isRoot;
+
     }
 
     #getTemplate() {
         return `
-            <div class="FieldSet">
-                <div class="Title"></div>
+            <fieldset class="FieldSet">
+                <legend class="Title"></legend>
                 <div class="Row">
-                    <slot></slot> <!-- Contenido sloteado aquí -->
+                    <slot></slot>
                 </div>
-            </div>
+                ${this.isRoot ? `
+                    <div class="button-container">
+                        <button class="clear">Limpiar</button>
+                        <button class="save">Enviar</button>
+                    </div>
+                ` : ''}
+            </fieldset>
         `;
     }
+
+
 
     async #getCss() {
         const response = await fetch('../js/css/FastFieldSet.css');
@@ -85,11 +95,35 @@ export const FastFieldSet = class extends Fast {
         await this.#checkProps();
         this._isBuilt = true;
         this.built(this);
-
+    
         // Si no hay nodos sloteados, crear fieldsets por defecto
         const hasSlotContent = this.querySelector('fieldset, *:not(script)');
         if (!hasSlotContent) {
             this.createDefaultFieldsets();
+        }
+
+        this._registerButtonEvents();
+    }
+
+    _registerButtonEvents() {
+        const clearBtn = this.shadowRoot.querySelector('.clear');
+        const saveBtn = this.shadowRoot.querySelector('.save');
+
+        if (clearBtn) {
+            clearBtn.addEventListener('click', () => this._clearAll());
+        }
+
+        if (saveBtn) {
+            const patterns = {
+                nombre: /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/,
+                cedula: /^\d+$/,
+                representante: /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/,
+                telefono: /^\d{7,15}$/,
+                calle: /^[A-Za-z0-9ÁÉÍÓÚáéíóúÑñ\.\s]+$/,
+                ciudad: /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/,
+                codigoPostal: /^\d+$/
+            };
+            saveBtn.addEventListener('click', () => this._validateAndSend(patterns));
         }
     }
 
@@ -149,24 +183,10 @@ export const FastFieldSet = class extends Fast {
         `;
 
         this.rowsContainer.append(estudiante, rep, dir);
-
-        const btnCont = document.createElement('div');
-        btnCont.classList.add('button-container');
-        const clearBtn = document.createElement('button');
-        clearBtn.textContent = 'Limpiar';
-        clearBtn.classList.add('clear');
-        const saveBtn = document.createElement('button');
-        saveBtn.textContent = 'Enviar';
-        saveBtn.classList.add('save');
-        btnCont.append(clearBtn, saveBtn);
-        this.rowsContainer.appendChild(btnCont);
-
-        clearBtn.addEventListener('click', () => this._clearAll());
-        saveBtn.addEventListener('click', () => this._validateAndSend(patterns));
     }
 
     _clearAll() {
-        this.rowsContainer.querySelectorAll('input').forEach(i => {
+        this.querySelectorAll('input').forEach(i => {
             i.value = '';
             i.classList.remove('invalid');
             const msg = i.nextElementSibling;
@@ -175,7 +195,7 @@ export const FastFieldSet = class extends Fast {
     }
 
     _validateAndSend(patterns) {
-        const inputs = Array.from(this.rowsContainer.querySelectorAll('input'));
+        const inputs = Array.from(this.querySelectorAll('input'));
         inputs.forEach(i => {
             i.classList.remove('invalid');
             const msg = i.nextElementSibling;
@@ -217,9 +237,12 @@ export const FastFieldSet = class extends Fast {
 
     getFields() {
         const data = {};
-        this.rowsContainer.querySelectorAll('input').forEach(i => data[i.name] = i.value);
+        this.querySelectorAll('input').forEach(i => {
+            data[i.name] = i.value;
+        });
         return data;
     }
+
 
     async sendData(data) {
         try {

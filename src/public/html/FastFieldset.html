@@ -8,10 +8,28 @@
   <script type="module" src="../js/com/FastFieldSet.js"></script>
 </head>
 <body>
-  <fast-fieldset 
-    id="FieldSetJS" 
-    title="Datos Guardados"
-    style="margin: 20px auto; width: 80%; border-radius: 12px; padding: 20px; background-color: #f9f9f9;">
+  <fast-fieldset title="Formulario Principal" is-root>
+    <fast-fieldset  id="FieldSetJS" title="Datos Guardados">
+      <label for="nombre">Nombre:</label>
+      <input type="text" name="nombre" id="nombre" /><br><br>
+
+      <label for="email">Correo:</label>
+      <input type="email" name="email" id="email" /><br><br>
+
+      <label for="telefono">Teléfono:</label>
+      <input type="tel" name="telefono" id="telefono" /><br><br>
+
+      <label for="fecha">Fecha de Nacimiento:</label>
+      <input type="date" name="fecha" id="fecha" /><br><br>
+    </fast-fieldset>
+
+    <fast-fieldset title="Dirección">
+      <label for="direccion">Dirección:</label>
+      <input type="text" name="direccion" id="direccion" /><br><br>
+
+      <label for="ciudad">Ciudad:</label>
+      <input type="text" name="ciudad" id="ciudad" /><br><br>
+    </fast-fieldset>
   </fast-fieldset>
 
   <!-- fastInit: punto de arranque para interactuar con tu <fast-fieldset> -->
@@ -23,5 +41,7 @@
 
     document.addEventListener('DOMContentLoaded', fastInit);
   </script>
+
+  
 </body>
 </html>
