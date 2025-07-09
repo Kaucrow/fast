@@ -1,4 +1,4 @@
-export class FastSliderText extends HTMLElement {
+export const FastSliderText = class extends Fast {
     constructor() {
         super();
         this.attachShadow({mode: 'open'});
