@@ -80,6 +80,23 @@ export const FastSliderText = class extends Fast {
         this.dispatchEvent(new CustomEvent('slide-changed', {
             detail: this.getActiveValue()
         }));
+        
+        const slideContent = this.shadowRoot.querySelector('.slider-container');
+        const arrows = this.shadowRoot.querySelector('.arrow-btn');
+        if (slideContent && arrows) {
+            const width = slideContent.offsetWidth;
+            if (width < 150) {
+                const slideContentElements = this.shadowRoot.querySelectorAll('.slide-content');
+                slideContentElements.forEach(element => {
+                    element.style.fontSize = '10px';
+                });
+                const arrow = this.shadowRoot.querySelectorAll('.arrow-btn img');
+                arrow.forEach(element=>{
+                    element.style.width = '10px';
+                    element.style.height = '10px';
+                })
+            }
+        }
     }
 
     nextSlide() {
