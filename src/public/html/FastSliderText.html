@@ -4,19 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Slider como Componente</title>
-    <script type="module" src="../js/com/FastSliderText.js"></script>
+    <script type="module" src="../js/com/Fast.js"></script>
 </head>
 <body>
-    <script type="module">
-        window.addEventListener('DOMContentLoaded', () => {
-            const slider = document.createElement('fast-slider-text');
-            slider.slidesData = [
-                "¡Componente!",
-                "Slider text",
-                "web1"
-            ];
-            document.body.appendChild(slider);
-        });
+    <script>
+        let fastInit = async () => {
+            const slider = await fast.createInstance("FastSliderText", {
+                slidesData: [
+                    'Enero',
+                    'Febrero',
+                    'Marzo',
+                    'Abril',
+                    'Mayo',
+                    'Junio',
+                    'Julio',
+                    'Agosto',
+                    'Septiembre',
+                    'Octubre',
+                    'Noviembre',
+                    'Diciembre'
+                ]
+            });
+            slider.addToBody();
+        };
     </script>
 </body>
 </html>
