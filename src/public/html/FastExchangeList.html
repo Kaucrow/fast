@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exchange List</title>
+    <link rel="stylesheet" href="../js/css/FastExchangeList.css">
+</head>
+<body>
+    <div class="transfer-list-container">
+        <h1 class="transfer-list-title">Selecciona las opciones</h1>
+        
+        <div class="transfer-list-content">
+            <div class="options-column">
+                <div class="column-header">
+                    <span>Opciones Disponibles</span>
+                    <span id="available-count">0/7 seleccionadas</span>
+                </div>
+                <ul class="options-list" id="available-options">
+                    <li class="option-item" data-value="4wd">
+                        <span class="checkbox"></span>
+                        <span>Opcion 1</span>
+                    </li>
+                    <li class="option-item" data-value="steering">
+                        <span class="checkbox"></span>
+                        <span>Opcion 2</span>
+                    </li>
+                    <li class="option-item" data-value="windows">
+                        <span class="checkbox"></span>
+                        <span>Opcion 3</span>
+                    </li>
+                    <li class="option-item" data-value="locks">
+                        <span class="checkbox"></span>
+                        <span>Opcion 4</span>
+                    </li>
+                    <li class="option-item" data-value="nav">
+                        <span class="checkbox"></span>
+                        <span>Opcion 5</span>
+                    </li>
+                    <li class="option-item" data-value="charger">
+                        <span class="checkbox"></span>
+                        <span>Opcion 6</span>
+                    </li>
+                    <li class="option-item" data-value="sunroof">
+                        <span class="checkbox"></span>
+                        <span>Opcion 7</span>
+                    </li>
+                </ul>
+            </div>
+             
+            <div class="transfer-actions">
+                <button class="transfer-btn" id="add-btn" disabled>
+                    <svg viewBox="0 0 24 24">
+                        <path d="M10 17l5-5-5-5v10z"/>
+                    </svg>
+                </button>
+                <button class="transfer-btn" id="remove-btn" disabled>
+                    <svg viewBox="0 0 24 24">
+                        <path d="M14 7l-5 5 5 5V7z"/>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="options-column">
+                <div class="column-header">
+                    <span>Opciones Disponibles</span>
+                    <span id="selected-count">0/0 seleccionadas</span>
+                </div>
+                <ul class="options-list" id="selected-options">
+                    <!-- Opciones seleccionadas aparecerán aquí -->
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/com/FastExchangeList.js"></script>
+</body>
+</html>
