@@ -3,11 +3,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    width: 250px;
-    height: 50px;
-    /* max-width: 400px; */
-    
-    /* background: rgba(34, 40, 49, 0.95); */
+    width: 95px; 
+    height: 20px;
     color: transparent;
     border-radius: 18px;
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
@@ -25,8 +22,7 @@
 .slides {
     display: flex;
     flex-direction: row;
-    min-height: 90px;
-    align-items: stretch;
+    align-items: center;
     justify-content: flex-start;
     transition: transform 0.6s cubic-bezier(.4,0,.2,1);
 }
@@ -34,7 +30,7 @@
 .slide {
     width: 100%;
     flex-shrink: 0; /* Evita que los slides se encojan */
-    height: 100px;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -42,31 +38,24 @@
 
 .slide-content {
     display: inline-block;
-    padding: 0 24px;
-    /* background: linear-gradient(90deg, #00c6ff 0%, #0072ff 100%); */
-    border-radius: 12px;
-    box-shadow: 0 4px 16px rgba(0,123,255,0.10);
-    font-size: 20px;
+    font-size: auto;
     letter-spacing: 0.5px;
     box-sizing: border-box;
     color: #111;
-    border: 2px solid transparent;
-    transition: border 0.3s;
     width: auto;
-    max-width: 90%;
     min-width: 0;
-    overflow-wrap: break-word;
-    word-break: break-word;
     text-align: center;
-    margin: 0 auto 18px auto;
+    white-space: nowrap;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
+
 
 .main-content {
     display: flex;
     align-items: center;
     justify-content: center;
     width: 100%;
-    padding: 0 12px;
+    height: 100%;
     box-sizing: border-box;
 }
 
@@ -74,13 +63,15 @@
     background: transparent;
     border: none;
     cursor: pointer;
-    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     transition: opacity 0.3s, transform 0.2s;
 }
 
 .arrow-btn img {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     filter: invert(90%) sepia(10%) saturate(1000%) hue-rotate(180deg);
 }
 
@@ -99,7 +90,6 @@
 }
 
 button:not(.arrow-btn) {
-    padding: 12px 22px;
     background: linear-gradient(90deg, #00c6ff 0%, #0072ff 100%);
     color: #fff;
     border: none;
@@ -130,8 +120,4 @@ button:not(.arrow-btn):hover, button:not(.arrow-btn):focus {
     background: rgb(24, 107, 103);
     transform: scale(1.2);
     box-shadow: 0 2px 8px rgba(0,123,255,0.18);
-}
-
-body{
-    font-family:Georgia, 'Times New Roman', Times, serif ;
 }
