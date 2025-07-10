@@ -1,11 +1,16 @@
 export const FastSliderText = class extends Fast {
-    constructor() {
+    constructor(props) {
         super();
+        this.name = "FastSliderText";
+        this.props = props;
+        if(props && props.id) this.id = props.id;
+        this.built = () => {};
         this.attachShadow({mode: 'open'});
         this.currentIndex = 0;
         this.slides = [];
         this.interval = null;
         this._isBuilt = false;
+        this.objectProps = new Map();
     }
 
     // Método privado para obtener el template HTML
@@ -29,12 +34,9 @@ export const FastSliderText = class extends Fast {
         `;
     }
 
-    // Método privado para obtener el CSS
     async #getCss() {
-        // Ruta relativa desde el JS hacia la carpeta css
-        const cssURL = new URL('../css/FastSliderText.css', import.meta.url);
-        const response = await fetch(cssURL);
-        return await response.text();
+        let baseCss = await fast.getCssFile("FastSliderText");
+        return baseCss;
     }
 
     // Renderiza el slider en el Shadow DOM
@@ -86,10 +88,59 @@ export const FastSliderText = class extends Fast {
         };
     }
 
+    // Verificar y aplicar props
+    #checkProps() {
+        return new Promise(async (resolve, reject) => {
+            try {
+                if(this.props) {
+                    for(let attr in this.props) {
+                        switch(attr) {
+                            case 'slidesData':
+                                this.slidesData = this.props[attr];
+                                break;
+                            case 'style':
+                                for(let attrcss in this.props.style) this.style[attrcss] = this.props.style[attrcss];
+                                break;
+                            case 'events':
+                                for(let attrevent in this.props.events) {
+                                    this.addEventListener(attrevent, this.props.events[attrevent]);
+                                }
+                                break;
+                            default:
+                                this.setAttribute(attr, this.props[attr]);
+                                this[attr] = this.props[attr];
+                        }
+                    }
+                }
+                resolve(this);
+            } catch (error) {
+                reject(error);
+            }
+        });
+    }
+
+    // Aplicar props diferidas
+    #applyProps() {
+        return new Promise((resolve, reject) => {
+            try {
+                for (const [key, value] of this.objectProps.entries()) {
+                    this[key] = value;
+                    this.objectProps.delete(key);
+                }
+                resolve(this);
+            } catch(e) {
+                reject(e);
+            }
+        });
+    }
+
     // Ciclo de vida: cuando el componente se agrega al DOM
     async connectedCallback() {
-        await this.#render();
+        await this.#checkProps(); 
+        await this.#render();     
         this._isBuilt = true;
+        await this.#applyProps();
+        this.built();
     }
 
     // Permite establecer las diapositivas desde fuera del componente
@@ -125,6 +176,11 @@ export const FastSliderText = class extends Fast {
             this.currentIndex = index;
             this.#updateView();
         }
+    }
+
+    // Método para agregar el componente al body
+    addToBody() {
+        document.body.appendChild(this);
     }
 }
 
