@@ -68,16 +68,65 @@ export const FastSliderText = class extends Fast {
     }
 
     // Actualiza la vista (transform e indicadores)
-    #updateView() {
+    #updateView(instant = false) {
         const slidesDiv = this.shadowRoot.querySelector('.slides');
-        if (slidesDiv) {
-            slidesDiv.style.transform = `translateX(-${this.currentIndex * 100}%)`;
-        }
+        if (!slidesDiv) return;
 
-        // Disparar evento cuando cambia el slide
+        slidesDiv.style.transition = instant ? 'none' : 'transform 0.5s ease-in-out';
+        slidesDiv.style.transform = `translateX(-${this.currentIndex * 100}%)`;
+        
+        if (instant) void slidesDiv.offsetWidth;
+
         this.dispatchEvent(new CustomEvent('slide-changed', {
             detail: this.getActiveValue()
         }));
+    }
+
+    nextSlide() {
+    const slidesDiv = this.shadowRoot.querySelector('.slides');
+        if (!slidesDiv) return;
+
+        const isLastSlide = this.currentIndex === this.slides.length - 1;
+        
+        if (isLastSlide) {
+            // 1. Desactivar transición momentáneamente
+            slidesDiv.style.transition = 'none';
+            slidesDiv.style.transform = 'translateX(85%)'; // Mover fuera de pantalla
+            void slidesDiv.offsetWidth; // Forzar reflow
+            
+            // 2. Animar hacia Enero (posición 0)
+            slidesDiv.style.transition = 'transform 0.5s ease-in-out';
+            this.currentIndex = 0;
+            slidesDiv.style.transform = 'translateX(0%)';
+        } else {
+            // Movimiento normal
+            this.currentIndex++;
+            slidesDiv.style.transform = `translateX(-${this.currentIndex * 100}%)`;
+        }
+        
+        this.dispatchEvent(new CustomEvent('slide-changed', {
+            detail: this.getActiveValue()
+        }));
+    }
+
+    prevSlide() {
+        const isFirstSlide = this.currentIndex === 0;
+        
+        if (isFirstSlide) {
+            // 1. Preparar posición inicial (invisible para el usuario)
+            this.currentIndex = this.slides.length;
+            this.#updateView(true); // Cambio instantáneo
+            
+            // 2. Mover a posición length-1 con animación
+            setTimeout(() => {
+                this.currentIndex = this.slides.length - 1;
+                this.#updateView();
+            }, 20);
+        } else {
+            // Movimiento normal
+            this.currentIndex--;
+            this.#updateView();
+        }
     }
 
     // Obtiene el valor activo (para el calendario)
@@ -153,16 +202,8 @@ export const FastSliderText = class extends Fast {
     }
 
     // Muestra la siguiente diapositiva
-    nextSlide() {
-        this.currentIndex = (this.currentIndex + 1) % this.slides.length;
-        this.#updateView();
-    }
+    
 
-    // Muestra la diapositiva anterior
-    prevSlide() {
-        this.currentIndex = (this.currentIndex - 1 + this.slides.length) % this.slides.length;
-        this.#updateView();
-    }
 
     // Añadida funcion para ir a una diapositiva específica
     goToSlide(index) {
