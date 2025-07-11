@@ -218,16 +218,6 @@ export const FastSliderText = class extends Fast {
         }
     }
 
-    // Muestra la siguiente diapositiva
-    
-
-
-    // Añadida funcion para ir a una diapositiva específica
-    goToSlide(index) {
-        this.currentIndex = index;
-        this.#updateView();
-    }
-
     // Devuelve el valor del texto activo
     goToSlide(index) {
         if (index >= 0 && index < this.slides.length) {
