@@ -3,7 +3,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    width: 95px; 
+    width: 100px; 
     height: 20px;
     color: transparent;
     border-radius: 18px;
@@ -57,22 +57,26 @@
     width: 100%;
     height: 100%;
     box-sizing: border-box;
+    user-select: none;
 }
 
 .arrow-btn {
     background: transparent;
     border: none;
     cursor: pointer;
+    
     display: flex;
     align-items: center;
     justify-content: center;
     transition: opacity 0.3s, transform 0.2s;
+    padding: 0.5%;
 }
 
 .arrow-btn img {
     width: 20px;
     height: 20px;
     filter: invert(90%) sepia(10%) saturate(1000%) hue-rotate(180deg);
+    transition: all 0.8s ease;
 }
 
 .arrow-btn:disabled {
@@ -81,8 +85,9 @@
     transform: scale(1);
 }
 
-.arrow-btn:not(:disabled):hover {
-    transform: scale(1.15);
+.arrow-btn img:hover {
+    transform: scale(1.1);
+    transition: all 0.8s ease;
 }
 
 .controls {
@@ -95,7 +100,7 @@ button:not(.arrow-btn) {
     border: none;
     cursor: pointer;
     font-size: 16px;
-    margin: 0 2px;
+    margin: 0 px;
     border-radius: 7px;
     box-shadow: 0 2px 8px rgba(0,123,255,0.10);
     transition: background 0.3s, transform 0.2s;
@@ -109,15 +114,3 @@ button:not(.arrow-btn):hover, button:not(.arrow-btn):focus {
     outline: none;
 }
 
-.indicators {
-    display: flex;
-    justify-content: center;
-    margin-top: 18px;
-    gap: 8px;
-}
-
-.indicators .active {
-    background: rgb(24, 107, 103);
-    transform: scale(1.2);
-    box-shadow: 0 2px 8px rgba(0,123,255,0.18);
-}
