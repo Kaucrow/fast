@@ -24,12 +24,14 @@ body {
 
 /* Vertical container */
 .slider-container.vertical {
-    width: 180px;
-    height: 340px;
+    width: 120px;
+    height: 260px;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 2rem 0.5rem;
+    padding: 1.2rem 0.2rem;
+    min-width: 90px;
+    min-height: 180px;
 }
 
 /* Horizontal track */
@@ -45,9 +47,9 @@ body {
 /* Vertical track */
 .slider-track.vertical {
     width: 8px;
-    height: 220px;
-    margin-bottom: 1.5rem;
-    margin-top: 1.5rem;
+    height: 170px;
+    margin-bottom: 1.2rem;
+    margin-top: 1.2rem;
     background: #e0e0e0;
     border-radius: 4px;
     position: relative;

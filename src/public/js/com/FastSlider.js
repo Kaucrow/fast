@@ -1,5 +1,5 @@
 export const FastSlider = class extends Fast{
-  static observedAttributes = ["value", "min", "max", "step"];
+  static observedAttributes = ["value", "min", "max", "step", "show-value"];
 
   constructor(props) {
     super();
@@ -14,6 +14,7 @@ export const FastSlider = class extends Fast{
     this._step = 1;
     this._isBuilt = false;
     this.orientation = (props && props.orientation) ? props.orientation : (this.getAttribute('orientation') || 'horizontal');
+    this.showValue = (props && props["show-value"]) !== undefined ? props["show-value"] !== false && props["show-value"] !== "false" : (this.getAttribute('show-value') !== null);
     this.objectProps = new Map();
     this._readyPromise = new Promise(resolve => {
       this._resolveReady = resolve;
@@ -26,7 +27,7 @@ export const FastSlider = class extends Fast{
         <div class="slider-track${this.orientation === 'vertical' ? ' vertical' : ''}">
           <div class="slider-thumb"></div>
         </div>
-        <div class="slider-value"></div>
+        <div class="slider-value" style="display:${this.showValue ? 'block' : 'none'}"></div>
       </div>
     `;
   }
@@ -61,6 +62,9 @@ export const FastSlider = class extends Fast{
           if (attr.substring(0,2) != "on") {
             this.mainElement.setAttribute(attr, this.getAttribute(attr));
             this[attr] = this.getAttribute(attr);
+          }
+          if (attr === 'show-value') {
+            this.showValue = this.getAttribute('show-value') !== null && this.getAttribute('show-value') !== 'false';
           }
           switch(attr) {
             case 'id': 
@@ -111,6 +115,7 @@ export const FastSlider = class extends Fast{
                 if (attr === 'max') { this.max = Number(this.props[attr]); }
                 if (attr === 'step') { this.step = Number(this.props[attr]); }
                 if (attr === 'orientation') { this.orientation = this.props[attr]; }
+                if (attr === 'show-value') { this.showValue = this.props[attr] !== false && this.props[attr] !== 'false'; }
             }
           }
           resolve(this);
@@ -129,6 +134,11 @@ export const FastSlider = class extends Fast{
     this._isBuilt = true;
     await this.#applyProps();
     this._setupSlider();
+    // Update value display visibility after setup
+    const valueDisplay = this.shadowRoot.querySelector('.slider-value');
+    if (valueDisplay) {
+      valueDisplay.style.display = this.showValue ? 'block' : 'none';
+    }
     this._resolveReady(); // Mark as ready
     this.built();
   }
@@ -169,6 +179,9 @@ export const FastSlider = class extends Fast{
     const track = this.shadowRoot.querySelector('.slider-track');
     const thumb = this.shadowRoot.querySelector('.slider-thumb');
     const valueDisplay = this.shadowRoot.querySelector('.slider-value');
+    if (valueDisplay) {
+      valueDisplay.style.display = this.showValue ? 'block' : 'none';
+    }
     let dragging = false;
 
     const setThumbPosition = (value) => {
@@ -241,12 +254,12 @@ export const FastSlider = class extends Fast{
       const trackHeight = track.offsetHeight;
       thumb.style.top = `${(1 - percent) * trackHeight}px`;
       thumb.style.left = '50%';
-      valueDisplay.textContent = `Value: ${Math.round(this.value)}`;
+      if (this.showValue) valueDisplay.textContent = `Value: ${Math.round(this.value)}`;
     } else {
       const trackWidth = track.offsetWidth;
       thumb.style.left = `${percent * trackWidth}px`;
       thumb.style.top = '50%';
-      valueDisplay.textContent = `Value: ${Math.round(this.value)}`;
+      if (this.showValue) valueDisplay.textContent = `Value: ${Math.round(this.value)}`;
     }
   }
 }

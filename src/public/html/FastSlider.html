@@ -9,8 +9,8 @@
 </head>
 <body>
 
-    <fast-slider id="slider1" min="0" max="100" value="50"></fast-slider>
-    <fast-slider id="slider2" min="0" max="100" value="25" orientation="vertical"></fast-slider>
+    <fast-slider id="slider1" min="0" max="100" value="50" show-value></fast-slider>
+    <fast-slider id="slider2" min="0" max="100" value="25" orientation="vertical" show-value></fast-slider>
 
     <div id="sliders"></div>
     <script>
@@ -19,7 +19,8 @@
                 'id': "slider3",
                 'min': "0",
                 'max': "100",
-                'value': "60"
+                'value': "60",
+                'show-value': true
             });
             let slider2 = await fast.createInstance("FastSlider", {
                 'id': "slider4",
@@ -27,6 +28,7 @@
                 'max': "100",
                 'value': "30",
                 'orientation': "vertical"
+                
             });
             document.getElementById('sliders').appendChild(slider1);
             document.getElementById('sliders').appendChild(slider2);
