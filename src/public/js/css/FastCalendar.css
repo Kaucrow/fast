@@ -3,7 +3,7 @@
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    width: 325px;
+    width: 500px;
     height:auto;
     padding: 2%;
     font-family: sans-serif;
@@ -24,18 +24,18 @@
 }
 
 .container-options{
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  width: 40%;
-  margin-right: 10px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 40%;
+    margin-right: 10px;
 }
 
 .container-inputs-date{
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 50%;
+    width: 35%;
     height: 30px;
     margin-left: 10px;
     padding: 0 10px 5px 10px;
@@ -79,8 +79,8 @@
 }
 
 .header-select:focus{
-  outline: 1px solid #FFF;
-  background-color : rgb(8, 143, 136);
+    outline: 1px solid #FFF;
+    background-color : rgb(8, 143, 136);
 }
 
 .toggle-button, .options-button{
@@ -98,7 +98,7 @@
 }
 
 .toggle-button{
-  order: 2;
+    order: 2;
 }
 
 .arrow-up{
@@ -115,7 +115,8 @@
     justify-content: center;
     align-items: center;
     width: 100%;
-    border-radius:0 0 1vw 1vw;
+    padding-bottom: 20px;
+    border-radius:0 0 10px 10px;
     background-color: #FFF;
     box-shadow: .2vw .2vw rgba(0, 0, 0, 0.1);
     transform-origin: top;
@@ -141,15 +142,15 @@
 }
 
 .select-month{
-  margin-left: 10px;
+    margin-left: 10px;
 }
 
 .select-year{
-  margin-right: 15px;
+    margin-right: 15px;
 }
 
 .select-month:focus, .select-year:focus{
-  outline: none;
+    outline: none;
 }
 
 .container-header-days{
@@ -159,17 +160,17 @@
     height: 25px;
     width: 100%;
     background-color: rgb(8, 143, 136);
-    padding: 0 10px;
+    padding: 5px 10px;
 }
 
 .header-day{
-  font-size: 16px;
-  color: #FFF;
-  width: 40px;
-  text-align: center;
-  margin-left: 10px;
-  margin-right: 10px;
-  user-select: none;
+    font-size: 16px;
+    color: #FFF;
+    width: 40px;
+    text-align: center;
+    margin-left: 10px;
+    margin-right: 10px;
+    user-select: none;
 }
 
 .container-body-days{
@@ -198,9 +199,9 @@
     border-radius: 10%;
     width: 10px;
     height: 10px;
-    padding: 5px;
+    padding: 10px;
     transform: translateY(-2px);
-    margin-bottom: 5px;
+    margin-bottom: 10px;
     transition: all .2s ease-in;
     user-select: none;
 }
@@ -208,6 +209,7 @@
 .current-day {
     color:#FFF;
     background-color: rgb(8, 143, 136);
+    padding: 10px;
 }
 
 .empty-day{
@@ -218,19 +220,19 @@
 
 .input[type="number"]::-webkit-inner-spin-button,
 .input[type="number"]::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 .input:focus {
-  outline: none;
-  border: 1px solid #FFF;
-  scale: 1.1;
-  transition: all .4s ease;
+    outline: none;
+    border: 1px solid #FFF;
+    scale: 1.1;
+    transition: all .4s ease;
 }
 
 .toggle-button:hover, .options-button:hover{
-  scale: 1.1;
+    scale: 1.1;
 }
 
 
@@ -248,75 +250,72 @@
 }
 
 .hidden {
-  opacity: 0;
-  z-index: -1;
+    opacity: 0;
+    z-index: -1;
 }
 
 .reveleaded{
-  animation: show 0.4s ease-in-out;
-  opacity: 1;
-  z-index: 1;
+    animation: show 0.4s ease-in-out;
+    opacity: 1;
+    z-index: 1;
 }
 
 
 @keyframes slideDown {
-  0% {
-    height: 0;
-    transform: scaleY(0);
-    opacity: 0;
-  }
-  25% {
-    height: 25%;
-    opacity: 0.25;
-  }
-  50% {
-    height: 50%;
-    opacity: 0.5;
-  }
+    0% {
+        height: 0;
+        transform: scaleY(0);
+        opacity: 0;
+    }
+    25% {
+        height: 25%;
+        opacity: 0.25;
+    }
+    50% {
+        height: 50%;
+        opacity: 0.5;
+    }
 
-  75% {
-    height: 75%;
-    opacity: 0.75;
-  }
+    75% {
+        height: 75%;
+        opacity: 0.75;
+    }
 
-  100% {
-    height: 100%;
-    opacity: 1;
-    transform: scaleY(1);
-  }
+    100% {
+        height: 100%;
+        opacity: 1;
+        transform: scaleY(1);
+    }
 }
 
 @keyframes slideUp {
-  0% {
-    height: 100%;
-    transform: scaleY(1);
-    opacity: 1;
-  }
-  25% {
-    height: 75%;
-    opacity: 0.75;
-  }
-  50% {
-    height: 50%;
-    opacity: 0.5;
-  }
+    0% {
+        height: 100%;
+        transform: scaleY(1);
+        opacity: 1;
+    }
+    25% {
+        height: 75%;
+        opacity: 0.75;
+    }
+    50% {
+        height: 50%;
+        opacity: 0.5;
+    }
 
-  75% {
-    height: 25%;
-    opacity: 0.25;
-  }
+    75% {
+        height: 25%;
+        opacity: 0.25;
+    }
 
-  100% {
-    height: 0%;
-    opacity: 0;
-    transform: scaleY(0);
-  }
+    100% {
+        height: 0%;
+        opacity: 0;
+        transform: scaleY(0);
+    }
 }
 
 @keyframes show {
     from { opacity: 0.25; transform: translateY(5px);}
     to { opacity: 1; transform: translateY(0);}
 }
-
-
-
