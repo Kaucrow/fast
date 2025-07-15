@@ -1,10 +1,10 @@
 export class FastCalendar extends Fast {
     constructor(props) {
         super();
-        this.name  = 'FastCalendar';
+        this.name = 'FastCalendar';
         this.props = props;
-        this.built = ()=> {};
-        this.attachShadow({mode: 'open'});
+        this.built = () => {};
+        this.attachShadow({ mode: 'open' });
         this.dateOrder = 'dd-mm-yyyy';
         this._coloricon = '#FFF';
         this.widthCharMenu = 7;
@@ -13,11 +13,12 @@ export class FastCalendar extends Fast {
         this.bodyVisible = true;
         this.day = 1;
         this.month = 1;
-        this.year = 2025;
+        this.year = new Date().getFullYear();
         this.currentDay = this.day;
         this.currentMonth = this.month;
         this.currentYear = this.year;
         this._isBuilt = false;
+        this.monthSlider = null;
     }
 
     #getTemplate() {
@@ -25,34 +26,21 @@ export class FastCalendar extends Fast {
       <div class="FastCalendar">
         <div class="FastCalendarHeader">
           <div class="container-inputs-date reveleaded"></div>
-            <select class="header-select hidden">
-                <option value="dd-mm-yyyy">dd/mm/yyyy</option>
-                <option value="mm-dd-yyyy">mm/dd/yyyy</option>
-                <option value="yyyy-mm-dd">yyyy/mm/dd</option>
-                <option value="yyyy-dd-mm">yyyy/dd/mm</option>
-            </select>
-            <div class= "container-options"></div>
+          <select class="header-select hidden">
+            <option value="dd-mm-yyyy">dd/mm/yyyy</option>
+            <option value="mm-dd-yyyy">mm/dd/yyyy</option>
+            <option value="yyyy-mm-dd">yyyy/mm/dd</option>
+            <option value="yyyy-dd-mm">yyyy/dd/mm</option>
+          </select>
+          <div class="container-options"></div>
         </div>
         <div class="FastCalendarBody">
           <div class="FastCalendarSelect">
-            <select class="select-month">
-                <option value="1" class="months">Enero</option>
-                <option value="2" class="months">Febrero</option>
-                <option value="3" class="months">Marzo</option>
-                <option value="4" class="months">Abril</option>
-                <option value="5" class="months">Mayo</option>
-                <option value="6" class="months">Junio</option>
-                <option value="7" class="months">Julio</option>
-                <option value="8" class="months">Agosto</option>
-                <option value="9" class="months">Septiembre</option>
-                <option value="10" class="months">Octubre</option>
-                <option value="11" class="months">Noviembre</option>
-                <option value="12" class="months">Diciembre</option>
-            </select>
+            <div class="slider-month-container"></div>
             <select class="select-year">
-                <option value="2025">2025</option>
-                <option value="2026">2026</option>
-                <option value="2027">2027</option>
+              <option value="2025">2025</option>
+              <option value="2026">2026</option>
+              <option value="2027">2027</option>
             </select>
           </div>
           <div class="container-header-days">
@@ -231,7 +219,7 @@ export class FastCalendar extends Fast {
                 if (countBar === 1) {
                     divInput.appendChild(barLeft);
                 };
-                
+
                 if (countBar === 2) {
                     divInput.appendChild(barCenter);
                 }
@@ -241,7 +229,7 @@ export class FastCalendar extends Fast {
             countBar++;
         });
     }
-    
+
     #getCurrentDay() {
         const dayInput = this.shadowRoot.querySelector('.input-day');
         const monthInput = this.shadowRoot.querySelector('.input-month');
@@ -347,7 +335,7 @@ export class FastCalendar extends Fast {
             const currentDay = this.#getDayOfWeek(i, m, y);
             const date = document.createElement('p');
             date.textContent = i.toString();
-            
+
             if (i === 1 && currentDay !== "Sunday") {
                 this.#fillLeadingEmptyDays(m, y);
             }
@@ -361,7 +349,7 @@ export class FastCalendar extends Fast {
                 }
             }
             else{
-                    date.classList.add('day');
+                date.classList.add('day');
             }
 
 
@@ -379,7 +367,7 @@ export class FastCalendar extends Fast {
 
                 this.#updateCalendar();
             });
-            
+
             switch (currentDay) {
                 case "Sunday": {
                     calendarDays[0].appendChild(date);
@@ -414,96 +402,20 @@ export class FastCalendar extends Fast {
     }
 
     #updateCalendar() {
-        const dayInput = this.shadowRoot.querySelector('.input-day');
-        const monthInput = this.shadowRoot.querySelector('.input-month');
-        const yearInput  = this.shadowRoot.querySelector('.input-year');
-        const selectMonth = this.shadowRoot.querySelector('.select-month');
+        const dayInput    = this.shadowRoot.querySelector('.input-day');
+        const monthInput  = this.shadowRoot.querySelector('.input-month');
+        const yearInput   = this.shadowRoot.querySelector('.input-year');
         const selectYear  = this.shadowRoot.querySelector('.select-year');
-        const selectFormat = this.shadowRoot.querySelector('.header-select');
+        const sliderTextMonth = this.shadowRoot.querySelector('.slider-month-container');
+        if (!dayInput || !monthInput || !yearInput || !selectYear || !sliderTextMonth) return;
 
-        if (monthInput && selectMonth) {
-            if (this.currentDate) {
-                selectMonth.value = monthInput.value;
-            } else {
-                monthInput.value = this.month;
-                selectMonth.value = this.month;
-            }
-        } else return;
-        if (yearInput && selectYear) {
-            if (this.currentDate) {
-                selectYear.value = yearInput.value;
-            } else {
-                yearInput.value = this.year;
-                selectYear.value = this.year;
-            }
-        } else return;
-        if (!this.currentDate) {
-            dayInput.value = this.day;
-        }
+        dayInput.value   = this.day;
+        monthInput.value = this.month;
+        yearInput.value  = this.year;
+        selectYear.value = this.year;
+        sliderTextMonth.children[0].goToSlide(monthInput.value - 1);
 
-        const updateCalendar = () => this.#getCalendar(selectMonth.value, selectYear.value);
-        const updateSelector = () => {
-            selectYear.value  = yearInput.value;
-            selectMonth.value = monthInput.value;
-
-            const d = parseInt(dayInput.value,   10) || 0;
-            const m = parseInt(monthInput.value, 10) || 1;
-            const y = parseInt(yearInput.value,  10) || this.year;
-
-            const maxDays = this.#numberOfDaysPerMonth(m, y);
-
-            if (d < 1 || d > maxDays) setRange(dayInput, 1, maxDays);
-
-            this.day   = d;
-            this.month = m;
-            this.year  = y;
-
-            updateCalendar();
-        };
-
-        const updateFormat = () => {
-            this.dateOrder = selectFormat.value;
-            this.#formatDate();
-            this.#getCurrentDay();
-            return this.#updateCalendar();
-        };
-        const setRange = (camp, min, max) => {
-            let value =parseInt(camp.value, 10);
-            if (value < min) {
-                camp.value = min
-                updateSelector();
-            } else if (value > max) {
-                camp.value = max
-                updateSelector();
-            }
-        };
-
-        [dayInput, monthInput, yearInput].forEach(input => {
-            input.addEventListener('keydown', e => {
-                if (e.key === 'Enter') {
-                    if (input === dayInput) {
-                        setRange(dayInput, 1, this.#numberOfDaysPerMonth(this.month, this.year));
-                    } else if (input === monthInput) {
-                        setRange(monthInput, 1, 12);
-                    } else {
-                        setRange(yearInput, 1900, 2100);
-                    }
-                    e.preventDefault();
-                }
-            });
-        });
-
-        selectFormat.addEventListener('change', updateFormat);
-        dayInput.addEventListener('change', updateSelector);
-        monthInput.addEventListener('change', updateSelector);
-        yearInput.addEventListener('change', updateSelector);
-        selectMonth.addEventListener('change', updateCalendar);
-        selectYear.addEventListener('change', updateCalendar);
-        dayInput.addEventListener('blur', () => setRange(dayInput, 1, this.#numberOfDaysPerMonth(this.month, this.year)));
-        monthInput.addEventListener('blur', () => setRange(monthInput, 1, 12));
-        yearInput.addEventListener('blur', () => setRange(yearInput, 1900, 2100));
-
-        updateCalendar();
+        this.#getCalendar(this.month, this.year);
     }
 
     async #hideCalendar() {
@@ -533,7 +445,7 @@ export class FastCalendar extends Fast {
             icon.classList.add('arrow-down');
             containerHeader.style.borderRadius = '10px 10px 0 0';
         }
-        else {  
+        else {
             containerBody.style.animation = 'slideUp .4s ease-in forwards';
             icon.classList.remove('arrow-down');
             icon.classList.add('arrow-up');
@@ -577,7 +489,7 @@ export class FastCalendar extends Fast {
                     'iconname' : objOption.iconname,
                     'style' : {
                         'position'          : 'relative',
-                        'box-shadow'        : 'none', 
+                        'box-shadow'        : 'none',
                         'border-style'      : 'none',
                         'width'             : this.sizeIconMenu+'px',
                         'height'            : this.sizeIconMenu+'px',
@@ -585,8 +497,8 @@ export class FastCalendar extends Fast {
                         'background-color'  : 'rgba(0,0,0,0)',
                     }
                 });
-                resolve(i);      
-            } 
+                resolve(i);
+            }
             catch (error) { reject(error); }
         })
     }
@@ -624,9 +536,70 @@ export class FastCalendar extends Fast {
         await this.#hideCalendar();
         await this.#alternateContainerHeader();
         this.#getCurrentDay();
-        this.#updateCalendar();
-        
 
+        const monthNames = [
+            'Enero','Febrero','Marzo','Abril','Mayo','Junio',
+            'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'
+        ];
+        const slider = document.createElement('fast-slider-text');
+        slider.slidesData = monthNames;
+        this.monthSlider = slider;
+        this.shadowRoot.querySelector('.slider-month-container').appendChild(slider);
+
+        const setRange = (input, min, max) => {
+            let v = parseInt(input.value, 10);
+            if (isNaN(v) || v < min) v = min;
+            else if (v > max) v = max;
+            input.value = v;
+            return v;
+        };
+
+        const bindInputs = () => {
+            const dayInput    = this.shadowRoot.querySelector('.input-day');
+            const monthInput  = this.shadowRoot.querySelector('.input-month');
+            const yearInput   = this.shadowRoot.querySelector('.input-year');
+            const selectYear  = this.shadowRoot.querySelector('.select-year');
+
+            dayInput.onchange = () => {
+                this.day = setRange(dayInput, 1, this.#numberOfDaysPerMonth(this.month, this.year));
+                this.#updateCalendar();
+            };
+
+            monthInput.onchange = () => {
+                this.month = setRange(monthInput, 1, 12);
+                if (this.monthSlider.goToSlide) {
+                    this.monthSlider.goToSlide(this.month - 1);
+                }
+                this.#updateCalendar();
+            };
+
+            yearInput.onchange = () => {
+                this.year = setRange(yearInput, 1900, 2100);
+                selectYear.value = this.year;
+                this.#updateCalendar();
+            };
+
+            selectYear.onchange = () => {
+                this.#getCalendar(slider.getActiveValue().numero, selectYear.value);
+            };
+        };
+
+        bindInputs();
+
+        slider.addEventListener('slide-changed', ({ detail }) => {
+            this.#getCalendar(detail.numero, this.year);
+        });
+
+        const selectFormat = this.shadowRoot.querySelector('.header-select');
+        selectFormat.onchange = () => {
+            this.dateOrder = selectFormat.value;
+            this.#formatDate();
+            this.#getCurrentDay();
+            bindInputs();
+            this.#updateCalendar();
+        };
+
+        this.#updateCalendar();
         this._isBuilt = true;
         this.built();
     }
