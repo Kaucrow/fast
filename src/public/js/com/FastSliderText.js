@@ -1,3 +1,4 @@
+import {FastIcon} from "./FastIcon.js"
 export const FastSliderText = class extends Fast {
     constructor(props) {
         super();
@@ -15,12 +16,11 @@ export const FastSliderText = class extends Fast {
 
     // Método privado para obtener el template HTML
     #getTemplate() {
-        const leftArrowUrl = new URL('../../images/icons/leftArrow.svg', import.meta.url).href;
-        const rightArrowUrl = new URL('../../images/icons/rightArrow.svg', import.meta.url).href;
-
         return `
                 <div class="main-content">
-                    <button id="prevBtn" class="arrow-btn"><img src="${leftArrowUrl}" alt="Previous"></button>
+                    <button id="prevBtn" class="arrow-btn">
+                        <fast-icon iconname="leftArrow"></fast-icon>
+                    </button>
                     <div class="slides-list">
                         <div class="slides">
                             ${this.slides.map((text) =>
@@ -28,9 +28,10 @@ export const FastSliderText = class extends Fast {
                             ).join('')}
                         </div>
                     </div>
-                    <button id="nextBtn" class="arrow-btn"><img src="${rightArrowUrl}" alt="Next"></button>
+                    <button id="nextBtn" class="arrow-btn">
+                        <fast-icon iconname="rightArrow"></fast-icon>
+                    </button>
                 </div>
-            </div>
         `;
     }
 
