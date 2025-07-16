@@ -1,6 +1,7 @@
 <html>
     <head>
         <script type="module" src="../js/com/Fast.js"></script>
+        <script type="module" src="../js/com/FastIcon.js"></script>
     </head>
     <body>
         <script>
@@ -13,37 +14,37 @@
                     }
                 });
                 popupMenu.built = async () => {
-                    popupMenu.addItem('Save', '../images/icons/save.svg', () => alert('Save selected'));
+                    popupMenu.addItem('Save', 'save', () => alert('Save selected'));
                     popupMenu.addItem(
                         'Share...',
-                        '../images/icons/exit.svg',
+                        'exit',
                         '',
                         [
                             {
                                 text: 'Profile',
-                                imgSrc: '../images/icons/user.svg',
+                                imgSrc: 'user.svg',
                                 callback: () => alert('Shared via Profile')
                             },
                             {
                                 text: 'Group',
-                                imgSrc: '../images/icons/users.svg',
+                                imgSrc: 'users.svg',
                                 callback: () => alert('Shared via Group')
                             },
                             {
                                 text: 'More...',
-                                imgSrc: '../images/icons/plus.svg',
+                                imgSrc: 'plus.svg',
                                 callback: null,
                                 subItems: [
                                     {
                                         text: 'Social Media',
-                                        imgSrc: '../images/icons/users.svg',
+                                        imgSrc: 'users.svg',
                                         callback: () => alert('Shared via Social Media'),
                                     }
                                 ]
                             }
                         ]
                     );
-                    popupMenu.addItem('Options', '../images/icons/config.svg', () => alert('Options selected'));
+                    popupMenu.addItem('Options', 'config.svg', () => alert('Options selected'));
                 };
                 popupMenu.addToBody();
 
