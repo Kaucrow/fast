@@ -17,6 +17,7 @@
 .slides-list { 
     width: 70%;
     overflow: hidden;
+    z-index: 1;
 }
 
 .slides {
