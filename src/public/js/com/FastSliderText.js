@@ -66,6 +66,7 @@ export const FastSliderText = class extends Fast {
         this.shadowRoot.querySelector('#nextBtn').onclick = () => this.nextSlide();
 
         this.#removeIconBorders();
+        this.#setupIconHover(); // Configurar hover de iconos
 
         this.#updateView();
     }
@@ -102,6 +103,56 @@ export const FastSliderText = class extends Fast {
                 }
             });
         }, 100);
+    }
+
+    // Método para manejar el hover de los iconos
+    #setupIconHover() {
+        const arrowButtons = this.shadowRoot.querySelectorAll('.arrow-btn');
+        
+        arrowButtons.forEach(button => {
+            const icon = button.querySelector('fast-icon');
+            
+            if (icon) {
+                // Evento mouseenter
+                button.addEventListener('mouseenter', () => {
+                    if (icon.shadowRoot) {
+                        // Cambiar el color del SVG directamente
+                        /* const svgElement = icon.shadowRoot.querySelector('.FastIcon');
+                        if (svgElement) {
+                            svgElement.style.fill = '#007bff';
+                            svgElement.style.transition = 'fill 0.3s ease';
+                        } */
+                        
+                        // También cambiar el contenedor si es necesario
+                        const iconContainers = icon.shadowRoot.querySelectorAll('.FastIconContainer');
+                        iconContainers.forEach(container => {
+                            container.style.transform = 'scale(1.1)';
+                            container.style.transition = 'transform 0.3s ease';
+                            container.style.padding = '0';
+                        });
+                    }
+                });
+                
+                // Evento mouseleave
+                button.addEventListener('mouseleave', () => {
+                    if (icon.shadowRoot) {
+                        // Restaurar el color original del SVG
+                        const svgElement = icon.shadowRoot.querySelector('.FastIcon');
+                        if (svgElement) {
+                            svgElement.style.fill = 'rgb(10, 70, 62)';
+                            svgElement.style.transition = '';
+                        }
+                        
+                        // Restaurar el contenedor
+                        const iconContainers = icon.shadowRoot.querySelectorAll('.FastIconContainer');
+                        iconContainers.forEach(container => {
+                            container.style.transform = '';
+                            container.style.transition = '';
+                        });
+                    }
+                });
+            }
+        });
     }
 
     // Actualiza la vista (transform e indicadores)
