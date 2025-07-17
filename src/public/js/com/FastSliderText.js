@@ -65,8 +65,8 @@ export const FastSliderText = class extends Fast {
         this.shadowRoot.querySelector('#prevBtn').onclick = () => this.prevSlide();
         this.shadowRoot.querySelector('#nextBtn').onclick = () => this.nextSlide();
 
-        this.#removeIconBorders();
         this.#setupIconHover(); // Configurar hover de iconos
+        this.#removeIconBorders();
 
         this.#updateView();
     }
@@ -79,9 +79,18 @@ export const FastSliderText = class extends Fast {
             fastIcons.forEach(icon => {
                 // Acceder al shadow root del fast-icon
                 if (icon.shadowRoot) {
-                    const iconContainers = icon.shadowRoot.querySelectorAll('.FastIconContainer');
+                    const iconContainers = icon.shadowRoot.querySelectorAll('.FastIconContainer, .FastIconContainer:active, .FastIconContainer:focus');
                     iconContainers.forEach(container => {
                         container.style.border = 'none';
+                        container.style.boxShadow = 'none';
+                        container.style.outline = 'none';
+                    });
+                    
+                    // También eliminar bordes del SVG
+                    const svgElements = icon.shadowRoot.querySelectorAll('.FastIcon');
+                    svgElements.forEach(svg => {
+                        svg.style.outline = 'none';
+                        svg.style.border = 'none';
                     });
                 }
             });
