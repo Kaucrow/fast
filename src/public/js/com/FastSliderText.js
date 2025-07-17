@@ -65,7 +65,43 @@ export const FastSliderText = class extends Fast {
         this.shadowRoot.querySelector('#prevBtn').onclick = () => this.prevSlide();
         this.shadowRoot.querySelector('#nextBtn').onclick = () => this.nextSlide();
 
+        this.#removeIconBorders();
+
         this.#updateView();
+    }
+
+    // Método para eliminar bordes de los iconos
+    #removeIconBorders() {
+        // Esperar a que los fast-icon se rendericen completamente
+        setTimeout(() => {
+            const fastIcons = this.shadowRoot.querySelectorAll('fast-icon');
+            fastIcons.forEach(icon => {
+                // Acceder al shadow root del fast-icon
+                if (icon.shadowRoot) {
+                    const iconContainers = icon.shadowRoot.querySelectorAll('.FastIconContainer');
+                    iconContainers.forEach(container => {
+                        container.style.border = 'none';
+                    });
+                }
+            });
+        }, 100);
+    }
+
+    #smallIcon(){
+        // Esperar a que los fast-icon se rendericen completamente
+        setTimeout(() => {
+            const fastIcons = this.shadowRoot.querySelectorAll('fast-icon');
+            fastIcons.forEach(icon => {
+                // Acceder al shadow root del fast-icon
+                if (icon.shadowRoot) {
+                    const iconContainers = icon.shadowRoot.querySelectorAll('.FastIcon');
+                    iconContainers.forEach(container => {
+                        container.style.width = '10px';
+                        container.style.height = '10px';
+                    });
+                }
+            });
+        }, 100);
     }
 
     // Actualiza la vista (transform e indicadores)
@@ -86,16 +122,8 @@ export const FastSliderText = class extends Fast {
         const arrows = this.shadowRoot.querySelector('.arrow-btn');
         if (slideContent && arrows) {
             const width = slideContent.offsetWidth;
-            if (width < 150) {
-                const slideContentElements = this.shadowRoot.querySelectorAll('.slide-content');
-                slideContentElements.forEach(element => {
-                    element.style.fontSize = '10px';
-                });
-                const arrow = this.shadowRoot.querySelectorAll('.arrow-btn img');
-                arrow.forEach(element=>{
-                    element.style.width = '10px';
-                    element.style.height = '10px';
-                })
+            if (width < 100) {
+                this.#smallIcon();
             }
         }
     }
