@@ -1,62 +1,68 @@
 <html>
     <head>
         <script type="module" src="../js/com/Fast.js"></script>
-        <script type="module" src="../js/com/FastIcon.js"></script>
+        <style>
+            #toggle-button {
+                position: fixed; top: 20px; left: 20px;
+                width: 40px; height: 40px;
+                background: transparent;
+                border: none;
+                cursor: pointer;
+                display: flex; align-items: center; justify-content: center;
+                z-index: 900;
+            }
+            #toggle-button fast-icon {
+                width: 60px;
+                height: 60px;
+                border: none !important;
+                position: relative;
+                top: 0;
+                left: -15;
+            }
+        </style>
     </head>
     <body>
-        <script>
-            let fastInit = async () => {
-                let popupMenu = await fast.createInstance("FastPopUpMenu", {
-                    id: "main-popup",
-                    style: {
-                        position: "absolute",
-                        backgroundColor: "#ffffff",
+        <button id="toggle-button">
+        <fast-icon iconname="world"></fast-icon>
+    </button>
+
+    <script type="module">
+        const fastInit = async () => {
+            const menu = await fast.createInstance("FastPopUpMenu", {
+                id: "sidebar-menu",
+                toggleButtonId: "toggle-button",
+                style: {
+                    position: "fixed",
+                    backgroundColor: "#ffffff"
+                }
+            });
+
+            menu.built = async () => {
+                menu.addItem('Home', 'home', () => alert('Home'));
+                menu.addItem('Profile', 'user', () => alert('Profile'));
+                menu.addItem('Settings', 'config', null, [
+                    {
+                        text: 'Account',
+                        iconName: 'user',
+                        callback: () => alert('Account Settings')
+                    },
+                    {
+                        text: 'Security',
+                        iconName: 'debug',
+                        callback: () => alert('Security Settings')
                     }
-                });
-                popupMenu.built = async () => {
-                    popupMenu.addItem('Save', 'save', () => alert('Save selected'));
-                    popupMenu.addItem(
-                        'Share...',
-                        'exit',
-                        '',
-                        [
-                            {
-                                text: 'Profile',
-                                imgSrc: 'user.svg',
-                                callback: () => alert('Shared via Profile')
-                            },
-                            {
-                                text: 'Group',
-                                imgSrc: 'users.svg',
-                                callback: () => alert('Shared via Group')
-                            },
-                            {
-                                text: 'More...',
-                                imgSrc: 'plus.svg',
-                                callback: null,
-                                subItems: [
-                                    {
-                                        text: 'Social Media',
-                                        imgSrc: 'users.svg',
-                                        callback: () => alert('Shared via Social Media'),
-                                    }
-                                ]
-                            }
-                        ]
-                    );
-                    popupMenu.addItem('Options', 'config.svg', () => alert('Options selected'));
-                };
-                popupMenu.addToBody();
-
-                document.addEventListener('contextmenu', (event) => {
-                    event.preventDefault();
-                    popupMenu.show(event);
-                });
-
-                document.addEventListener('click', (event) => {
-                    popupMenu.hide();
-                });
+                ]);
+                menu.addFixedItem('Logout', 'exit', () => alert('Logged out'));
             };
-        </script>
+
+            menu.addToBody();
+
+            document.getElementById('toggle-button').onclick = () => {
+                menu.show();
+            };
+        };
+
+        fastInit();
+    </script>
     </body>
 </html>

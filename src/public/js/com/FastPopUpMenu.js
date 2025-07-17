@@ -1,25 +1,34 @@
+import './FastIcon.js';
+
 export const FastPopUpMenu = class extends Fast {
     constructor(props) {
         super();
         this.name = "FastPopUpMenu";
         this.props = props;
-        if (props && props.id) this.id = props.id;
-        this.built = () => {};
+        if (props?.id) this.id = props.id;
         this.attachShadow({ mode: "open" });
-        this._isBuilt = false;
-        this.objectProps = new Map();
         this.menuStack = [];
         this.currentMenu = null;
         this.mainMenu = [];
-        this.currentMenuElement = null;
-        this.menuContainer = null;
+        this.fixedItems = [];
         this.hasBuilt = false;
+
+        document.addEventListener('click', e => {
+            if (!this.menuContainer) return;
+            const path = e.composedPath();
+            if (!path.includes(this.menuContainer) &&
+                !(this._toggleButton && path.includes(this._toggleButton))) {
+                this.hide();
+            }
+        });
     }
 
     #getTemplate() {
         return `
             <div id="fast-popup-menu">
-                <ul></ul>
+                <div class="header"></div>
+                <div class="items"></div>
+                <div class="footer"></div>
             </div>
         `;
     }
@@ -28,222 +37,146 @@ export const FastPopUpMenu = class extends Fast {
         return await fast.getCssFile("FastPopUpMenu");
     }
 
-    #render() {
-        return new Promise(async (resolve, reject) => {
-            try {
-                const sheet = new CSSStyleSheet();
-                const css = await this.#getCss();
-                sheet.replaceSync(css);
-                this.shadowRoot.adoptedStyleSheets = [sheet];
-                this.template = document.createElement('template');
-                this.template.innerHTML = this.#getTemplate();
-                this.shadowRoot.appendChild(this.template.content.cloneNode(true));
-                this.menuContainer = this.shadowRoot.querySelector('#fast-popup-menu');
-                resolve(this);
-            } catch (error) {
-                reject(error);
-            }
-        });
-    }
-
-    #checkAttributes() {
-        return new Promise(async (resolve, reject) => {
-            try {
-                for (const attr of this.getAttributeNames()) {
-                    if (!attr.startsWith("on")) {
-                        this[attr] = this.getAttribute(attr);
-                    }
-                    if (attr === 'id') {
-                        await fast.createInstance('FastPopUpMenu', { id: this[attr] });
-                    }
-                }
-                resolve(this);
-            } catch (error) {
-                reject(error);
-            }
-        });
-    }
-
-    #checkProps() {
-        return new Promise(async (resolve, reject) => {
-            try {
-                if (this.props) {
-                    for (const [attr, val] of Object.entries(this.props)) {
-                        if (attr === 'style') {
-                            Object.assign(this.menuContainer.style, val);
-                        } else if (attr === 'events') {
-                            for (const [evt, fn] of Object.entries(val)) {
-                                this.menuContainer.addEventListener(evt, fn);
-                            }
-                        } else {
-                            this.setAttribute(attr, val);
-                            this[attr] = val;
-                            if (attr === 'id') {
-                                await fast.createInstance('FastPopUpMenu', { id: val });
-                            }
-                        }
-                    }
-                }
-                resolve(this);
-            } catch (error) {
-                reject(error);
-            }
-        });
-    }
-
     async connectedCallback() {
-        await this.#render();
-        await this.#checkAttributes();
-        await this.#checkProps();
-        this._isBuilt = true;
-        await this.#applyProps();
+        const sheet = new CSSStyleSheet();
+        sheet.replaceSync(await this.#getCss());
+        this.shadowRoot.adoptedStyleSheets = [sheet];
+
+        const tpl = document.createElement('template');
+        tpl.innerHTML = this.#getTemplate();
+        this.shadowRoot.appendChild(tpl.content.cloneNode(true));
+
+        this.menuContainer   = this.shadowRoot.querySelector('#fast-popup-menu');
+        this.headerContainer = this.shadowRoot.querySelector('.header');
+        this.itemsContainer  = this.shadowRoot.querySelector('.items');
+        this.footerContainer = this.shadowRoot.querySelector('.footer');
 
         if (this.props?.style) {
             Object.assign(this.menuContainer.style, this.props.style);
         }
-
-        await this.built();
-        this.hasBuilt = true;
-
-        if (this.mainMenu.length > 0) {
-            const menuEl = await this.#renderMenu(this.mainMenu);
-            this.currentMenu = this.mainMenu;
-            this.currentMenuElement = menuEl;
+        if (this.props?.toggleButtonId) {
+            this._toggleButton = document.getElementById(this.props.toggleButtonId);
         }
-    }
 
-    #applyProps() {
-        return new Promise((resolve, reject) => {
-            try {
-                for (const [k, v] of this.objectProps.entries()) {
-                    this[k] = v;
-                    this.objectProps.delete(k);
-                }
-                resolve(this);
-            } catch (e) {
-                reject(e);
-            }
-        });
+        this.hasBuilt = true;
+        await this.built();
+        if (this.mainMenu.length) this._renderMenu(this.mainMenu);
     }
 
     addItem(text, iconName, callback, subItems) {
-        let name = iconName || '';
-        const m = name.match(/([^\/]+?)(?:\.svg)?$/);
-        if (m) name = m[1];
-
-        const menuItem = { text, iconName: name, callback, subItems, subMenuElement: null };
-        this.mainMenu.push(menuItem);
-
-        if (this.hasBuilt && this.currentMenu === this.mainMenu) {
-            this.#cleanupMenus();
-            this.#renderMenu(this.mainMenu).then(el => {
-                this.currentMenuElement = el;
-                if (this.menuContainer.style.display === 'block') el.style.display = 'block';
-            });
-        }
-
-        return menuItem;
+        this.mainMenu.push({ text, iconName, callback, subItems });
+        if (this.hasBuilt) this._renderMenu(this.mainMenu);
+        return this;
     }
 
-    #renderMenu(menuData, parentItem = null) {
-        return new Promise(resolve => {
-            const menuDiv = document.createElement('div');
-            menuDiv.className = 'menu-level';
-            menuDiv.style.display = 'none';
+    addFixedItem(text, iconName, callback) {
+        this.fixedItems.push({ text, iconName, callback });
+        if (this.hasBuilt) this._renderFixed();
+        return this;
+    }
 
-            const ul = document.createElement('ul');
-            menuDiv.appendChild(ul);
+    _renderHeader(title, showBack = false) {
+        this.headerContainer.innerHTML = '';
+        const row = document.createElement('div');
+        row.className = 'menu-item header-content';
 
-            if (parentItem) {
-                const backLi = document.createElement('li');
-                backLi.className = 'menu-item back-item';
-                backLi.innerHTML = `
-                    <fast-icon iconname="arrowLeft"></fast-icon>
-                    <span class="menu-text">Volver</span>
-                `;
-                backLi.addEventListener('click', e => { e.stopPropagation(); this.#navigateBack(); });
-                ul.appendChild(backLi);
+        const ic = document.createElement('fast-icon');
+        ic.setAttribute('iconname', showBack ? 'leftArrow' : 'world');
+        row.appendChild(ic);
+
+        const span = document.createElement('span');
+        span.textContent = title;
+        row.appendChild(span);
+
+        row.addEventListener('click', e => {
+            e.stopPropagation();
+            if (showBack) {
+                this._navigateBack();
+            } else {
+                this.hide();
             }
+        });
 
-            for (const item of menuData) {
-                const li = document.createElement('li');
-                li.className = 'menu-item';
-                li.innerHTML = `
-                    <fast-icon iconname="${item.iconName}"></fast-icon>
-                    <span class="menu-text">${item.text}</span>
-                    ${item.subItems ? '<fast-icon iconname="arrowRight"></fast-icon>' : ''}
-                `;
-                li.addEventListener('click', e => {
+        this.headerContainer.appendChild(row);
+    }
+
+    _renderMenu(menuData, parent = null) {
+        this.itemsContainer.innerHTML = '';
+        this._renderHeader(parent?.text || 'Menu', !!parent);
+
+        menuData.forEach(item => {
+            const row = document.createElement('div');
+            row.className = 'menu-item';
+
+            const ic = document.createElement('fast-icon');
+            ic.setAttribute('iconname', item.iconName);
+            row.appendChild(ic);
+
+            const txt = document.createElement('span');
+            txt.textContent = item.text;
+            row.appendChild(txt);
+
+            if (item.subItems) {
+                const arrow = document.createElement('fast-icon');
+                arrow.setAttribute('iconname','arrowRight');
+                arrow.className = 'arrow-right';
+                row.appendChild(arrow);
+
+                row.addEventListener('click', e => {
                     e.stopPropagation();
-                    if (item.subItems) this.#navigateToSubmenu(item);
-                    else { item.callback?.(); this.hide(); }
+                    this.menuStack.push(menuData);
+                    this._renderMenu(item.subItems, item);
                 });
-                ul.appendChild(li);
+            } else {
+                row.addEventListener('click', e => {
+                    e.stopPropagation();
+                    item.callback?.();
+                    this.hide();
+                });
             }
 
-            this.menuContainer.appendChild(menuDiv);
-            resolve(menuDiv);
+            this.itemsContainer.appendChild(row);
+        });
+
+        this._renderFixed();
+        this.currentMenu = menuData;
+    }
+
+    _renderFixed() {
+        this.footerContainer.innerHTML = '';
+        this.fixedItems.forEach(item => {
+            const row = document.createElement('div');
+            row.className = 'fixed-item';
+
+            const ic = document.createElement('fast-icon');
+            ic.setAttribute('iconname', item.iconName);
+            row.appendChild(ic);
+
+            const txt = document.createElement('span');
+            txt.textContent = item.text;
+            row.appendChild(txt);
+
+            row.addEventListener('click', e => {
+                e.stopPropagation();
+                item.callback?.();
+                this.hide();
+            });
+
+            this.footerContainer.appendChild(row);
         });
     }
 
-    #navigateToSubmenu(menuItem) {
-        if (this.currentMenuElement) this.currentMenuElement.style.display = 'none';
-        this.menuStack.push({ menu: this.currentMenu, element: this.currentMenuElement });
-
-        if (!menuItem.subMenuElement) {
-            this.#renderMenu(menuItem.subItems, menuItem).then(newMenu => {
-                menuItem.subMenuElement = newMenu;
-                this.currentMenu = menuItem.subItems;
-                this.currentMenuElement = newMenu;
-                newMenu.style.display = 'block';
-            });
-        } else {
-            this.currentMenu = menuItem.subItems;
-            this.currentMenuElement = menuItem.subMenuElement;
-            this.currentMenuElement.style.display = 'block';
-        }
-    }
-
-    #navigateBack() {
-        if (!this.menuStack.length) return;
-        this.currentMenuElement.style.display = 'none';
+    _navigateBack() {
         const prev = this.menuStack.pop();
-        this.currentMenu = prev.menu;
-        this.currentMenuElement = prev.element;
-        this.currentMenuElement.style.display = 'block';
+        this._renderMenu(prev);
     }
 
-    #cleanupMenus() {
-        this.menuContainer.innerHTML = '';
-        this.menuStack = [];
-        this.currentMenuElement = null;
-    }
-
-    show(event) {
-        this.menuContainer.style.display = 'block';
-        this.menuContainer.style.zIndex = fast.getMaxZIndex();
-        this.#positionMenu(event);
-        if (this.currentMenuElement) this.currentMenuElement.style.display = 'block';
-    }
-
-    #positionMenu(event) {
-        const rect = this.menuContainer.getBoundingClientRect();
-        const vw = window.innerWidth, vh = window.innerHeight;
-        let left = event.clientX, top = event.clientY;
-        if (left + rect.width > vw) left = vw - rect.width;
-        if (top + rect.height > vh) top = vh - rect.height;
-        this.menuContainer.style.left = `${Math.max(0, left)}px`;
-        this.menuContainer.style.top = `${Math.max(0, top)}px`;
+    show() {
+        this.menuContainer.classList.add('visible');
     }
 
     hide() {
-        this.menuContainer.style.display = 'none';
-        if (this.currentMenu !== this.mainMenu) {
-            this.currentMenuElement.style.display = 'none';
-            this.currentMenu = this.mainMenu;
-            this.currentMenuElement = this.menuContainer.querySelector('.menu-level');
-            this.menuStack = [];
-        }
+        this.menuContainer.classList.remove('visible');
     }
 
     addToBody() {
