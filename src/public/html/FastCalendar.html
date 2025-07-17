@@ -9,15 +9,15 @@
   <script type="module" src="../js/com/FastSliderText.js"></script>
 </head>
 <body>
-  <fast-calendar id="my-fastCalendar-html" date-order="dd-mm-yyyy" current-date="false" body-visible="true"></fast-calendar>
+  <!--<fast-calendar id="my-fastCalendar-html" date-order="dd-mm-yyyy" current-date="false" body-visible="true"></fast-calendar>-->
 <script>
   // my-fastCalendar-html events
-  document.addEventListener('DOMContentLoaded', () => {
+  /*document.addEventListener('DOMContentLoaded', () => {
     const calendar = document.querySelector('fast-calendar');
     calendar.built = () => {
       console.log('Built my-fastCalendar-html');
     };
-  });
+  });*/
 
   let fastInit = async () => {
     let c = await fast.createInstance("FastCalendar", {

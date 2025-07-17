@@ -543,6 +543,7 @@ export class FastCalendar extends Fast {
         ];
         const slider = document.createElement('fast-slider-text');
         slider.slidesData = monthNames;
+        slider.classList.add('slider-month');
         this.monthSlider = slider;
         this.shadowRoot.querySelector('.slider-month-container').appendChild(slider);
 

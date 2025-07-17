@@ -88,12 +88,12 @@ export const FastSliderText = class extends Fast {
             if (width < 150) {
                 const slideContentElements = this.shadowRoot.querySelectorAll('.slide-content');
                 slideContentElements.forEach(element => {
-                    element.style.fontSize = '10px';
+                    //element.style.fontSize = '10px';
                 });
                 const arrow = this.shadowRoot.querySelectorAll('.arrow-btn img');
                 arrow.forEach(element=>{
-                    element.style.width = '10px';
-                    element.style.height = '10px';
+                    //element.style.width = '10px';
+                    //element.style.height = '10px';
                 })
             }
         }

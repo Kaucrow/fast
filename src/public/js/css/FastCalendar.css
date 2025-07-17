@@ -3,7 +3,7 @@
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    width: 500px;
+    width: 400px;
     height:auto;
     padding: 2%;
     font-family: sans-serif;
@@ -83,6 +83,14 @@
     background-color : rgb(8, 143, 136);
 }
 
+.calendar-icon{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 40px;
+    height: 40px;
+}
+
 .toggle-button, .options-button{
     display: flex;
     justify-content: center;
@@ -132,17 +140,23 @@
     height: 40px;
 }
 
-.select-month, .select-year{
+.slider-month-container{
+    padding: 0 10px;
+    font-size: 16px;
+    color: #FFF;
+}
+
+.slider-month{
+    color: #FFF;
+}
+
+.select-year{
     border: none;
     border-bottom: .1vw solid rgb(8, 143, 136);
     padding: 5px;
     font-size: 14px;
     cursor: pointer;
     transition: all .1s ease;
-}
-
-.select-month{
-    margin-left: 10px;
 }
 
 .select-year{
@@ -227,9 +241,9 @@
 .input:focus {
     outline: none;
     border: 1px solid #FFF;
-    scale: 1.1;
     transition: all .4s ease;
 }
+
 
 .toggle-button:hover, .options-button:hover{
     scale: 1.1;
