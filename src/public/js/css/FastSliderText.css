@@ -76,3 +76,9 @@ fast-icon {
     align-items: center;
     justify-content: center;
 }
+
+/* Estilos de hover para los iconos */
+.arrow-btn:hover fast-icon {
+    filter: brightness(1.2) saturate(1.2);
+    transition: all 0.3s ease;
+}
