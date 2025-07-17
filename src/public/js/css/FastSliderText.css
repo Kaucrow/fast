@@ -17,7 +17,6 @@
 .slides-list { 
     width: 70%;
     overflow: hidden;
-    z-index: 1;
 }
 
 .slides {
@@ -76,6 +75,7 @@ fast-icon {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    z-index: 10;
 }
 
 /* Estilos de hover para los iconos */
