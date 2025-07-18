@@ -1,9 +1,11 @@
 :host {
   display: block;
-  font-family: Arial, sans-serif;
+  font-family: 'Open Sans', sans-serif;
   user-select: none;
+  color: #1f1f1f;
 }
 
+/* Tree Structure */
 ul {
   list-style: none;
   padding-left: 20px;
@@ -13,53 +15,102 @@ ul {
 li {
   position: relative;
   padding: 2px 0;
+  contain: content; /* Improves rendering performance */
 }
 
+/* Node Styles */
 .node {
+  border-radius: 0.25rem;
   display: flex;
   align-items: center;
   cursor: pointer;
   padding: 4px 0;
+  transition: background-color 0.2s ease;
 }
 
 .node:hover {
   background-color: #f0f0f0;
 }
 
+.selected > .node {
+  background-color: #e0e0e0;
+  color: #000000;
+}
+
+/* Toggle Control */
 .toggle {
   width: 16px;
   height: 16px;
-  margin-right: 5px;
+  margin-left: 0.75em;
+  margin-right: 0.75em;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+/* Icons */
+.folder-closed {
+  display: none;
+}
+
+.folder-open {
+  display: block;
+}
+
+.toggle.collapsed .folder-closed {
+  display: block;
+}
+
+.toggle.collapsed .folder-open {
+  display: none;
+}
+
+.leaf-icon {
+  margin-left: 0.5em;
+  display: block;
+}
+
+.leaf-icon-dummy {
+  margin-left: 2em;
+  display: block;
 }
 
 .toggle::before {
-  content: "▶";
   font-size: 10px;
   color: #666;
   transition: transform 0.2s;
 }
 
-.toggle.expanded::before {
-  transform: rotate(90deg);
-}
-
-.leaf .toggle {
-  visibility: hidden;
-}
-
+/* Label */
 .label {
   flex-grow: 1;
+  margin-left: 0.5em;
 }
 
-.selected > .node {
-  background-color: #e0e0e0;
-  font-weight: bold;
+/* Animations */
+li > ul {
+  overflow: hidden;
+  transform-origin: top;
+  transition: 
+    height 0.3s ease-out,
+    opacity 0.2s ease-out,
+    transform 0.2s ease-out;
+  display: block; /* Always visible for animations */
 }
 
-.collapsed > ul {
-  display: none;
+/* Collapsed State */
+li.collapsed > ul {
+  height: 0 !important;
+  opacity: 0;
+  transform: translateY(-5px);
+  pointer-events: none;
+}
+
+/* Expanded State */
+li:not(.collapsed) > ul {
+  height: auto;
+  opacity: 1;
+  transform: translateY(0);
 }

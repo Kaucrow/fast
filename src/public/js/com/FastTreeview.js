@@ -15,6 +15,11 @@ export const FastTreeview = class extends Fast {
     this._readyPromise = new Promise(resolve => {
       this._resolveReady = resolve;
     });
+    this._initialData = null;
+  }
+
+  get data() {
+    return this._data;
   }
 
   #getTemplate() {
@@ -56,10 +61,10 @@ export const FastTreeview = class extends Fast {
           }
           switch(attr) {
             case 'id': 
-              await fast.createInstance('FastTreeview', { 'id': this[attr] });
+              //await fast.createInstance('FastTreeview', { 'id': this[attr] });
               break;
             case 'data':
-              this.data = JSON.parse(this.getAttribute('data'));
+              this._initialData = JSON.parse(this.getAttribute('data'));
               break;
           }
         }
@@ -82,11 +87,14 @@ export const FastTreeview = class extends Fast {
               case 'events': 
                 for (let attrevent in this.props.events) {this.mainElement.addEventListener(attrevent, this.props.events[attrevent])}
                 break;
+              case 'data':
+                this._initialData = this.props[attr];
+                console.log(this._initialData);
+                break;
               default: 
                 this.setAttribute(attr, this.props[attr]);
                 this[attr] = this.props[attr];
-                if (attr === 'id') await fast.createInstance('FastTreeview', { 'id': this[attr] });
-                if (attr === 'data') { this.data = this.props[attr] }
+                //if (attr === 'id') await fast.createInstance('FastTreeview', { 'id': this[attr] });
             }
           }
           resolve(this);
@@ -138,21 +146,20 @@ export const FastTreeview = class extends Fast {
     return this._selectedNode;
   }
 
-  #renderTree() {
-    console.log(`CALLED RENDER TREE`);
+  async #renderTree() {
     const container = this.shadowRoot.querySelector('.tree-container');
     container.innerHTML = '';
 
     if (this._data.length > 0) {
       const ul = document.createElement('ul');
-      this._data.forEach(item => {
-        ul.appendChild(this.#createTreeNode(item));
-      });
+      for (const item of this._data) {
+        ul.appendChild(await this.#createTreeNode(item));
+      }
       container.appendChild(ul);
     }
   }
 
-  #createTreeNode(nodeData) {
+  async #createTreeNode(nodeData) {
     const li = document.createElement('li');
     const hasChildren = nodeData.children && nodeData.children.length > 0;
     li.className = hasChildren ? 'branch' : 'leaf';
@@ -162,20 +169,93 @@ export const FastTreeview = class extends Fast {
     
     const toggle = document.createElement('div');
     toggle.className = 'toggle';
-    
+
+    const closedIconUniqueId = `icon_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
+    const closedIcon = await fast.createInstance("FastIcon", {
+      'id': closedIconUniqueId,
+      'iconname' : 'closedFolder',
+      'disabled' : false,
+      'style': {
+        'fill': '#83c7c3',
+        'stroke': 'transparent'
+      }
+    });
+    closedIcon.className = 'folder-closed';
+
+    const openIconUniqueId = `icon_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
+    const openIcon = await fast.createInstance("FastIcon", {
+      'id': openIconUniqueId,
+      'iconname' : 'openFolder',
+      'disabled' : false,
+      'style': {
+        'fill': '#83c7c3',
+        'stroke': 'transparent'
+      }
+    });
+    openIcon.className = 'folder-open';
+
+    toggle.appendChild(closedIcon);
+    toggle.appendChild(openIcon);
+
     const label = document.createElement('div');
     label.className = 'label';
     label.textContent = nodeData.label || nodeData.name || 'Unnamed';
 
-    nodeDiv.appendChild(toggle);
+    if (hasChildren) {
+      nodeDiv.appendChild(toggle);
+    } else if (nodeData.icon) {
+      const leafIconUniqueId = `icon_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
+      const leafIcon = await fast.createInstance("FastIcon", {
+        'id': leafIconUniqueId,
+        'iconname' : nodeData.icon,
+        'disabled': false,
+        'style': {
+          'fill': '#83c7c3',
+          'stroke': 'transparent'
+        }
+      });
+      leafIcon.className = 'leaf-icon';
+      nodeDiv.prepend(leafIcon);
+    } else {
+      const leafIconDummy = document.createElement('div');
+      leafIconDummy.className = 'leaf-icon-dummy';
+      nodeDiv.prepend(leafIconDummy);
+    }
+
     nodeDiv.appendChild(label);
     li.appendChild(nodeDiv);
 
     // Handle expand/collapse
     const toggleNode = () => {
       if (hasChildren) {
+        const childUl = li.querySelector('ul');
+        const isCollapsing = !li.classList.contains('collapsed');
+
+        // Set initial state
+        if (isCollapsing) {
+          childUl.style.height = `${childUl.scrollHeight}px`;
+          childUl.style.opacity = '1';
+        }
+        
+        // Force reflow
+        void childUl.offsetHeight;
+        
+        // Toggle class and set final state
         li.classList.toggle('collapsed');
-        toggle.classList.toggle('expanded');
+        toggle.classList.toggle('collapsed');
+
+        if (isCollapsing) {
+          childUl.style.height = '0';
+          childUl.style.opacity = '0';
+        } else {
+          childUl.style.height = `${childUl.scrollHeight}px`;
+          childUl.style.opacity = '1';
+          
+          // Reset height after animation completes
+          setTimeout(() => {
+            childUl.style.height = 'auto';
+          }, 300);
+        }
       }
     };
 
@@ -197,17 +277,15 @@ export const FastTreeview = class extends Fast {
     };
 
     if (hasChildren) {
-      toggle.addEventListener('click', clickHandler);
-      label.addEventListener('click', clickHandler);
+      nodeDiv.addEventListener('click', clickHandler);
 
       const childUl = document.createElement('ul');
-      nodeData.children.forEach(child => {
-        childUl.appendChild(this.#createTreeNode(child));
-      });
+
+      for (const child of nodeData.children) {
+        childUl.appendChild(await this.#createTreeNode(child));
+      }
+
       li.appendChild(childUl);
-      
-      // Start expanded by default
-      toggle.classList.add('expanded');
     } else {
       // Leaf node - only selection, no expand/collapse
       nodeDiv.addEventListener('click', (e) => {
@@ -217,6 +295,10 @@ export const FastTreeview = class extends Fast {
         }
         li.classList.add('selected');
         this._selectedNode = li;
+
+        if (nodeData.callback && typeof nodeData.callback === 'function') {
+          nodeData.callback(nodeData);
+        }
         
         this.dispatchEvent(new CustomEvent('node-selected', {
           detail: { node: nodeData }

@@ -167,6 +167,35 @@
                 i.built = ()=>{
                     console.log('Componente construido...');
                 }
+                let i23 = await fast.createInstance("FastIcon", {
+                    'id':'MyFastIconJS23',
+                    'iconname' : 'folderOpen',
+                    'caption' : 'Nube',
+                    'style' : {
+                        'position':'absolute', 
+                        'left':'180px', 
+                        'top':'200px', 
+                        'fill' : 'white',
+                        'stroke': 'rgba(9, 92, 88)',
+                    },
+                    'hint' : 'Bajar de la nube..!',                    
+                });
+                let i24 = await fast.createInstance("FastIcon", {
+                  'id': 'FastIconJS24',
+                  'iconname': 'openFolderNew',
+                  'caption': 'folder',
+                  'style': {
+                    'position': 'absolute',
+                    'left': '280px',
+                    'top': '200px',
+                    'fill': 'white',
+                    'stroke': 'rgba(9, 92, 88)',
+                  },
+                  'hint' : 'el atla',
+                });
+                i.built = () => {
+                  console.log('elatla');
+                }
                 i.addToBody();
                 i2.addToBody();
                 i3.addToBody();
@@ -189,6 +218,8 @@
                 i20.addToBody();
                 i21.addToBody();
                 i22.addToBody();
+                i23.addToBody();
+                i24.addToBody();
             };
         </script>
         <fast-icon onclick = "alert('config HTML')" id = "MyFastIconHTML" iconname="config" caption="config HTML" style="position:absolute; left:20px; top:200px;"></fast-icon>
