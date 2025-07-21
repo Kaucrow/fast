@@ -1,0 +1,25 @@
+
+<html>
+    <head>
+        <script type="module" src="../js/com/Fast.js"></script>
+        <link rel="icon" href="../images/icons/favicon.png" sizes="32x32" type="image/png">
+    </head>
+    <body>
+        <script>
+            let fastInit = async () => {
+                let comp = await fast.createInstance("FastNavigator", {
+                    'id':'MyFastNavigatorJS',
+                    'style' : {'left' : '0px', 'top' : '0px'},
+                    'totalpage' : 5,
+                });
+                comp.built = ()=>{
+                    console.log('Componente construido...');
+                    comp.itempage = 3;
+                    // console.log(comp.nextPage().nextPage().itempage);
+                }
+                comp.addToBody();
+            };
+        </script>
+        <fast-navigator totalpage = '10' itempage = '2'  id="MyFastNavigatorHTML" style="top:200px;"></fast-navigator>
+    </body>
+</html> 

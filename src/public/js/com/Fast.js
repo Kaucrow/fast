@@ -53,6 +53,20 @@ export const Fast = class extends HTMLElement{
         }
     }
 
+    getTextWidth(text, font) {
+        let span = document.createElement("span");
+        span.style.visibility = "hidden";
+        span.style.position = "absolute";
+        span.style.whiteSpace = "nowrap";
+        span.style.font = font; 
+        span.textContent = text;
+        document.body.appendChild(span);
+        let width = span.offsetWidth;
+        document.body.removeChild(span);
+        return width;
+    }
+
+
     parseBoolean(val){ return (String(val).toLowerCase() === 'true'); }
 
     async getClass(className){

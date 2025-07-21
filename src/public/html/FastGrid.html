@@ -1,0 +1,22 @@
+
+<html>
+    <head>
+        <script type="module" src="../js/com/Fast.js"></script>
+        <link rel="icon" href="../images/icons/favicon.png" sizes="32x32" type="image/png">
+    </head>
+    <body>
+        <script>
+            let fastInit = async () => {
+                let comp = await fast.createInstance("FastGrid", {
+                    'id':'MyFastGridJS',
+                    'style' : {'width' : '20%', 'height' : '20%'} ,
+                });
+                comp.built = ()=>{
+                    console.log('Componente construido...');
+                }
+                comp.addToBody();
+            };
+        </script>
+        <fast-grid id="MyFastGridHTML" style="position:absolute; left:10px; top:140px; width: 100px; height:100px"></fast-grid>
+    </body>
+</html> 

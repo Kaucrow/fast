@@ -1,0 +1,67 @@
+
+.FastNavigator{
+    display : flex;
+    position : relative;
+    /* background-color : rgb(35, 119, 84); */
+    align-items : center;
+    justify-content :center;
+    /* gap : 5px; */
+    border : 0px;
+    width : 402px;
+    height : 36px; 
+}
+
+.FastNavContainerElement{
+    display : flex;
+    align-items:center;
+    justify-content:center;
+    border-radius: 0.5em;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgba(0,0,0,0); 
+    width : 56px;
+}
+
+.FastNavContainerIcon{
+    display : flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.FastNavContainerElement:hover{
+    border-style: solid;
+    border-color: rgba(100,100,100,0.3);
+    border-width: 1px;
+    cursor:pointer;
+}
+
+.FastNavInput{
+    position: relative;
+    width: 52px;
+    font-family: Trebuchet MS;
+    font-size: 12px;
+    border-radius: 0.5em;
+    text-align: center;
+    height:24px;
+    border: none;
+    color:rgb(4, 70, 53);
+    outline: none;
+    cursor:pointer;
+    margin: 1px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.FastNavigator:hover {
+    transition: all 0.2s ease-in-out;
+    box-shadow: 2px 1px 2px 1px rgba(206, 210, 214, 0.486);
+    border-radius: 0.5em;
+    color : orange;
+    cursor:pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}

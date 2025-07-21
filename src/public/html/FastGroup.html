@@ -46,14 +46,16 @@
                 let btn = document.createElement('button');
                 btn.innerText = "Eliminar";
                 let htmlGroup = fast.getInstance("FastGroupHTML");
-                htmlGroup.addRow({
-                        elements : [btn],
-                        styleRow:{
-                            'align-item': 'center',
-                            'justify-content' : 'center',
-                            'height' : '25px'
-                        }
-                })
+                htmlGroup.built = ()=>{
+                    htmlGroup.addRow({
+                            elements : [btn],
+                            styleRow:{
+                                'align-item': 'center',
+                                'justify-content' : 'center',
+                                'height' : '25px'
+                            }
+                    })
+                }                                
             };
         </script>
         <fast-group id = "FastGroupHTML" caption="Group HTML algo mas largo" style="position:absolute; width:450px; height:200px; left:20px; top:300px">

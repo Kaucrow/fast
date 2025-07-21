@@ -12,6 +12,7 @@ export const FastIcon = class extends Fast{
         this.objectProps = new Map();
         this._isBuilt = false;
         this._iconName = '';
+        this._disabled = false;
         this._hint = "";
         this.svg = null;
     }
@@ -223,7 +224,10 @@ export const FastIcon = class extends Fast{
         this.captionElement.innerText = val;
     }
     get hint (){return this._hint}
-    set hint (val){this._hint = val; this.hintElement.innerText=this._hint;}
+    set hint (val){
+        this._hint = val;
+        this.hintElement.innerText=this._hint;
+    }
 }
 if (!customElements.get ('fast-icon')) {
     customElements.define ('fast-icon', FastIcon);
