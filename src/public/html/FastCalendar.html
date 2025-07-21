@@ -9,44 +9,60 @@
   <script type="module" src="../js/com/FastSliderText.js"></script>
 </head>
 <body>
-  <!--<fast-calendar id="my-fastCalendar-html" date-order="dd-mm-yyyy" current-date="false" body-visible="true"></fast-calendar>-->
-<script>
-  // my-fastCalendar-html events
-  /*document.addEventListener('DOMContentLoaded', () => {
-    const calendar = document.querySelector('fast-calendar');
-    calendar.built = () => {
-      console.log('Built my-fastCalendar-html');
-    };
-  });*/
+  <!--<fast-calendar id="cal-html" date-order="dd-mm-yyyy" current-date="false" body-visible="true"></fast-calendar>-->
 
-  let fastInit = async () => {
-    let c = await fast.createInstance("FastCalendar", {
-      id: "cal-1",
-      "date-order": "dd-mm-yyyy",
-      "current-date": "true",
-      "body-visible": "true",
-      //'style' : {'background-color' : 'blue'},
-      //'events' : {'click' : () => {alert('Se creo el calendario.')}}
-    });
-    c.built = () => {
-      console.log("c listo:", c.getDate());
-    };
-    c.addBody();
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
 
-    /*let cal = await fast.createInstance("FastCalendar", {
-      id: "cal-2",
-      "date-order": "yyyy-mm-dd",
-      "current-date": "false",
-      "body-visible": "false"
+      /* const calendar = document.querySelector('fast-calendar');
+      calendar.built = () => {
+        console.log('Built my-fastCalendar-html');
+      };*/
     });
-    cal.built = () => {
-      console.log("cal listo:", cal.getDate());
-      console.log("c vs cal →", c.compareCalendars(cal));
-      console.log("cal vs c →", cal.compareCalendars(c));
+
+    let fastInit = async () => {
+      const calA = await fast.createInstance("FastCalendar", {
+        id: "cal-A",
+        "date-order": "dd-mm-yyyy",
+        "current-date": "true",
+        "body-visible": "true"
+      });
+
+      calA.built = () => {
+        console.log("Calendar A ready:", calA.getDate());
+      };
+      calA.addBody();
+
+      const calB = await fast.createInstance("FastCalendar", {
+        id: "cal-B",
+        "date-order": "yyyy-dd-mm",
+        "current-date": "false",
+        "body-visible": "true"
+      });
+
+      calB.built = () => {
+        console.log("Calendar B ready:", calB.getDate());
+      };
+      calB.addBody();
+
+      const comparison = () => {
+        const result = calA.compareCalendars(calB);
+
+        if (result === 1) {
+          console.log("A es mayor que B");
+        } else if (result === -1) {
+          console.log("A es menor que B");
+        } else if (result === 0) {
+          console.log("A y B son iguales");
+        } else {
+          console.log("Uno de los calendarios aún no estaba listo");
+        }
+      }
+
+      setTimeout(() => {
+        calA.addEventListener('date-change', comparison);
+      }, 100);
     };
-    cal.addBody();
-    */
-  }
-</script>
+  </script>
 </body>
 </html>

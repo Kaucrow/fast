@@ -37,11 +37,7 @@ export class FastCalendar extends Fast {
         <div class="FastCalendarBody">
           <div class="FastCalendarSelect">
             <div class="slider-month-container"></div>
-            <select class="select-year">
-              <option value="2025">2025</option>
-              <option value="2026">2026</option>
-              <option value="2027">2027</option>
-            </select>
+            <select class="select-year"></select>
           </div>
           <div class="container-header-days">
             <p class="header-day">Dom</p>
@@ -241,22 +237,23 @@ export class FastCalendar extends Fast {
         const month = date.getMonth() + 1;
         const year  = date.getFullYear();
 
-        if (this.currentDate) {
-            dayInput.value   = day;
-            this.day = day;
-        }
-        this.currentDay = day;
 
-        if (this.currentDate) {
+        if (!this.currentDate) {
+            dayInput.value = this.day;
+            monthInput.value = this.month;
+            yearInput.value = this.year;
+        } else {
+            dayInput.value = day;
+            this.day = day;
+
             monthInput.value = month;
             this.month = month;
-        }
-        this.currentMonth = month;
 
-        if (this.currentDate) {
             yearInput.value  = year;
             this.year = year;
         }
+        this.currentDay = day;
+        this.currentMonth = month;
         this.currentYear = year;
     }
 
@@ -405,14 +402,12 @@ export class FastCalendar extends Fast {
         const dayInput    = this.shadowRoot.querySelector('.input-day');
         const monthInput  = this.shadowRoot.querySelector('.input-month');
         const yearInput   = this.shadowRoot.querySelector('.input-year');
-        const selectYear  = this.shadowRoot.querySelector('.select-year');
         const sliderTextMonth = this.shadowRoot.querySelector('.slider-month-container');
-        if (!dayInput || !monthInput || !yearInput || !selectYear || !sliderTextMonth) return;
+        if (!dayInput || !monthInput || !yearInput || !sliderTextMonth) return;
 
-        dayInput.value   = this.day;
-        monthInput.value = this.month;
-        yearInput.value  = this.year;
-        selectYear.value = this.year;
+        this.day = dayInput.value;
+        this.month = monthInput.value;
+        this.year = yearInput.value;
         sliderTextMonth.children[0].goToSlide(monthInput.value - 1);
 
         this.#getCalendar(this.month, this.year);
@@ -504,11 +499,31 @@ export class FastCalendar extends Fast {
     }
 
     getDate() {
-        return `${this.day}/${this.month}/${this.year}`;
+        const parts = {
+            dd: String(this.day).padStart(2, '0'),
+            mm: String(this.month).padStart(2, '0'),
+            yyyy: String(this.year)
+        };
+
+        let result = '';
+
+        const order = this.dateOrder.split('-');
+        order.forEach((key, idx) => {
+            if (parts[key]) {
+                if (idx > 0) result += '/';
+                result += parts[key];
+            }
+        });
+
+        return result;
     }
 
+
     compareCalendars(calendar) {
-        if (typeof calendar !== 'object') return;
+        if (typeof calendar !== 'object') {
+            console.warn('compareCalendars: the argument must be a calendar object');
+            return undefined;
+        }
 
         if (this._isBuilt && calendar._isBuilt) {
             if (this.year > calendar.year) return 1;
@@ -522,7 +537,8 @@ export class FastCalendar extends Fast {
 
             return 0;
         } else {
-            return this.compareCalendars(calendar);
+            console.warn('compareCalendars: both calendars must be built before comparing');
+            return undefined;
         }
     }
 
@@ -536,6 +552,15 @@ export class FastCalendar extends Fast {
         await this.#hideCalendar();
         await this.#alternateContainerHeader();
         this.#getCurrentDay();
+
+        const selectYear  = this.shadowRoot.querySelector('.select-year');
+
+        for (let i = 1900; i <= 2100; i++) {
+            let option = document.createElement('option');
+            option.value = i;
+            option.textContent = i;
+            selectYear.appendChild(option);
+        }
 
         const monthNames = [
             'Enero','Febrero','Marzo','Abril','Mayo','Junio',
@@ -555,40 +580,68 @@ export class FastCalendar extends Fast {
             return v;
         };
 
+        const dateChange = () => {
+            this.dispatchEvent(new CustomEvent('date-change', {
+                bubbles: true,
+                composed: true
+            }));
+        };
+
         const bindInputs = () => {
             const dayInput    = this.shadowRoot.querySelector('.input-day');
             const monthInput  = this.shadowRoot.querySelector('.input-month');
             const yearInput   = this.shadowRoot.querySelector('.input-year');
-            const selectYear  = this.shadowRoot.querySelector('.select-year');
+
+            selectYear.value = yearInput.value;
 
             dayInput.onchange = () => {
                 this.day = setRange(dayInput, 1, this.#numberOfDaysPerMonth(this.month, this.year));
                 this.#updateCalendar();
+                dateChange();
             };
 
             monthInput.onchange = () => {
                 this.month = setRange(monthInput, 1, 12);
-                if (this.monthSlider.goToSlide) {
-                    this.monthSlider.goToSlide(this.month - 1);
-                }
+                if (this.monthSlider.goToSlide) this.monthSlider.goToSlide(this.month - 1);
                 this.#updateCalendar();
+                dateChange();
             };
 
             yearInput.onchange = () => {
                 this.year = setRange(yearInput, 1900, 2100);
                 selectYear.value = this.year;
                 this.#updateCalendar();
+                dateChange();
             };
 
             selectYear.onchange = () => {
-                this.#getCalendar(slider.getActiveValue().numero, selectYear.value);
+                yearInput.value = selectYear.value;
+                this.#updateCalendar();
+                dateChange();
             };
         };
 
         bindInputs();
 
         slider.addEventListener('slide-changed', ({ detail }) => {
-            this.#getCalendar(detail.numero, this.year);
+            const monthInput = this.shadowRoot.querySelector('.input-month');
+            const yearInput = this.shadowRoot.querySelector('.input-year');
+            const newMonth = detail.numero;
+            const previousMonth = Number(monthInput.value);
+
+            if (newMonth === 12 && previousMonth !== 11) {
+                this.year--;
+                yearInput.value = this.year;
+            }
+
+            if (previousMonth === 12 && newMonth === 1) {
+                this.year++;
+                yearInput.value = this.year;
+            }
+
+            monthInput.value = newMonth;
+            this.#getCalendar(newMonth, this.year);
+            dateChange();
         });
 
         const selectFormat = this.shadowRoot.querySelector('.header-select');
