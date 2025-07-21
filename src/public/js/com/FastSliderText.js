@@ -65,6 +65,8 @@ export const FastSliderText = class extends Fast {
         this.shadowRoot.querySelector('#nextBtn').onclick = () => this.nextSlide();
 
         this.#updateView();
+
+        this.#attachContentClicks();
     }
 
     // Actualiza la vista (transform e indicadores)
@@ -145,6 +147,23 @@ export const FastSliderText = class extends Fast {
             this.#updateView();
         }
     }
+
+    #attachContentClicks() {
+        const contents = this.shadowRoot.querySelectorAll('.slide-content');
+        contents.forEach((div, idx) => {
+            div.onclick = () => {
+                this.dispatchEvent(new CustomEvent('slide-text-click', {
+                    bubbles: true,
+                    composed: true,
+                    detail: {
+                        text: div.textContent,
+                        index: idx
+                    }
+                }));
+            };
+        });
+    }
+
 
     // Obtiene el valor activo (para el calendario)
     getActiveValue() {
