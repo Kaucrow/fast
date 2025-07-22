@@ -5,21 +5,28 @@ export class FastCalendar extends Fast {
         this.props = props;
         this.built = () => {};
         this.attachShadow({ mode: 'open' });
+
         this.dateOrder = 'dd-mm-yyyy';
         this._coloricon = '#FFF';
         this.widthCharMenu = 7;
         this.sizeIconMenu = 14;
         this.currentDate = true;
         this.bodyVisible = true;
+
         this.day = 1;
         this.month = 1;
         this.year = new Date().getFullYear();
         this.currentDay = this.day;
         this.currentMonth = this.month;
         this.currentYear = this.year;
-        this._isBuilt = false;
+
         this.monthSlider = null;
         this.yearSlider = null;
+        this.formatSelect = null;
+        this.bindInputs = null;
+
+        this._isBuilt = false;
+
     }
 
     #getTemplate() {
@@ -27,12 +34,7 @@ export class FastCalendar extends Fast {
       <div class="FastCalendar">
         <div class="FastCalendarHeader">
           <div class="container-inputs-date reveleaded"></div>
-          <select class="header-select hidden">
-            <option value="dd-mm-yyyy">dd/mm/yyyy</option>
-            <option value="mm-dd-yyyy">mm/dd/yyyy</option>
-            <option value="yyyy-mm-dd">yyyy/mm/dd</option>
-            <option value="yyyy-dd-mm">yyyy/dd/mm</option>
-          </select>
+          <div class="header-select hidden"></div>
           <div class="container-options"></div>
         </div>
         <div class="FastCalendarBody">
@@ -63,14 +65,13 @@ export class FastCalendar extends Fast {
     `;
     }
 
-    async #getCss() {return fast.getCssFile('FastCalendar');}
+    async #getCss() { return fast.getCssFile('FastCalendar'); }
 
     #render() {
         return new Promise(async (resolve, reject) => {
             try {
                 let sheet = new CSSStyleSheet();
-                let css = await this.#getCss();
-                sheet.replaceSync(css);
+                sheet.replaceSync(await this.#getCss());
                 this.shadowRoot.adoptedStyleSheets = [sheet];
 
                 this.template = document.createElement('template');
@@ -80,8 +81,8 @@ export class FastCalendar extends Fast {
                 this.mainElement = tpc.firstChild.nextSibling;
                 this.shadowRoot.appendChild(this.mainElement);
                 resolve(this);
-            } catch(error){ reject(error);}
-        })
+            } catch (error) { reject(error); }
+        });
     }
 
     #checkAttributes(){
@@ -109,7 +110,7 @@ export class FastCalendar extends Fast {
                 }
                 resolve(this);
             } catch (error) { reject(error); }
-        })
+        });
     }
 
     #checkProps() {
@@ -125,7 +126,7 @@ export class FastCalendar extends Fast {
                                 break;
                             case 'events' :
                                 for(let attrEvent in this.props.events){
-                                    this.mainElement.addEventListener(attrEvent, this.props.events[attrEvent], false)
+                                    this.mainElement.addEventListener(attrEvent, this.props.events[attrEvent], false);
                                 }
                                 break;
                             default:
@@ -145,9 +146,7 @@ export class FastCalendar extends Fast {
                     }
                 }
                 resolve(this);
-            } catch (error) {
-                reject(error);
-            }
+            } catch (error) { reject(error); }
         });
     }
 
@@ -161,18 +160,17 @@ export class FastCalendar extends Fast {
                     }
                 }
                 resolve(this);
-            } catch (e) {
-                reject(e);
-            }
+            } catch (e) { reject(e); }
         });
     }
+
     #formatDate() {
         const divInput = this.shadowRoot.querySelector('.container-inputs-date');
-        const selectorFormat = this.shadowRoot.querySelector('.header-select');
+        const selectorFormat = this.formatSelect ? this.formatSelect.getSelect() : null;
         if (!divInput) return;
 
         divInput.innerHTML = '';
-        selectorFormat.value = this.dateOrder;
+        if (selectorFormat) selectorFormat.value = this.dateOrder;
 
         const dayInput = document.createElement('input');
         dayInput.className = 'input-day input';
@@ -180,7 +178,8 @@ export class FastCalendar extends Fast {
         dayInput.placeholder = 'DD';
         dayInput.min = 1;
         dayInput.max = 31;
-        dayInput.disabled = false
+        dayInput.disabled = false;
+
         const barLeft = document.createElement('p');
         barLeft.classList.add('label-input');
         barLeft.innerHTML = '/';
@@ -192,6 +191,7 @@ export class FastCalendar extends Fast {
         monthInput.min = 1;
         monthInput.max = 12;
         monthInput.disabled = false;
+
         const barCenter = document.createElement('p');
         barCenter.classList.add('label-input');
         barCenter.innerHTML = '/';
@@ -204,28 +204,44 @@ export class FastCalendar extends Fast {
         yearInput.max = 2100;
         yearInput.disabled = false;
 
-        const inputs = {
-            'dd': dayInput,
-            'mm': monthInput,
-            'yyyy': yearInput
-        };
+        const inputs = { 'dd': dayInput, 'mm': monthInput, 'yyyy': yearInput };
 
         let countBar = 0;
         this.dateOrder.split('-').forEach(part => {
             if (inputs[part]) {
-                if (countBar === 1) {
-                    divInput.appendChild(barLeft);
-                };
-
-                if (countBar === 2) {
-                    divInput.appendChild(barCenter);
-                }
-
+                if (countBar === 1) divInput.appendChild(barLeft);
+                if (countBar === 2) divInput.appendChild(barCenter);
                 divInput.appendChild(inputs[part]);
             }
             countBar++;
         });
     }
+
+    #onFormatChange = () => {
+        const prev = { day: this.day, month: this.month, year: this.year };
+        const selectEl = this.formatSelect.getSelect();
+        this.dateOrder = selectEl.value;
+
+        this.#formatDate();
+
+        const dayInput   = this.shadowRoot.querySelector('.input-day');
+        const monthInput = this.shadowRoot.querySelector('.input-month');
+        const yearInput  = this.shadowRoot.querySelector('.input-year');
+
+        dayInput.value   = prev.day;
+        monthInput.value = prev.month;
+        yearInput.value  = prev.year;
+
+        this.day   = prev.day;
+        this.month = prev.month;
+        this.year  = prev.year;
+
+        if (this.bindInputs) {
+            this.bindInputs();
+        }
+
+        this.#updateCalendar();
+    };
 
     #getCurrentDay() {
         const dayInput = this.shadowRoot.querySelector('.input-day');
@@ -237,7 +253,6 @@ export class FastCalendar extends Fast {
         const day   = date.getDate();
         const month = date.getMonth() + 1;
         const year  = date.getFullYear();
-
 
         if (!this.currentDate) {
             dayInput.value = this.day;
@@ -261,11 +276,8 @@ export class FastCalendar extends Fast {
     #isLeapYear(year) {
         if ((year % 4) === 0) {
             if ((year % 100) === 0) {
-                if (year % 400 === 0) {
-                    return 29;
-                } else {
-                    return 28;
-                }
+                if (year % 400 === 0) return 29;
+                else return 28;
             }
             return 29;
         }
@@ -273,20 +285,12 @@ export class FastCalendar extends Fast {
     }
 
     #getDayOfWeek(day, month, year) {
-        if (month < 3) {
-            month += 12;
-            year -= 1;
-        }
-
+        if (month < 3) { month += 12; year -= 1; }
         let K = year % 100;
         let J = Math.floor(year / 100);
-
         let h = (day + Math.floor((month + 1) * 26 / 10) + K + Math.floor(K / 4) + Math.floor(J / 4) - 2 * J) % 7;
-
         const weekDays = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
-
         h = (h + 7) % 7;
-
         return weekDays[h];
     }
 
@@ -307,15 +311,19 @@ export class FastCalendar extends Fast {
     }
 
     #numberOfDaysPerMonth (month, year) {
-        let numberOfDays;
-        if ( [1,3,5,7,8,10,12].includes(month) ) {
-            numberOfDays = 31;
-        } else if ( [4,6,9,11].includes(month) ) {
-            numberOfDays = 30;
-        } else if ( month === 2 ) {
-            numberOfDays = this.#isLeapYear(year);
+        if ( [1,3,5,7,8,10,12].includes(month) ) return 31;
+        if ( [4,6,9,11].includes(month) ) return 30;
+        if ( month === 2 ) return this.#isLeapYear(year);
+        return 30;
+    }
+
+    #fixDayForMonthYear() {
+        const dayInput = this.shadowRoot.querySelector('.input-day');
+        const max = this.#numberOfDaysPerMonth(Number(this.month), Number(this.year));
+        if (Number(this.day) > max) {
+            this.day = max;
+            if (dayInput) dayInput.value = max;
         }
-        return numberOfDays;
     }
 
     #getCalendar(month, year) {
@@ -339,17 +347,11 @@ export class FastCalendar extends Fast {
             }
 
             if (m === this.currentMonth && y === this.currentYear) {
-                if (i === this.currentDay) {
-                    date.classList.add('current-day');
-                }
-                else{
-                    date.classList.add('day');
-                }
-            }
-            else{
+                if (i === this.currentDay) date.classList.add('current-day');
+                else date.classList.add('day');
+            } else {
                 date.classList.add('day');
             }
-
 
             date.addEventListener('click', () => {
                 this.day   = i;
@@ -367,34 +369,13 @@ export class FastCalendar extends Fast {
             });
 
             switch (currentDay) {
-                case "Sunday": {
-                    calendarDays[0].appendChild(date);
-                    break;
-                }
-                case "Monday": {
-                    calendarDays[1].appendChild(date);
-                    break;
-                }
-                case "Tuesday": {
-                    calendarDays[2].appendChild(date);
-                    break;
-                }
-                case "Wednesday": {
-                    calendarDays[3].appendChild(date);
-                    break;
-                }
-                case "Thursday": {
-                    calendarDays[4].appendChild(date);
-                    break;
-                }
-                case "Friday": {
-                    calendarDays[5].appendChild(date);
-                    break;
-                }
-                case "Saturday": {
-                    calendarDays[6].appendChild(date);
-                    break;
-                }
+                case "Sunday":    calendarDays[0].appendChild(date); break;
+                case "Monday":    calendarDays[1].appendChild(date); break;
+                case "Tuesday":   calendarDays[2].appendChild(date); break;
+                case "Wednesday": calendarDays[3].appendChild(date); break;
+                case "Thursday":  calendarDays[4].appendChild(date); break;
+                case "Friday":    calendarDays[5].appendChild(date); break;
+                case "Saturday":  calendarDays[6].appendChild(date); break;
             }
         }
     }
@@ -416,7 +397,6 @@ export class FastCalendar extends Fast {
 
         this.#getCalendar(this.month, this.year);
     }
-
 
     async #hideCalendar() {
         const containerHeader = this.shadowRoot.querySelector('.FastCalendarHeader');
@@ -444,8 +424,7 @@ export class FastCalendar extends Fast {
             icon.classList.remove('arrow-up');
             icon.classList.add('arrow-down');
             containerHeader.style.borderRadius = '10px 10px 0 0';
-        }
-        else {
+        } else {
             containerBody.style.animation = 'slideUp .4s ease-in forwards';
             icon.classList.remove('arrow-down');
             icon.classList.add('arrow-up');
@@ -478,7 +457,6 @@ export class FastCalendar extends Fast {
         containerHeader.append(optionsButton);
     }
 
-
     #renderIcon(objOption){
         return new Promise(async (resolve, reject) => {
             try {
@@ -500,7 +478,7 @@ export class FastCalendar extends Fast {
                 resolve(i);
             }
             catch (error) { reject(error); }
-        })
+        });
     }
 
     getDate() {
@@ -509,9 +487,7 @@ export class FastCalendar extends Fast {
             mm: String(this.month).padStart(2, '0'),
             yyyy: String(this.year)
         };
-
         let result = '';
-
         const order = this.dateOrder.split('-');
         order.forEach((key, idx) => {
             if (parts[key]) {
@@ -519,27 +495,21 @@ export class FastCalendar extends Fast {
                 result += parts[key];
             }
         });
-
         return result;
     }
-
 
     compareCalendars(calendar) {
         if (typeof calendar !== 'object') {
             console.warn('compareCalendars: el argumento debe ser un objeto de calendario');
             return undefined;
         }
-
         if (this._isBuilt && calendar._isBuilt) {
             if (this.year > calendar.year) return 1;
             if (this.year < calendar.year) return -1;
-
             if (this.month > calendar.month) return 1;
             if (this.month < calendar.month) return -1;
-
             if (this.day > calendar.day) return 1;
             if (this.day < calendar.day) return -1;
-
             return 0;
         } else {
             console.warn('compareCalendars: Ambos calendarios deben construirse antes de compararlos');
@@ -558,6 +528,23 @@ export class FastCalendar extends Fast {
         await this.#alternateContainerHeader();
         this.#getCurrentDay();
 
+        const formatHost = this.shadowRoot.querySelector('.header-select');
+        const formats = ['dd-mm-yyyy','mm-dd-yyyy','yyyy-mm-dd','yyyy-dd-mm'];
+
+        this.formatSelect = await fast.createInstance('FastSelect', {
+            id: `${this.id}_dateFormat`,
+            style: { width: '180px' }
+        });
+
+        this.formatSelect.built = () => {
+            formats.forEach(f => this.formatSelect.addOption({ text: f, value: f }));
+            const idx = formats.indexOf(this.dateOrder);
+            if (idx >= 0) this.formatSelect.selectedIndex = idx;
+            this.formatSelect.getSelect().addEventListener('change', this.#onFormatChange);
+        };
+
+        formatHost.appendChild(this.formatSelect);
+
         const monthNames = [
             'Enero','Febrero','Marzo','Abril','Mayo','Junio',
             'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'
@@ -569,8 +556,7 @@ export class FastCalendar extends Fast {
         this.monthSlider = sliderMonth;
         this.shadowRoot.querySelector('.slider-month-container').appendChild(sliderMonth);
 
-        let arrayYear = [];
-
+        const arrayYear = [];
         for (let i = 1900; i <= 2100; i++) arrayYear.push(i);
 
         const sliderYear = document.createElement('fast-slider-text');
@@ -607,6 +593,7 @@ export class FastCalendar extends Fast {
 
             monthInput.onchange = () => {
                 this.month = setRange(monthInput, 1, 12);
+                this.#fixDayForMonthYear();
                 if (this.monthSlider) this.monthSlider.goToSlide(this.month - 1);
                 this.#updateCalendar();
                 dateChange();
@@ -614,15 +601,15 @@ export class FastCalendar extends Fast {
 
             yearInput.onchange = () => {
                 this.year = setRange(yearInput, 1900, 2100);
-
+                this.#fixDayForMonthYear();
                 if (this.yearSlider) this.yearSlider.goToSlide(this.year - 1900);
-
                 this.#updateCalendar();
                 dateChange();
             };
         };
 
         bindInputs();
+        this.bindInputs = bindInputs;
 
         sliderMonth.addEventListener('slide-changed', ({ detail }) => {
             const monthInput = this.shadowRoot.querySelector('.input-month');
@@ -643,7 +630,11 @@ export class FastCalendar extends Fast {
             }
 
             monthInput.value = newMonth;
-            this.#getCalendar(newMonth, this.year);
+            this.month = monthInput.value;
+
+            this.#fixDayForMonthYear();
+
+            this.#getCalendar(this.month, this.year);
             dateChange();
         });
 
@@ -653,29 +644,22 @@ export class FastCalendar extends Fast {
 
         sliderYear.addEventListener('slide-changed', ({ detail }) => {
             const yearInput = this.shadowRoot.querySelector('.input-year');
-            this.year = Number(detail.nombre);
-            yearInput.value = this.year;
-            this.#getCalendar(this.month, this.year);
+            const monthInput = this.shadowRoot.querySelector('.input-month');
+
+            yearInput.value = Number(detail.nombre);
+            this.year = yearInput.value;
+
+            this.#fixDayForMonthYear();
+            this.#getCalendar(monthInput.value, this.year);
             dateChange();
         });
-
-        const selectFormat = this.shadowRoot.querySelector('.header-select');
-        selectFormat.onchange = () => {
-            this.dateOrder = selectFormat.value;
-            this.#formatDate();
-            this.#getCurrentDay();
-            bindInputs();
-            this.#updateCalendar();
-        };
 
         this.#updateCalendar();
         this._isBuilt = true;
         this.built();
     }
 
-    addBody() {
-        document.body.appendChild(this);
-    }
+    addBody() { document.body.appendChild(this); }
 }
 
 if (!customElements.get('fast-calendar')) {
