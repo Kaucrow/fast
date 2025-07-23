@@ -1,15 +1,29 @@
-:host{
-    --diametro : 20px;
+
+.FastPageControl{
+    display : flex;
+    position : absolute;
+    background-color : rgba(0,0,0,0);
+    color : white;
+    align-items : center;
+    justify-content : center;
+    transition: 0.1s box-shadow;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 1em;
+    border-color: rgba(161, 163, 157, 0.774);
+    padding: 10px;
+    gap:10px;
 }
-.FastBadge{
+
+.FastPrincipalBadge{
     display : flex;
     height : 30px;
     padding : 5px;
     line-height: 30px;
-    background-color : rgb(8, 143, 136);
-    color : white;
+    background-color : rgb(6, 77, 73);
+    color : yellow;
     font-family : Trebuchet MS;
-    font-size : 10px;
+    font-size : 11px;
     font-weight: bold;
     align-items : center;
     justify-content : center;
@@ -24,7 +38,7 @@
     user-select: none;
 }
 
-.FastBadge:hover {
+.FastPageControl:hover {
     transition: all 0.2s ease-in-out;
     box-shadow: 3px 2px 22px 1px rgba(0, 0, 0, 0.24);
     color : orange;

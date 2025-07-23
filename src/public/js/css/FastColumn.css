@@ -1,0 +1,97 @@
+
+.FastColumn{
+    display : grid;
+    position : absolute;
+    left : 0px;
+    top : 0px;
+    color : black;
+    align-items : center;
+    justify-content : left;
+    border-style : solid;
+    border-width: 1px;
+    border-color: rgb(200,200,200);
+    grid-template-rows: 0.1fr 0.9fr;
+    grid-template-columns: 1fr;
+    width: 150px;
+    height:380px;
+    overflow: hidden;
+}
+
+.FastColumn:hover {
+    transition: all 0.2s ease-in-out;
+    border-color : orange;
+    cursor:pointer;
+}
+
+.FastColumnTitle{
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    font-family:Trebuchet MS;
+    font-size: 12px;
+    font-weight: bold;
+    width:100%;
+    height:100%;
+}
+
+.FastColumnBody{
+    display : grid;
+    position: absolute;
+    top:10%;
+    left:0px;
+    font-family : Trebuchet MS;
+    font-size: 12px;
+    color: black;
+    align-items:unsafe;
+    justify-content: left;
+    width:100%;
+    outline: none;
+    /* padding:6px; */
+    /* gap:2px; */
+}
+
+.FastColumnCell{
+    display:flex; 
+    position : relative;
+    width: 100%;  
+    white-space: nowrap;
+    overflow:hidden;
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgba(0,0,0,0);
+    height:35px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    outline: none;
+    align-items: center;
+}
+
+.FastColumnCell:hover{
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgba(200,200,200,0.4);
+}
+
+.FastColumnCellInternal{
+    display:flex; 
+    position : relative;
+    width: 100%;
+    height:100%;
+    margin: 5px;  
+    white-space: nowrap;
+    overflow:hidden;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    outline: none;
+    align-items: center;
+    text-align: center;
+    background-color: rgba(0,0,0,0);
+}
+
+.FastColumnCell:has(div:focus){
+    background-color: rgb(235, 245, 243);
+}

@@ -1,0 +1,30 @@
+
+<html>
+    <head>
+        <script type="module" src="../js/com/Fast.js"></script>
+        <link rel="icon" href="../images/icons/favicon.png" sizes="32x32" type="image/png">
+    </head>
+    <body>
+        <script>
+            let fastInit = async () => {
+                fast.getItemPage = (itemPage)=>{console.log("itemPage : "+itemPage);}
+                let comp = await fast.createInstance("FastPageControl", {
+                    'id':'MyFastPageControlJS',
+                    'style':{
+                        'position' : 'absolute',
+                        'left' : '40px', 
+                        'top' : '10px',
+                    },
+                    'totalpage' : 5,
+                    'callback' : (i)=>{console.log('Se ejecuto el callBack del '+i);
+                    }
+                });
+                comp.built = ()=>{
+                    console.log('Componente construido...');
+                }
+                comp.addToBody();
+            };
+        </script>
+        <fast-pagecontrol callback = 'fast.getItemPage(itempage)' totalpage = 4 id="MyFastPageControlHTML" style="position:absolute; left:40px; top:140px"></fast-pagecontrol>
+    </body>
+</html> 

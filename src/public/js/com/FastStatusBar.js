@@ -134,7 +134,6 @@ export const FastStatusBar = class extends Fast{
                 reject(error);
             }
         })
-        
     }
     async connectedCallback(){
         await this.#render();

@@ -14,7 +14,7 @@ export const FastBarMenu = class extends Fast{
         this.node = new Map();
         this.actMenuId = null;
         this.widthCharMenu = 7;
-        this.sizeIconMenu = 16;
+        this.sizeIconMenu = 20;
         this.brothers = [];
     }
 

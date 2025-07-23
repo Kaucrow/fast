@@ -17,6 +17,7 @@ export const ${j.name} = class extends Fast{
         this._sts = false;
         this.built = ()=>{}; 
         this.attachShadow({mode:'open'});
+        this._isBuilt = false;
     }
 
     #getTemplate(){ return \`
@@ -27,51 +28,91 @@ export const ${j.name} = class extends Fast{
     async #getCss(){ 
         return await fast.getCssFile("${j.name}");
     }
+
+    #render(){
+        return new Promise(async (resolve, reject) => {
+            try {
+                let sheet = new CSSStyleSheet();
+                let css = await this.#getCss();
+                sheet.replaceSync(css);
+                this.shadowRoot.adoptedStyleSheets = [sheet];
+                this.template = document.createElement('template');
+                this.template.innerHTML = this.#getTemplate();
+                let tpc = this.template.content.cloneNode(true);  
+                this.mainElement = tpc.firstChild.nextSibling;
+                this.shadowRoot.appendChild(this.mainElement);
+                resolve(this);        
+            } 
+            catch (error) {
+                reject(error);
+            }
+        })
+    }
+
+    #checkAttributes(){
+        return new Promise(async (resolve, reject) => {
+            try {
+                for(let attr of this.getAttributeNames()){          
+                    if(attr.substring(0,2)!="on"){
+                        this[attr] = this.getAttribute(attr);
+                        this.mainElement.setAttribute(attr, this[attr]);
+                    }
+                    else{
+                        let f = this[attr];
+                        this[attr] = ()=>{ if(!this._disabled) f() };
+                    }
+                    switch(attr){
+                        case 'id' : 
+                            await fast.createInstance('${j.name}', {'id': this[attr]});
+                            break;
+                    }
+                }
+                resolve(this);        
+            } catch (error) {
+                reject(error);
+            }
+        })   
+    }
+
+    #checkProps(){
+        return new Promise(async (resolve, reject) => {
+            try {
+                if(this.props){
+                    for(let attr in this.props){
+                        switch(attr){
+                            case 'style' :
+                                for(let attrcss in this.props.style) this.mainElement.style[attrcss] = this.props.style[attrcss];
+                                break;
+                            case 'events' : 
+                                for(let attrevent in this.props.events){
+                                    this.mainElement.addEventListener(attrevent, ()=>{
+                                        if(!this._disabled)this.props.events[attrevent]()})}
+                                break;
+                            default : 
+                                this.setAttribute(attr, this.props[attr]);
+                                this[attr] = this.props[attr];
+                                if(attr==='id'){
+                                    this.id = this[attr];
+                                    await fast.createInstance('${j.name}', {'id': this[attr]})
+                                };
+                        }
+                    }
+                }
+                resolve(this);        
+            } catch (error) {
+                reject(error);
+            }
+        })   
+    }
     
     async connectedCallback(){
-        let sheet = new CSSStyleSheet();
-        let css = await this.#getCss();
-        sheet.replaceSync(css);
-        this.shadowRoot.adoptedStyleSheets = [sheet];
-        this.template = document.createElement('template');
-        this.template.innerHTML = this.#getTemplate();
-        let tpc = this.template.content.cloneNode(true);  
-        this.mainElement = tpc.firstChild.nextSibling;
-        
-        this.shadowRoot.appendChild(this.mainElement);        
-        for(let attr of this.getAttributeNames()){          
-            if(attr.substring(0,2)!="on"){
-                this.mainElement.setAttribute(attr, this.getAttribute(attr));
-                this[attr] = this.getAttribute(attr);
-            }
-            else{
-                let f = this[attr];
-                this[attr] = ()=>{ if(!this.disabled) f(); };
-            }
-            switch(attr){
-                case 'id' : 
-                    fast.createInstance('${j.name}', {'id': this[attr]});
-                    break;
-            }
-        }
-        if(this.props){
-            for(let attr in this.props){
-                switch(attr){
-                    case 'style' :
-                        for(let attrcss in this.props.style) this.mainElement.style[attrcss] = this.props.style[attrcss];
-                        break;
-                    case 'events' : 
-                        for(let attrevent in this.props.events){this.mainElement.addEventListener(attrevent, ()=>{if(!this.disabled){this.props.events[attrevent]}})}
-                        break;
-                    default : 
-                        this.setAttribute(attr, this.props[attr]);
-                        this[attr] = this.props[attr];
-                        if(attr==='id')fast.createInstance('${j.name}', {'id': this[attr]});
-                }
-            }
-        }
+        await this.#render();
+        await this.#checkAttributes();
+        await this.#checkProps();      
+        this._isBuilt = true;  
         this.built();
     }
+
     addToBody(){document.body.appendChild(this);}
 }
 
@@ -83,6 +124,9 @@ if (!customElements.get ('${j.xTab}')) {
 let defaultCss = `
 .${j.name}{
     display : flex;
+    position : absolute;
+    left : 0px;
+    top : 0px;
     background-color : rgb(8, 143, 136);
     color : white;
     align-items : center;
@@ -140,6 +184,7 @@ let msg = (m)=>{
 }
 
 try{
+    // if(j.createJsFile) fs.writeFileSync(name);
     if(fs.readFileSync(name)) {
         process.stdin.resume();
         process.stdin.setEncoding('utf8');
