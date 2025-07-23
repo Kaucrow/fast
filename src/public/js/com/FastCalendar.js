@@ -22,11 +22,11 @@ export class FastCalendar extends Fast {
 
         this.monthSlider = null;
         this.yearSlider = null;
+        this.decadesSlider = null;
         this.formatSelect = null;
         this.bindInputs = null;
 
         this._isBuilt = false;
-
     }
 
     #getTemplate() {
@@ -59,6 +59,21 @@ export class FastCalendar extends Fast {
             <div class="container-days"></div>
             <div class="container-days"></div>
             <div class="container-days"></div>
+          </div>
+          <div class="container-month">
+            <div class="container-body-month">
+                <div class="container-month"></div>
+                <div class="container-month"></div>
+                <div class="container-month"></div>
+            </div>
+          </div>
+          <div class="container-decades">
+            <div class="slider-decades-container"></div>
+            <div class="container-body-decades">
+                <div class="container-year"></div>
+                <div class="container-year"></div>
+                <div class="container-year"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -201,7 +216,7 @@ export class FastCalendar extends Fast {
         yearInput.type = 'number';
         yearInput.placeholder = 'YYYY';
         yearInput.min = 1900;
-        yearInput.max = 2100;
+        yearInput.max = 2099;
         yearInput.disabled = false;
 
         const inputs = { 'dd': dayInput, 'mm': monthInput, 'yyyy': yearInput };
@@ -326,7 +341,7 @@ export class FastCalendar extends Fast {
         }
     }
 
-    #getCalendar(month, year) {
+    #renderCalendar(month, year) {
         const m = Number(month);
         const y = Number(year);
 
@@ -380,6 +395,73 @@ export class FastCalendar extends Fast {
         }
     }
 
+    #syncDecadeFromYear(year = this.year) {
+        year = Number(year);
+        const idx = Math.floor((year - 1900) / 10)
+        if (this.decadesSlider) {
+            this.decadesSlider.goToSlide(idx);
+        }
+    }
+
+    #renderDecade(year = Math.floor(Number(this.year) / 10) * 10) {
+
+        const cols = this.shadowRoot.querySelectorAll('.container-body-decades .container-year');
+        if (!cols.length) return;
+
+        cols.forEach(col => col.textContent = '');
+
+        for (let i = 0; i < 10; i++) {
+            const y = year + i;
+
+            const p = document.createElement('p');
+            p.textContent = String(y);
+            p.classList.add('decade');
+
+            p.addEventListener('click', () => {
+                this.year = y;
+                const yearInput = this.shadowRoot.querySelector('.input-year');
+                if (yearInput) yearInput.value = y;
+                this.#updateCalendar();
+            });
+
+            cols[i % cols.length].appendChild(p);
+        }
+
+        for (let j = 1; j <= 2; j++) {
+            const p = document.createElement('p');
+            p.textContent = '.';
+            cols[j].appendChild(p);
+        }
+    }
+
+    #renderMonth() {
+
+        const cols = this.shadowRoot.querySelectorAll('.container-body-month .container-month');
+        if (!cols.length) return;
+
+        cols.forEach(col => col.textContent = '');
+
+        const arrayMonths = [
+            'Enero','Febrero','Marzo','Abril','Mayo','Junio',
+            'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'
+        ];
+
+        for (let i = 1; i <= 12; i++) {
+            const p = document.createElement('p');
+            p.textContent = String(arrayMonths[i-1]);
+            p.classList.add('month');
+
+            p.addEventListener('click', () => {
+                this.month = i;
+                const monthInput = this.shadowRoot.querySelector('.input-month');
+                if (monthInput) monthInput.value = i;
+                this.#updateCalendar();
+            });
+
+            cols[(i - 1) % cols.length].appendChild(p);
+        }
+    }
+
     #updateCalendar() {
         const dayInput    = this.shadowRoot.querySelector('.input-day');
         const monthInput  = this.shadowRoot.querySelector('.input-month');
@@ -394,8 +476,9 @@ export class FastCalendar extends Fast {
 
         sliderTextMonth.children[0].goToSlide(this.month - 1);
         sliderTextYear.children[0].goToSlide(this.year - 1900);
+        this.#syncDecadeFromYear(this.year);
 
-        this.#getCalendar(this.month, this.year);
+        this.#renderCalendar(this.month, this.year);
     }
 
     async #hideCalendar() {
@@ -557,13 +640,22 @@ export class FastCalendar extends Fast {
         this.shadowRoot.querySelector('.slider-month-container').appendChild(sliderMonth);
 
         const arrayYear = [];
-        for (let i = 1900; i <= 2100; i++) arrayYear.push(i);
+        for (let i = 1900; i <= 2099; i++) arrayYear.push(i);
 
         const sliderYear = document.createElement('fast-slider-text');
         sliderYear.slidesData = arrayYear;
         sliderYear.classList.add('slider-year');
         this.yearSlider = sliderYear;
         this.shadowRoot.querySelector('.slider-year-container').appendChild(sliderYear);
+
+        const arrayDecades = [];
+        for (let i = 1900; i <= 2090; i += 10) arrayDecades.push(i);
+
+        const sliderDecades = document.createElement('fast-slider-text');
+        sliderDecades.slidesData = arrayDecades;
+        sliderDecades.classList.add('slider-decades');
+        this.decadesSlider = sliderDecades;
+        this.shadowRoot.querySelector('.slider-decades-container').appendChild(sliderDecades);
 
         const setRange = (input, min, max) => {
             let v = parseInt(input.value, 10);
@@ -600,7 +692,7 @@ export class FastCalendar extends Fast {
             };
 
             yearInput.onchange = () => {
-                this.year = setRange(yearInput, 1900, 2100);
+                this.year = setRange(yearInput, 1900, 2099);
                 this.#fixDayForMonthYear();
                 if (this.yearSlider) this.yearSlider.goToSlide(this.year - 1900);
                 this.#updateCalendar();
@@ -621,12 +713,14 @@ export class FastCalendar extends Fast {
                 this.year--;
                 yearInput.value = this.year;
                 sliderYear.goToSlide(this.year - 1900);
+                this.#syncDecadeFromYear(this.year);
             }
 
             if (previousMonth === 12 && newMonth === 1) {
                 this.year++;
                 yearInput.value = this.year;
                 sliderYear.goToSlide(this.year - 1900);
+                this.#syncDecadeFromYear(this.year);
             }
 
             monthInput.value = newMonth;
@@ -634,7 +728,7 @@ export class FastCalendar extends Fast {
 
             this.#fixDayForMonthYear();
 
-            this.#getCalendar(this.month, this.year);
+            this.#renderCalendar(this.month, this.year);
             dateChange();
         });
 
@@ -650,10 +744,21 @@ export class FastCalendar extends Fast {
             this.year = yearInput.value;
 
             this.#fixDayForMonthYear();
-            this.#getCalendar(monthInput.value, this.year);
+            this.#syncDecadeFromYear(this.year);
+            this.#renderCalendar(monthInput.value, this.year);
             dateChange();
         });
 
+        sliderYear.addEventListener('slide-text-click', ({ detail }) => {
+            console.log('Clic en slide', detail.index, 'con texto:', detail.text);
+        });
+
+        sliderDecades.addEventListener('slide-changed', ({ detail }) => {
+            this.#renderDecade(detail.nombre);
+        });
+
+        this.#renderMonth()
+        this.#renderDecade();
         this.#updateCalendar();
         this._isBuilt = true;
         this.built();
