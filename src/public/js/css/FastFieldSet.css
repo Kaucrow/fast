@@ -14,7 +14,7 @@
     position: relative;
     background: white;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 60%; /* Tamaño más pequeño, similar a carta */
+    width: 100%; /* Tamaño más pequeño, similar a carta */
     max-width: 600px; /* Ancho máximo */
     margin-left: 0; /* Pegar el contenedor a la izquierda */
     margin-right: auto; /* Mantener auto el margen derecho para centrar */

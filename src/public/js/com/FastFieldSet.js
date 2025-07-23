@@ -21,8 +21,8 @@ export const FastFieldSet = class extends Fast {
                 </div>
                 ${this.isRoot ? `
                     <div class="button-container">
-                        <button class="clear">Limpiar</button>
-                        <button class="save">Enviar</button>
+                        <fast-button id = "Cancelar" caption="cancelar"></fast-button>
+                        <fast-button id = "Enviar" caption="Enviar"></fast-button>
                     </div>
                 ` : ''}
             </fieldset>
@@ -95,95 +95,29 @@ export const FastFieldSet = class extends Fast {
         await this.#checkProps();
         this._isBuilt = true;
         this.built(this);
-    
-        // Si no hay nodos sloteados, crear fieldsets por defecto
-        const hasSlotContent = this.querySelector('fieldset, *:not(script)');
-        if (!hasSlotContent) {
-            this.createDefaultFieldsets();
-        }
 
         this._registerButtonEvents();
     }
 
     _registerButtonEvents() {
-        const clearBtn = this.shadowRoot.querySelector('.clear');
-        const saveBtn = this.shadowRoot.querySelector('.save');
+        const clearBtn = this.shadowRoot.querySelector('#Cancelar');
+        const saveBtn = this.shadowRoot.querySelector('#Enviar');
 
         if (clearBtn) {
             clearBtn.addEventListener('click', () => this._clearAll());
         }
 
         if (saveBtn) {
-            const patterns = {
-                nombre: /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/,
-                cedula: /^\d+$/,
-                representante: /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/,
-                telefono: /^\d{7,15}$/,
-                calle: /^[A-Za-z0-9ÁÉÍÓÚáéíóúÑñ\.\s]+$/,
-                ciudad: /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/,
-                codigoPostal: /^\d+$/
+            const patronesPorTipo = {
+                tx: /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/,    // texto
+                nm: /^\d{7,15}$/,                   // número telefono o similar
+                gm: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,  // gmail
             };
-            saveBtn.addEventListener('click', () => this._validateAndSend(patterns));
+            saveBtn.addEventListener('click', () => this._validateAndSend(patronesPorTipo));
         }
     }
 
-    createDefaultFieldsets() {
-        const patterns = {
-            nombre: /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/,
-            cedula: /^\d+$/,
-            representante: /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/,
-            telefono: /^\d{7,15}$/,
-            calle: /^[A-Za-z0-9ÁÉÍÓÚáéíóúÑñ\.\s]+$/,
-            ciudad: /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/,
-            codigoPostal: /^\d+$/
-        };
-
-        // Fieldsets por defecto
-        const estudiante = document.createElement('fieldset');
-        estudiante.innerHTML = `
-            <legend>Estudiante</legend>
-            <div class="field-row">
-                <label for="nombre">Nombre:</label>
-                <input type="text" id="nombre" name="nombre" value="Juan Pérez" />
-            </div>
-            <div class="field-row">
-                <label for="cedula">Cédula:</label>
-                <input type="text" id="cedula" name="cedula" value="12345678" />
-            </div>
-        `;
-
-        const rep = document.createElement('fieldset');
-        rep.innerHTML = `
-            <legend>Representante</legend>
-            <div class="field-row">
-                <label for="representante">Representante:</label>
-                <input type="text" id="representante" name="representante" value="Ana López" />
-            </div>
-            <div class="field-row">
-                <label for="telefono">Teléfono:</label>
-                <input type="text" id="telefono" name="telefono" value="9876543210" />
-            </div>
-        `;
-
-        const dir = document.createElement('fieldset');
-        dir.innerHTML = `
-            <legend>Dirección</legend>
-            <div class="field-row">
-                <label for="calle">Calle:</label>
-                <input type="text" id="calle" name="calle" value="Av. Principal" />
-            </div>
-            <div class="field-row">
-                <label for="ciudad">Ciudad:</label>
-                <input type="text" id="ciudad" name="ciudad" value="Caracas" />
-            </div>
-            <div class="field-row">
-                <label for="codigoPostal">Código Postal:</label>
-                <input type="text" id="codigoPostal" name="codigoPostal" value="1010" />
-            </div>
-        `;
-
-        this.rowsContainer.append(estudiante, rep, dir);
-    }
+    
 
     _clearAll() {
         this.querySelectorAll('input').forEach(i => {
@@ -194,34 +128,35 @@ export const FastFieldSet = class extends Fast {
         });
     }
 
-    _validateAndSend(patterns) {
+    _validateAndSend(patronesPorTipo) {
         const inputs = Array.from(this.querySelectorAll('input'));
-        inputs.forEach(i => {
-            i.classList.remove('invalid');
-            const msg = i.nextElementSibling;
-            if (msg && msg.classList.contains('error-message')) msg.remove();
-        });
-
         let allValid = true;
+
         inputs.forEach(input => {
+            input.classList.remove('invalid');
+            const msg = input.nextElementSibling;
+            if (msg && msg.classList.contains('error-message')) msg.remove();
+
             const val = input.value.trim();
-            const name = input.name;
+            const tipo = input.dataset.valtype; // lee el atributo data-valtype
+
             if (!val) {
-                allValid = false;
-                this._markError(input, 'Este campo es obligatorio');
-            } else if (patterns[name] && !patterns[name].test(val)) {
-                allValid = false;
-                this._markError(input, 'Formato inválido');
+            allValid = false;
+            this._markError(input, 'Este campo es obligatorio');
+            } else if (tipo && patronesPorTipo[tipo] && !patronesPorTipo[tipo].test(val)) {
+            allValid = false;
+            this._markError(input, 'Formato inválido');
             }
         });
 
         if (!allValid) {
-            const first = this.rowsContainer.querySelector('input.invalid');
+            const first = this.querySelector('input.invalid');
             if (first) first.focus();
             return;
         }
         this.sendData(this.getFields());
-    }
+        }
+
 
     _markError(input, message) {
         input.classList.add('invalid');

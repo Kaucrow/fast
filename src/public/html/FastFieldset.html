@@ -6,29 +6,28 @@
   <!-- Carga de Fast y registro de <fast-fieldset> -->
   <script type="module" src="../js/com/Fast.js"></script>
   <script type="module" src="../js/com/FastFieldSet.js"></script>
+  <script type="module" src="../js/com/FastButton.js"></script>
 </head>
 <body>
   <fast-fieldset title="Formulario Principal" is-root>
     <fast-fieldset  id="FieldSetJS" title="Datos Guardados">
       <label for="nombre">Nombre:</label>
-      <input type="text" name="nombre" id="nombre" /><br><br>
+      <input type="text" name="nombre" id="nombre" data-valtype="tx"/><br><br>
 
       <label for="email">Correo:</label>
-      <input type="email" name="email" id="email" /><br><br>
+      <input type="email" name="email" id="email" data-valtype="gm" /><br><br>
 
       <label for="telefono">Teléfono:</label>
-      <input type="tel" name="telefono" id="telefono" /><br><br>
+      <input type="tel" name="telefono" id="telefono" data-valtype="nm"/><br><br>
 
-      <label for="fecha">Fecha de Nacimiento:</label>
-      <input type="date" name="fecha" id="fecha" /><br><br>
     </fast-fieldset>
 
     <fast-fieldset title="Dirección">
       <label for="direccion">Dirección:</label>
-      <input type="text" name="direccion" id="direccion" /><br><br>
+      <input type="text" name="direccion" id="direccion" data-valtype="tx"/><br><br>
 
       <label for="ciudad">Ciudad:</label>
-      <input type="text" name="ciudad" id="ciudad" /><br><br>
+      <input type="text" name="ciudad" id="ciudad" data-valtype="tx" /><br><br>
     </fast-fieldset>
   </fast-fieldset>
 
