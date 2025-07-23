@@ -1,5 +1,3 @@
-import './FastIcon.js';
-
 export const FastPopUpMenu = class extends Fast {
     constructor(props) {
         super();
@@ -12,15 +10,28 @@ export const FastPopUpMenu = class extends Fast {
         this.mainMenu = [];
         this.fixedItems = [];
         this.hasBuilt = false;
+        this.iconResolver = props?.iconResolver || null;
 
-        document.addEventListener('click', e => {
-            if (!this.menuContainer) return;
-            const path = e.composedPath();
-            if (!path.includes(this.menuContainer) &&
-                !(this._toggleButton && path.includes(this._toggleButton))) {
-                this.hide();
-            }
-        });
+        this.headerConfig = props?.header || { 
+            text: "Menu", 
+            icon: "world" 
+        };
+
+        this._toggleButton = null;
+
+        document.addEventListener('click', this.handleOutsideClick.bind(this));
+    }
+
+    handleOutsideClick(e) {
+        if (!this.menuContainer) return;
+        
+        const path = e.composedPath();
+        const isClickInsideMenu = path.includes(this.menuContainer);
+        const isClickOnToggle = this._toggleButton && path.includes(this._toggleButton);
+        
+        if (!isClickInsideMenu && !isClickOnToggle) {
+            this.hide();
+        }
     }
 
     #getTemplate() {
@@ -46,21 +57,37 @@ export const FastPopUpMenu = class extends Fast {
         tpl.innerHTML = this.#getTemplate();
         this.shadowRoot.appendChild(tpl.content.cloneNode(true));
 
-        this.menuContainer   = this.shadowRoot.querySelector('#fast-popup-menu');
+        this.menuContainer = this.shadowRoot.querySelector('#fast-popup-menu');
         this.headerContainer = this.shadowRoot.querySelector('.header');
-        this.itemsContainer  = this.shadowRoot.querySelector('.items');
+        this.itemsContainer = this.shadowRoot.querySelector('.items');
         this.footerContainer = this.shadowRoot.querySelector('.footer');
 
         if (this.props?.style) {
             Object.assign(this.menuContainer.style, this.props.style);
         }
+        
         if (this.props?.toggleButtonId) {
             this._toggleButton = document.getElementById(this.props.toggleButtonId);
+            if (this._toggleButton) {
+                this._toggleButton.addEventListener('click', this.toggleMenu.bind(this));
+            }
         }
 
         this.hasBuilt = true;
-        await this.built();
-        if (this.mainMenu.length) this._renderMenu(this.mainMenu);
+        if (this.mainMenu.length) {
+            this._renderMenu(this.mainMenu);
+        } else {
+            this._renderHeader(this.headerConfig.text);
+            this._renderFixed();
+        }
+    }
+
+    toggleMenu() {
+        if (this.menuContainer.classList.contains('visible')) {
+            this.hide();
+        } else {
+            this.show();
+        }
     }
 
     addItem(text, iconName, callback, subItems) {
@@ -80,9 +107,23 @@ export const FastPopUpMenu = class extends Fast {
         const row = document.createElement('div');
         row.className = 'menu-item header-content';
 
-        const ic = document.createElement('fast-icon');
-        ic.setAttribute('iconname', showBack ? 'leftArrow' : 'world');
-        row.appendChild(ic);
+        const iconContainer = document.createElement('div');
+        iconContainer.className = 'menu-icon';
+        
+        if (this.iconResolver) {
+            const icon = this.iconResolver(showBack ? 'leftArrow' : this.headerConfig.icon);
+            if (icon) {
+                if (typeof icon === 'string') {
+                    iconContainer.innerHTML = icon;
+                } else {
+                    iconContainer.appendChild(icon);
+                }
+            }
+        } else {
+            iconContainer.textContent = showBack ? '←' : '☰';
+        }
+        
+        row.appendChild(iconContainer);
 
         const span = document.createElement('span');
         span.textContent = title;
@@ -102,25 +143,52 @@ export const FastPopUpMenu = class extends Fast {
 
     _renderMenu(menuData, parent = null) {
         this.itemsContainer.innerHTML = '';
-        this._renderHeader(parent?.text || 'Menu', !!parent);
+        this._renderHeader(parent?.text || this.headerConfig.text, !!parent);
 
         menuData.forEach(item => {
             const row = document.createElement('div');
             row.className = 'menu-item';
 
-            const ic = document.createElement('fast-icon');
-            ic.setAttribute('iconname', item.iconName);
-            row.appendChild(ic);
+            const iconContainer = document.createElement('div');
+            iconContainer.className = 'menu-icon';
+            
+            if (this.iconResolver) {
+                const icon = this.iconResolver(item.iconName);
+                if (icon) {
+                    if (typeof icon === 'string') {
+                        iconContainer.innerHTML = icon;
+                    } else {
+                        iconContainer.appendChild(icon);
+                    }
+                }
+            } else {
+                iconContainer.textContent = '•';
+            }
+            
+            row.appendChild(iconContainer);
 
             const txt = document.createElement('span');
             txt.textContent = item.text;
             row.appendChild(txt);
 
             if (item.subItems) {
-                const arrow = document.createElement('fast-icon');
-                arrow.setAttribute('iconname','arrowRight');
-                arrow.className = 'arrow-right';
-                row.appendChild(arrow);
+                const arrowContainer = document.createElement('div');
+                arrowContainer.className = 'menu-icon arrow-right';
+                
+                if (this.iconResolver) {
+                    const arrow = this.iconResolver('arrowRight');
+                    if (arrow) {
+                        if (typeof arrow === 'string') {
+                            arrowContainer.innerHTML = arrow;
+                        } else {
+                            arrowContainer.appendChild(arrow);
+                        }
+                    }
+                } else {
+                    arrowContainer.textContent = '→';
+                }
+                
+                row.appendChild(arrowContainer);
 
                 row.addEventListener('click', e => {
                     e.stopPropagation();
@@ -130,7 +198,7 @@ export const FastPopUpMenu = class extends Fast {
             } else {
                 row.addEventListener('click', e => {
                     e.stopPropagation();
-                    item.callback?.();
+                    if (item.callback) item.callback();
                     this.hide();
                 });
             }
@@ -148,9 +216,23 @@ export const FastPopUpMenu = class extends Fast {
             const row = document.createElement('div');
             row.className = 'fixed-item';
 
-            const ic = document.createElement('fast-icon');
-            ic.setAttribute('iconname', item.iconName);
-            row.appendChild(ic);
+            const iconContainer = document.createElement('div');
+            iconContainer.className = 'menu-icon';
+            
+            if (this.iconResolver) {
+                const icon = this.iconResolver(item.iconName);
+                if (icon) {
+                    if (typeof icon === 'string') {
+                        iconContainer.innerHTML = icon;
+                    } else {
+                        iconContainer.appendChild(icon);
+                    }
+                }
+            } else {
+                iconContainer.textContent = '★';
+            }
+            
+            row.appendChild(iconContainer);
 
             const txt = document.createElement('span');
             txt.textContent = item.text;
@@ -158,7 +240,7 @@ export const FastPopUpMenu = class extends Fast {
 
             row.addEventListener('click', e => {
                 e.stopPropagation();
-                item.callback?.();
+                if (item.callback) item.callback();
                 this.hide();
             });
 
@@ -167,8 +249,12 @@ export const FastPopUpMenu = class extends Fast {
     }
 
     _navigateBack() {
-        const prev = this.menuStack.pop();
-        this._renderMenu(prev);
+        if (this.menuStack.length > 0) {
+            const prev = this.menuStack.pop();
+            this._renderMenu(prev);
+        } else {
+            this._renderMenu(this.mainMenu);
+        }
     }
 
     show() {

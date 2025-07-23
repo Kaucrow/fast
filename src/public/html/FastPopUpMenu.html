@@ -1,68 +1,131 @@
 <html>
-    <head>
-        <script type="module" src="../js/com/Fast.js"></script>
-        <style>
-            #toggle-button {
-                position: fixed; top: 20px; left: 20px;
-                width: 40px; height: 40px;
-                background: transparent;
-                border: none;
-                cursor: pointer;
-                display: flex; align-items: center; justify-content: center;
-                z-index: 900;
-            }
-            #toggle-button fast-icon {
-                width: 60px;
-                height: 60px;
-                border: none !important;
-                position: relative;
-                top: 0;
-                left: -15;
-            }
-        </style>
-    </head>
-    <body>
-        <button id="toggle-button">
-        <fast-icon iconname="world"></fast-icon>
+<head>
+    <script type="module" src="../js/com/Fast.js"></script>
+    <script type="module" src="../js/com/FastIcon.js"></script>
+    <style>
+        #menu-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgb(21, 192, 135);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+        }
+        
+        #menu-button:hover {
+            transform: scale(1.10);
+        }
+        
+        #menu-button:active {
+            transform: scale(0.95);
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI';
+            background: linear-gradient(135deg, #f5f7fa, #e4e7eb);
+            min-height: 100vh;
+        }
+        
+        .content {
+            max-width: 800px;
+            margin: 100px auto 0;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <button id="menu-button">
+        <fast-icon iconname="options" style="width: 40px;height: 40px;display: inline-block;vertical-align: middle;"></fast-icon>
     </button>
 
+    <div class="content">
+        <h1>Haz click en el boton en la esquina superior izquierda para abrir el menu</h1>
+    </div>
+
     <script type="module">
+        const iconResolver = (iconName) => {
+            const icon = document.createElement('fast-icon');
+            icon.setAttribute('iconname', iconName);
+            return icon;
+        };
+
         const fastInit = async () => {
             const menu = await fast.createInstance("FastPopUpMenu", {
-                id: "sidebar-menu",
-                toggleButtonId: "toggle-button",
+                id: "main-menu",
+                toggleButtonId: "menu-button",
+                header: {
+                    text: "Menu Principal",
+                    icon: "options"
+                },
+                iconResolver: iconResolver,
                 style: {
-                    position: "fixed",
-                    backgroundColor: "#ffffff"
+                    backgroundColor: "#f8f9fa",
+                    boxShadow: "2px 0 15px rgba(0,0,0,0.15)",
+                    
                 }
             });
 
-            menu.built = async () => {
-                menu.addItem('Home', 'home', () => alert('Home'));
-                menu.addItem('Profile', 'user', () => alert('Profile'));
-                menu.addItem('Settings', 'config', null, [
-                    {
-                        text: 'Account',
-                        iconName: 'user',
-                        callback: () => alert('Account Settings')
-                    },
-                    {
-                        text: 'Security',
-                        iconName: 'debug',
-                        callback: () => alert('Security Settings')
-                    }
-                ]);
-                menu.addFixedItem('Logout', 'exit', () => alert('Logged out'));
-            };
-
             menu.addToBody();
 
-            document.getElementById('toggle-button').onclick = () => {
-                menu.show();
-            };
+            menu.addItem('Inicio', 'home', () => alert('Navegando a Inicio'));
+            menu.addItem('Perfil', 'user', null, [
+                {
+                    text: 'Editar Perfil',
+                    iconName: 'edit',
+                    callback: () => alert('Editando perfil')
+                },
+                {
+                    text: 'Configuración',
+                    iconName: 'config',
+                    callback: () => alert('Abriendo configuración')
+                }
+            ]);
+            menu.addItem('Documentos', 'print', null, [
+                {
+                    text: 'Nuevo Documento',
+                    iconName: 'plus',
+                    callback: () => alert('Creando documento')
+                },
+                {
+                    text: 'Plantillas',
+                    iconName: 'calendar',
+                    callback: null,
+                    subItems: [
+                        {
+                            text: 'Informe',
+                            iconName: 'edit',
+                            callback: () => alert('Seleccionado plantilla de informe')
+                        },
+                        {
+                            text: 'Presentación',
+                            iconName: 'users',
+                            callback: () => alert('Seleccionado plantilla de presentación')
+                        }
+                    ]
+                }
+            ]);
+            menu.addFixedItem('Cerrar Sesión', 'exit', () => alert('Sesión cerrada'));
+            menu.addFixedItem('Ayuda', 'info', () => alert('Abriendo ayuda'));
         };
-
         fastInit();
     </script>
-    </body>
+</body>
 </html>
