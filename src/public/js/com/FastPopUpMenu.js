@@ -143,12 +143,14 @@ export const FastPopUpMenu = class extends Fast {
 
     _renderMenu(menuData, parent = null) {
         this.itemsContainer.innerHTML = '';
-        this._renderHeader(parent?.text || this.headerConfig.text, !!parent);
+        const headerTitle = parent?.text || this.headerConfig.text;
+        this._renderHeader(headerTitle, !!parent);
 
         menuData.forEach(item => {
             const row = document.createElement('div');
             row.className = 'menu-item';
 
+            // Ícono del item
             const iconContainer = document.createElement('div');
             iconContainer.className = 'menu-icon';
             
@@ -192,7 +194,10 @@ export const FastPopUpMenu = class extends Fast {
 
                 row.addEventListener('click', e => {
                     e.stopPropagation();
-                    this.menuStack.push(menuData);
+                    this.menuStack.push({
+                        menuData: menuData,
+                        parent: parent
+                    });
                     this._renderMenu(item.subItems, item);
                 });
             } else {
@@ -250,8 +255,8 @@ export const FastPopUpMenu = class extends Fast {
 
     _navigateBack() {
         if (this.menuStack.length > 0) {
-            const prev = this.menuStack.pop();
-            this._renderMenu(prev);
+            const saved = this.menuStack.pop();
+            this._renderMenu(saved.menuData, saved.parent);
         } else {
             this._renderMenu(this.mainMenu);
         }
