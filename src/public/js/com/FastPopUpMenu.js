@@ -65,7 +65,7 @@ export const FastPopUpMenu = class extends Fast {
         if (this.props?.style) {
             Object.assign(this.menuContainer.style, this.props.style);
         }
-        
+
         if (this.props?.toggleButtonId) {
             this._toggleButton = document.getElementById(this.props.toggleButtonId);
             if (this._toggleButton) {
@@ -142,15 +142,21 @@ export const FastPopUpMenu = class extends Fast {
     }
 
     _renderMenu(menuData, parent = null) {
-        this.itemsContainer.innerHTML = '';
+        this.menuContainer.classList.add('animating');
+
         const headerTitle = parent?.text || this.headerConfig.text;
         this._renderHeader(headerTitle, !!parent);
+
+        this.itemsContainer.innerHTML = '';
+        
+        const newItemsContainer = document.createElement('div');
+        newItemsContainer.className = 'items-content';
+        this.itemsContainer.appendChild(newItemsContainer);
 
         menuData.forEach(item => {
             const row = document.createElement('div');
             row.className = 'menu-item';
 
-            // Ícono del item
             const iconContainer = document.createElement('div');
             iconContainer.className = 'menu-icon';
             
@@ -198,7 +204,10 @@ export const FastPopUpMenu = class extends Fast {
                         menuData: menuData,
                         parent: parent
                     });
-                    this._renderMenu(item.subItems, item);
+
+                    this._animateMenuChange(() => {
+                        this._renderMenu(item.subItems, item);
+                    });
                 });
             } else {
                 row.addEventListener('click', e => {
@@ -208,11 +217,28 @@ export const FastPopUpMenu = class extends Fast {
                 });
             }
 
-            this.itemsContainer.appendChild(row);
+            newItemsContainer.appendChild(row);
         });
 
         this._renderFixed();
         this.currentMenu = menuData;
+
+        setTimeout(() => {
+            newItemsContainer.classList.add('active');
+        }, 10);
+
+        setTimeout(() => {
+            this.menuContainer.classList.remove('animating');
+        }, 300);
+    }
+
+    _animateMenuChange(callback) {
+        this.menuContainer.classList.add('animating', 'exiting');
+
+        setTimeout(() => {
+            this.menuContainer.classList.remove('exiting');
+            callback();
+        }, 300);
     }
 
     _renderFixed() {
@@ -255,10 +281,14 @@ export const FastPopUpMenu = class extends Fast {
 
     _navigateBack() {
         if (this.menuStack.length > 0) {
-            const saved = this.menuStack.pop();
-            this._renderMenu(saved.menuData, saved.parent);
+            this._animateMenuChange(() => {
+                const saved = this.menuStack.pop();
+                this._renderMenu(saved.menuData, saved.parent);
+            });
         } else {
-            this._renderMenu(this.mainMenu);
+            this._animateMenuChange(() => {
+                this._renderMenu(this.mainMenu);
+            });
         }
     }
 
