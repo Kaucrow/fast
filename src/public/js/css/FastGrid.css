@@ -1,42 +1,221 @@
-
-.FastGrid{
-    display : grid;
-    position : absolute;
-    left : 0px;
-    top : 0px;
-    background-color : rgb(8, 143, 136);
-    color : white;
-    align-items : center;
-    justify-content : center;
-    border : 0px;
-    transition: 0.1s box-shadow;
-    width: 25%;
-    height:25%;
+.FastGrid {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 480px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    position: relative;
+    overflow: hidden;
 }
 
-.FastGridTitle{
-    display:flex;
-    background-color: rgba(0,0,0,0);
+.FastGridHeader {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 0 0 0; /* Quita el padding superior */
+    min-height: 24px; /* Reduce la altura mínima */
+    border-bottom: 1px solid #ddd;
+    background: #f5f5f5;
 }
 
-.FastGridBody{
-    display:flex;
-    background-color: rgba(0,0,0,0);
+.FastGridHeaderCell {
+    flex-shrink: 0;
+    box-sizing: border-box;
+    padding: 8px;
+    font-weight: bold;
+    border-right: 1px solid #e0e0e0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 100%;
+    display: flex;
+    align-items: center;
 }
 
-.FastGridColumn{
-    display:flex;
-    background-color: rgba(0,0,0,0);
+.FastGridHeaderCell:last-child {
+    border-right: none;
 }
 
-.FastGridControl{
-    display:flex;
-    background-color: rgba(0,0,0,0);
+.FastGridBody {
+    flex: 1 1 auto;
+    overflow-y: auto; /* Cambiado a auto para permitir scroll si el contenido es mayor */
+    overflow-x: auto; /* Permitir scroll horizontal si las columnas exceden el ancho */
+    position: relative;
+    background-color: #fff;
+    min-height: 0;
+    height: auto; /* Cambiado a auto para que la altura la determine el contenido */
+    /* padding-bottom: 24px; Eliminado para que la última fila quede pegada al footer */
 }
 
+.FastGridContainer {
+    display: flex;
+    width: 100%;
+    height: 100%; /* Asegurar que ocupe el 100% de la altura de FastGridBody */
+    overflow-x: auto;
+    overflow-y: hidden; /* Las columnas individuales manejarán el scroll vertical */
+    border: 1px solid #ddd;
+}
+
+.FastGridFooter {
+    flex: 0 0 auto;
+    background-color: #f9f9f9;
+    border-top: 1px solid #ddd;
+    padding: 4px;
+    min-height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* margin-top: 16px; Eliminado para evitar corte de la última fila */
+}
+
+/* Override FastColumn styles when inside FastGrid */
+.FastGridContainer fast-column {
+    border-right: 1px solid #e0e0e0;
+    border-radius: 0;
+    min-width: 100px;
+    flex-shrink: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.FastGridContainer fast-column:last-child {
+    border-right: none;
+}
+
+/* Ensure proper text rendering in grid cells */
+.FastGridContainer fast-column::part(cell) {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: normal;
+}
+
+/* Fix text positioning issues */
+.FastGridContainer fast-column .FastColumnCellInternal {
+    line-height: 1.4 !important;
+    padding: 4px 8px !important;
+    box-sizing: border-box !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    display: block !important;
+    width: 100% !important;
+    position: relative !important;
+    z-index: 1 !important;
+    background-color: transparent !important;
+}
+
+/* Force proper cell container styling */
+.FastGridContainer fast-column .FastColumnCell {
+    display: block !important;
+    width: 100% !important;
+    border-bottom: 1px solid #f0f0f0 !important;
+    box-sizing: border-box !important;
+    position: relative !important;
+    overflow: hidden !important;
+    min-height: 24px !important;
+    max-height: none !important; /* Permitir que la altura de la celda se ajuste */
+}
+
+/* Fix column body styling */
+.FastGridContainer fast-column .FastColumnBody {
+    overflow-y: auto !important; /* Permitir scroll vertical dentro de la columna */
+    overflow-x: hidden !important;
+    position: relative !important;
+    height: 100% !important; /* Asegurar que ocupe el 100% de la altura disponible */
+}
+
+/* Additional deep selector fallbacks */
+fast-grid fast-column::part(body) {
+    overflow: hidden !important;
+}
+
+fast-grid fast-column::part(cell) {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .FastGrid {
+        font-size: 12px;
+    }
+    
+    .FastGridContainer fast-column {
+        min-width: 80px;
+    }
+}
+
+/* Selection styles */
+.FastGrid.row-selected {
+    background-color: #e3f2fd;
+}
+
+.FastGrid.cell-selected {
+    background-color: #bbdefb;
+}
+
+/* Hover effects */
 .FastGrid:hover {
-    transition: all 0.2s ease-in-out;
-    box-shadow: 3px 2px 22px 1px rgba(0, 0, 0, 0.24);
-    color : orange;
-    cursor:pointer;
+    border-color: #999;
+}
+
+/* Loading state */
+.FastGrid.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.FastGrid.loading::after {
+    content: "Cargando...";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+/* Empty state */
+.FastGrid.empty .FastGridBody::after {
+    content: "No hay datos para mostrar";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #666;
+    font-style: italic;
+}
+
+.FastGridRow {
+    display: flex;
+    flex-direction: row;
+    min-height: 32px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.FastGridCell {
+    flex-shrink: 0;
+    box-sizing: border-box;
+    padding: 4px 8px; /* Ajustar padding */
+    border-right: 1px solid #e0e0e0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
+    min-height: 32px; /* Asegurar una altura mínima para la celda */
+    height: auto; /* Permitir que la altura de la celda se ajuste al contenido si es necesario */
+}
+
+.FastGridCell:last-child {
+    border-right: none;
 }
