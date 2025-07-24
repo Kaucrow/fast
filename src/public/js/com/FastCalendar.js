@@ -26,6 +26,9 @@ export class FastCalendar extends Fast {
         this.formatSelect = null;
         this.bindInputs = null;
 
+        this.monthSelect = false;
+        this.dayChange = false;
+
         this._isBuilt = false;
     }
 
@@ -37,6 +40,7 @@ export class FastCalendar extends Fast {
           <div class="header-select hidden"></div>
           <div class="container-options"></div>
         </div>
+        
         <div class="FastCalendarBody">
           <div class="FastCalendarSelect">
             <div class="slider-month-container"></div>
@@ -68,6 +72,7 @@ export class FastCalendar extends Fast {
             <p class="header-day">Vie</p>
             <p class="header-day">Sáb</p>
         </div>
+        
         <div class="container-body-days">
             <div class="container-days"></div>
             <div class="container-days"></div>
@@ -382,6 +387,9 @@ export class FastCalendar extends Fast {
                 monthInput.value = this.month;
                 yearInput.value  = this.year;
 
+                this.dayChange = true;
+                this.dateChange();
+
                 this.#updateCalendar();
             });
 
@@ -423,6 +431,9 @@ export class FastCalendar extends Fast {
                 this.year = y;
                 const yearInput = this.shadowRoot.querySelector('.input-year');
                 if (yearInput) yearInput.value = y;
+                this.monthSelect = true;
+                this.dayChange = true;
+                this.dateChange();
                 this.#updateCalendar();
             });
 
@@ -458,6 +469,9 @@ export class FastCalendar extends Fast {
                 this.month = i;
                 const monthInput = this.shadowRoot.querySelector('.input-month');
                 if (monthInput) monthInput.value = i;
+                this.monthSelect = true;
+                this.dayChange = true;
+                this.dateChange();
                 this.#updateCalendar();
             });
 
@@ -479,8 +493,10 @@ export class FastCalendar extends Fast {
 
         sliderTextMonth.children[0].goToSlide(this.month - 1);
         sliderTextYear.children[0].goToSlide(this.year - 1900);
-        this.#syncDecadeFromYear(this.year);
+        this.monthSelect = false;
+        this.dayChange = false;
 
+        this.#syncDecadeFromYear(this.year);
         this.#renderCalendar(this.month, this.year);
     }
 
@@ -566,6 +582,22 @@ export class FastCalendar extends Fast {
             catch (error) { reject(error); }
         });
     }
+
+    #toggleContainer(openEl, closeEl) {
+        if (!openEl.classList.contains('open')) {
+            closeEl.classList.remove('open');  // cierra el otro
+            openEl.classList.add('open');      // abre éste
+        } else {
+            openEl.classList.remove('open');   // si ya estaba abierto, lo cierra
+        }
+    }
+
+    dateChange() {
+        this.dispatchEvent(new CustomEvent('date-change', {
+            bubbles: true,
+            composed: true
+        }));
+    };
 
     getDate() {
         const parts = {
@@ -670,13 +702,6 @@ export class FastCalendar extends Fast {
             return v;
         };
 
-        const dateChange = () => {
-            this.dispatchEvent(new CustomEvent('date-change', {
-                bubbles: true,
-                composed: true
-            }));
-        };
-
         const bindInputs = () => {
             const dayInput    = this.shadowRoot.querySelector('.input-day');
             const monthInput  = this.shadowRoot.querySelector('.input-month');
@@ -685,7 +710,7 @@ export class FastCalendar extends Fast {
             dayInput.onchange = () => {
                 this.day = setRange(dayInput, 1, this.#numberOfDaysPerMonth(this.month, this.year));
                 this.#updateCalendar();
-                dateChange();
+                this.dateChange();
             };
 
             monthInput.onchange = () => {
@@ -693,7 +718,7 @@ export class FastCalendar extends Fast {
                 this.#fixDayForMonthYear();
                 if (this.monthSlider) this.monthSlider.goToSlide(this.month - 1);
                 this.#updateCalendar();
-                dateChange();
+                this.dateChange();
             };
 
             yearInput.onchange = () => {
@@ -701,7 +726,7 @@ export class FastCalendar extends Fast {
                 this.#fixDayForMonthYear();
                 if (this.yearSlider) this.yearSlider.goToSlide(this.year - 1900);
                 this.#updateCalendar();
-                dateChange();
+                this.dateChange();
             };
         };
 
@@ -709,12 +734,14 @@ export class FastCalendar extends Fast {
         this.bindInputs = bindInputs;
 
         sliderMonth.addEventListener('slide-changed', ({ detail }) => {
+            if (this.dayChange) return;
+
             const monthInput = this.shadowRoot.querySelector('.input-month');
             const yearInput = this.shadowRoot.querySelector('.input-year');
             const newMonth = detail.numero;
             const previousMonth = Number(monthInput.value);
 
-            if (newMonth === 12 && previousMonth !== 11) {
+            if (newMonth === 12 && previousMonth !== 11 && !this.monthSelect) {
                 this.year--;
                 yearInput.value = this.year;
                 sliderYear.goToSlide(this.year - 1900);
@@ -734,26 +761,19 @@ export class FastCalendar extends Fast {
             this.#fixDayForMonthYear();
 
             this.#renderCalendar(this.month, this.year);
-            dateChange();
+            this.dateChange();
         });
 
         const sliderMonthContainer = this.shadowRoot.querySelector('.container-month');
         const sliderDecadesContainer = this.shadowRoot.querySelector('.container-decades');
 
-        sliderMonth.addEventListener('slide-text-click', ({ detail }) => {
-        if (sliderMonthContainer.classList.contains('none')) {
-            sliderMonthContainer.classList.remove('none');
-            sliderDecadesContainer.classList.add('none');
-            sliderMonthContainer.style.animation = 'slideDown 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards';
-        } else {
-            sliderMonthContainer.style.animation = 'slideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards';
-            setTimeout(() => {
-            sliderMonthContainer.classList.add('none');
-            }, 600);
-        }
+        sliderMonth.addEventListener('slide-text-click', () => {
+            this.#toggleContainer(sliderMonthContainer, sliderDecadesContainer);
         });
 
         sliderYear.addEventListener('slide-changed', ({ detail }) => {
+            if (this.dayChange) return;
+
             const yearInput = this.shadowRoot.querySelector('.input-year');
             const monthInput = this.shadowRoot.querySelector('.input-month');
 
@@ -763,20 +783,11 @@ export class FastCalendar extends Fast {
             this.#fixDayForMonthYear();
             this.#syncDecadeFromYear(this.year);
             this.#renderCalendar(monthInput.value, this.year);
-            dateChange();
+            this.dateChange();
         });
 
-        sliderYear.addEventListener('slide-text-click', ({ detail }) => {
-        if (sliderDecadesContainer.classList.contains('none')) {
-            sliderDecadesContainer.classList.remove('none');
-            sliderMonthContainer.classList.add('none');
-            sliderDecadesContainer.style.animation = 'slideDown 0.4s ease-in forwards';
-        } else {
-            sliderDecadesContainer.style.animation = 'slideUp 0.4s ease-in forwards';
-            setTimeout(() => {
-            sliderDecadesContainer.classList.add('none');
-            }, 400);
-        }
+        sliderYear.addEventListener('slide-text-click', () => {
+            this.#toggleContainer(sliderDecadesContainer, sliderMonthContainer);
         });
 
         sliderDecades.addEventListener('slide-changed', ({ detail }) => {

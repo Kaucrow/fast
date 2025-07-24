@@ -13,7 +13,6 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
-
       /* const calendar = document.querySelector('fast-calendar');
       calendar.built = () => {
         console.log('Built my-fastCalendar-html');
@@ -33,9 +32,7 @@
       };
       calA.addBody();
 
-    }
-
-      /* const calB = await fast.createInstance("FastCalendar", {
+      const calB = await fast.createInstance("FastCalendar", {
         id: "cal-B",
         "date-order": "yyyy-dd-mm",
         "current-date": "false",
@@ -63,8 +60,9 @@
 
       setTimeout(() => {
         calA.addEventListener('date-change', comparison);
+        calB.addEventListener('date-change', comparison);
       }, 100);
-    };*/
+    };
   </script>
 </body>
 </html>

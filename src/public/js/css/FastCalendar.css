@@ -142,6 +142,26 @@
     height: 40px;
 }
 
+.container-month,
+.container-decades {
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition:
+            max-height 0.5s ease,
+            opacity     0.3s ease,
+            transform   0.5s ease;
+}
+
+.container-month.open,
+.container-decades.open {
+    max-height: 200px;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+
 .container-month{
     display: flex;
     justify-content: flex-start;
@@ -188,7 +208,7 @@
     background: rgba(0, 0, 0, 0.05);
     border-radius: 2px 2px 0 0;
     transform-origin: top;
-    overflow: hidden;   
+    overflow: hidden;
 }
 
 .container-body-decades{
@@ -342,10 +362,6 @@
     cursor: pointer;
     scale: 1.1;
     transition: all .3s ease-in-out;
-}
-
-.none{
-    display: none;
 }
 
 .hidden {
