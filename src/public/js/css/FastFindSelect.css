@@ -1,0 +1,84 @@
+:host {
+    --FastComboCheckHeightOption : 40px;
+}
+
+.fastEdit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+}
+
+.FastFindSelect {
+    padding-top: 30px;
+    /* padding-left: 30px; */
+    font-family: Arial, sans-serif;
+    width: 220px;
+    position: relative;
+}
+
+.FastFindSelectInputContainer {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+fast-edit {
+    flex: 1;
+    padding-right: 10px;
+}
+
+.FastFindSelectInput {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 1em;
+    background: transparent;
+}
+
+.FastFindSelectButtonDown {
+    width: 20px;
+    height: 20px;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>') no-repeat center;
+    cursor: pointer;
+    flex: 0 0 auto;
+    margin-left: 4px;
+    position: absolute;
+    right: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+}
+
+.FastFindSelectButtonDown:hover {
+    background-color: #f4f1f1;
+}
+
+
+.FastFindSelectPanel {
+    position: absolute;
+    left: 0;
+    right: 0;
+    border: 1px solid #bbb;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    z-index: 10;
+    overflow-y: auto;
+    display: block;
+    visibility: hidden;
+    height: 0;
+    transition: visibility 0.2s, height 0.2s; 
+    max-width: 98%;
+}
+
+.FastFindSelectOption {
+    padding: 8px 18px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.FastFindSelectOption:hover {
+    background: #f0f0f0;
+}
+
