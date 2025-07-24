@@ -792,6 +792,39 @@ export const FastGrid = class extends Fast {
         return this;
     }
 
+    deleteSelectedColumn() {
+        if (this._selectedColumn >= 0 && this._selectedColumn < this._columnsConfig.length) {
+            const columnToDelete = this._columnsConfig[this._selectedColumn];
+            const columnName = columnToDelete.name;
+            
+            // Confirmar eliminación
+            if (confirm(`¿Estás seguro de que quieres eliminar la columna "${columnToDelete.title || columnName}"?`)) {
+                // Remover la columna de la configuración
+                this._columnsConfig.splice(this._selectedColumn, 1);
+                
+                // Remover la columna de todos los datos
+                this._data.forEach(row => {
+                    delete row[columnName];
+                });
+                
+                // Actualizar el orden de columnas
+                this.columnOrder = this._columnsConfig.map(col => col.name);
+                
+                // Re-renderizar las columnas
+                this.setColumns(this._columnsConfig);
+                
+                // Reset selección
+                this._selectedColumn = -1;
+                
+                // Disparar evento
+                this.#dispatchCustomEvent('columnDeleted', { 
+                    column: columnToDelete 
+                });
+            }
+        }
+        return this;
+    }
+
     showCrudToolbar(show = true) {
         this._showCrudToolbar = show;
         if (this.toolbarElement) {
