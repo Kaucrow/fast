@@ -130,14 +130,85 @@
     transform-origin: top;
     overflow: hidden;
     transition: all 2s ease;
+    position: relative;
 }
 
 .FastCalendarSelect{
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
     width: 100%;
     height: 40px;
+}
+
+.container-month{
+    display: flex;
+    justify-content: flex-start;
+    width: 100%;
+    height: 200px;
+    transform-origin: top;
+}
+
+.container-body-month{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 2px 2px 0 0;
+    overflow: hidden;
+}
+
+.container-month-row{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    height: auto;
+}
+
+.month{
+    width: 85px;
+    font-size: 12px;
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+    transition: all .5s ease;
+}
+
+.container-decades{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    height: 200px;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 2px 2px 0 0;
+    transform-origin: top;
+    overflow: hidden;   
+}
+
+.container-body-decades{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%; 
+}
+
+.decade{
+    width: 85px;
+    font-size: 14px;
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+    transition: all .5s ease;
+}
+
+.slider-decades-container{
+    border-bottom:2px solid rgb(8, 143, 136);
 }
 
 .slider-month-container{
@@ -150,6 +221,7 @@
 
 .slider-month, .slider-year{
     color: #FFF;
+    transform-origin: top;
 }
 
 .select-year{
@@ -228,7 +300,7 @@
     padding: 10px;
 }
 
-.empty-day{
+.empty-day, .empty-decade{
     opacity: 0;
     cursor: default;
 }
@@ -265,6 +337,17 @@
     cursor: pointer;
 }
 
+.month:hover, .decade:hover{
+    color: rgb(8, 143, 136);
+    cursor: pointer;
+    scale: 1.1;
+    transition: all .3s ease-in-out;
+}
+
+.none{
+    display: none;
+}
+
 .hidden {
     opacity: 0;
     z-index: -1;
@@ -278,57 +361,25 @@
 
 
 @keyframes slideDown {
-    0% {
-        height: 0;
-        transform: scaleY(0);
-        opacity: 0;
-    }
-    25% {
-        height: 25%;
-        opacity: 0.25;
-    }
-    50% {
-        height: 50%;
-        opacity: 0.5;
-    }
-
-    75% {
-        height: 75%;
-        opacity: 0.75;
-    }
-
-    100% {
-        height: 100%;
-        opacity: 1;
-        transform: scaleY(1);
-    }
+  0% {
+    transform: scaleY(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
 }
 
 @keyframes slideUp {
-    0% {
-        height: 100%;
-        transform: scaleY(1);
-        opacity: 1;
-    }
-    25% {
-        height: 75%;
-        opacity: 0.75;
-    }
-    50% {
-        height: 50%;
-        opacity: 0.5;
-    }
-
-    75% {
-        height: 25%;
-        opacity: 0.25;
-    }
-
-    100% {
-        height: 0%;
-        opacity: 0;
-        transform: scaleY(0);
-    }
+  0% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scaleY(0);
+    opacity: 0;
+  }
 }
 
 @keyframes show {
