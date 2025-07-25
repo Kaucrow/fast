@@ -1,4 +1,4 @@
-
+<!DOCTYPE html>
 <html>
     <head>
         <script type="module" src="../js/com/Fast.js"></script>
@@ -7,16 +7,88 @@
     <body>
         <script>
             let fastInit = async () => {
+                let columnsConfig = [
+                    {
+                        name: 'id',
+                        title: 'ID',
+                        width: '80px',
+                    },
+                    {
+                        name: 'name',
+                        title: 'Nombre',
+                        width: '200px',
+                    },
+                    {
+                        name: 'email',
+                        title: 'Email',
+                        width: '250px',
+                    
+                    },
+                    {
+                        name: 'age',
+                        title: 'Edad',
+                        width: '80px',
+                    },
+                    {
+                        name: 'city',
+                        title: 'Ciudad',
+                        width: '150px',
+                    },
+                    {
+                        name: 'status',
+                        title: 'Estado',
+                        width: '120px',
+                    }
+                ];
+
+                let sampleData = [
+                    { id: '1', name: 'Juan Villasmil', email: 'juan@email.com', age: '30', city: 'Madrid', status: 'Activo' },
+                    { id: '2', name: 'María García', email: 'maria@email.com', age: '25', city: 'Barcelona', status: 'Inactivo' },
+                    { id: '3', name: 'Carlos López', email: 'carlos@email.com', age: '35', city: 'Valencia', status: 'Activo' },
+                    { id: '4', name: 'Ana Martín', email: 'ana@email.com', age: '28', city: 'Sevilla', status: 'Activo' },
+                    { id: '5', name: 'Luis Rodríguez', email: 'luis@email.com', age: '42', city: 'Bilbao', status: 'Activo' },
+                    { id: '6', name: 'Carmen Sánchez', email: 'carmen@email.com', age: '33', city: 'Málaga', status: 'Activo' },
+                    { id: '7', name: 'David Torres', email: 'david@email.com', age: '29', city: 'Zaragoza', status: 'Activo' },
+                    { id: '8', name: 'Laura Jiménez', email: 'laura@email.com', age: '31', city: 'Murcia', status: 'Inactivo' },
+                    { id: '9', name: 'Roberto Díaz', email: 'roberto@email.com', age: '38', city: 'Palma', status: 'Activo' },
+                    { id: '10', name: 'Silvia Ruiz', email: 'silvia@email.com', age: '27', city: 'Las Palmas', status: 'Activo' },
+                    { id: '11', name: 'Miguel Herrera', email: 'miguel@email.com', age: '45', city: 'Vitoria', status: 'Activo' },
+                    { id: '12', name: 'Patricia Moreno', email: 'patricia@email.com', age: '32', city: 'Córdoba', status: 'Inactivo' }
+                ];
+
                 let comp = await fast.createInstance("FastGrid", {
-                    'id':'MyFastGridJS',
-                    'style' : {'width' : '20%', 'height' : '20%'} ,
+                    'id': 'MyFastGridJS',
+                    'pagesize': 3,
+                    'style': {
+                        'left': '50px',
+                        'top': '100px',
+                        'width': '900px',
+                        'height': 'auto'
+                    },
+                    'events': {
+                        'cellfocus': (e) => { console.log('focus', e.detail); },
+                        'cellblur': (e) => { console.log('blur', e.detail); },
+                        'cellclick': (e) => { console.log('click', e.detail); },
+                        'pagechange': (e) => { console.log('page changed', e.detail); },
+                        'cellkeydown': (e) => { 
+                            console.log('keydown', e.detail);
+                            if(e.detail.key === 'Delete') {
+                                comp.removeRow(e.detail.row);
+                            }
+                        }
+                    }
                 });
-                comp.built = ()=>{
-                    console.log('Componente construido...');
-                }
+
+                comp.built = async () => {
+                    console.log('Grid construido...');
+                    await comp.setColumns(columnsConfig);
+                    comp.setData(sampleData);
+                    console.log('Total páginas:', comp.totalPages);
+                    console.log('Página actual:', comp.currentPage);
+                };
+
                 comp.addToBody();
             };
         </script>
-        <fast-grid id="MyFastGridHTML" style="position:absolute; left:10px; top:140px; width: 100px; height:100px"></fast-grid>
     </body>
-</html> 
+</html>
