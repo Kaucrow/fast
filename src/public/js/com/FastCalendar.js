@@ -711,6 +711,10 @@ export class FastCalendar extends Fast {
 
             dayInput.onchange = () => {
                 this.day = setRange(dayInput, 1, this.#numberOfDaysPerMonth(this.month, this.year));
+
+                this.monthSelect = true;
+                this.dayChange = true;
+
                 this.#updateCalendar();
                 this.dateChange();
             };
@@ -718,7 +722,12 @@ export class FastCalendar extends Fast {
             monthInput.onchange = () => {
                 this.month = setRange(monthInput, 1, 12);
                 this.#fixDayForMonthYear();
+
+                this.monthSelect = true;
+                this.dayChange = true;
+
                 if (this.monthSlider) this.monthSlider.goToSlide(this.month - 1);
+
                 this.#updateCalendar();
                 this.dateChange();
             };
@@ -726,7 +735,12 @@ export class FastCalendar extends Fast {
             yearInput.onchange = () => {
                 this.year = setRange(yearInput, 1900, 2099);
                 this.#fixDayForMonthYear();
+
+                this.monthSelect = true;
+                this.dayChange = true;
+
                 if (this.yearSlider) this.yearSlider.goToSlide(this.year - 1900);
+
                 this.#updateCalendar();
                 this.dateChange();
             };

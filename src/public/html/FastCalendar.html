@@ -9,13 +9,13 @@
   <script type="module" src="../js/com/FastSliderText.js"></script>
 </head>
 <body>
-  <!--<fast-calendar id="cal-html" date-order="dd-mm-yyyy" current-date="false" body-visible="true"></fast-calendar>-->
+  <!--<fast-calendar id="cal-html" date-order="dd-mm-yyyy" current-date="false" body-visible="false"></fast-calendar>-->
 
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
       /* const calendar = document.querySelector('fast-calendar');
       calendar.built = () => {
-        console.log('Built my-fastCalendar-html');
+        console.log("Calendario HTML listo:", calendar.getDate());
       };*/
     });
 
@@ -28,10 +28,9 @@
       });
 
       calA.built = () => {
-        console.log("Calendar A ready:", calA.getDate());
+        console.log("Calendario A listo:", calA.getDate());
       };
       calA.addBody();
-
       const calB = await fast.createInstance("FastCalendar", {
         id: "cal-B",
         "date-order": "yyyy-dd-mm",
@@ -40,8 +39,9 @@
       });
 
       calB.built = () => {
-        console.log("Calendar B ready:", calB.getDate());
+        console.log("Calendario B listo:", calB.getDate());
       };
+
       calB.addBody();
 
       const comparison = () => {
