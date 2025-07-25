@@ -142,16 +142,10 @@ export const FastPopUpMenu = class extends Fast {
     }
 
     _renderMenu(menuData, parent = null) {
-        this.menuContainer.classList.add('animating');
-
         const headerTitle = parent?.text || this.headerConfig.text;
         this._renderHeader(headerTitle, !!parent);
 
         this.itemsContainer.innerHTML = '';
-        
-        const newItemsContainer = document.createElement('div');
-        newItemsContainer.className = 'items-content';
-        this.itemsContainer.appendChild(newItemsContainer);
 
         menuData.forEach(item => {
             const row = document.createElement('div');
@@ -204,7 +198,7 @@ export const FastPopUpMenu = class extends Fast {
                         menuData: menuData,
                         parent: parent
                     });
-
+                    
                     this._animateMenuChange(() => {
                         this._renderMenu(item.subItems, item);
                     });
@@ -217,27 +211,25 @@ export const FastPopUpMenu = class extends Fast {
                 });
             }
 
-            newItemsContainer.appendChild(row);
+            this.itemsContainer.appendChild(row);
         });
 
         this._renderFixed();
         this.currentMenu = menuData;
-
-        setTimeout(() => {
-            newItemsContainer.classList.add('active');
-        }, 10);
-
-        setTimeout(() => {
-            this.menuContainer.classList.remove('animating');
-        }, 300);
     }
 
     _animateMenuChange(callback) {
-        this.menuContainer.classList.add('animating', 'exiting');
-
+        this.menuContainer.classList.add('closing');
+        
         setTimeout(() => {
-            this.menuContainer.classList.remove('exiting');
             callback();
+
+            this.menuContainer.classList.remove('closing');
+            this.menuContainer.classList.add('opening');
+            
+            setTimeout(() => {
+                this.menuContainer.classList.remove('opening');
+            }, 300);
         }, 300);
     }
 
