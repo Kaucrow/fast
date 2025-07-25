@@ -7,15 +7,17 @@ export class FastCalendar extends Fast {
         this.attachShadow({ mode: 'open' });
 
         this.dateOrder = 'dd-mm-yyyy';
+        this.currentDate = true;
+        this.bodyVisible = true;
+
         this._coloricon = '#FFF';
         this.widthCharMenu = 7;
         this.sizeIconMenu = 14;
-        this.currentDate = true;
-        this.bodyVisible = true;
 
         this.day = 1;
         this.month = 1;
         this.year = new Date().getFullYear();
+
         this.currentDay = this.day;
         this.currentMonth = this.month;
         this.currentYear = this.year;
@@ -585,10 +587,10 @@ export class FastCalendar extends Fast {
 
     #toggleContainer(openEl, closeEl) {
         if (!openEl.classList.contains('open')) {
-            closeEl.classList.remove('open');  // cierra el otro
-            openEl.classList.add('open');      // abre éste
+            closeEl.classList.remove('open');
+            openEl.classList.add('open');
         } else {
-            openEl.classList.remove('open');   // si ya estaba abierto, lo cierra
+            openEl.classList.remove('open');
         }
     }
 
