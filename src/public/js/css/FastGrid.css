@@ -200,11 +200,12 @@ fast-grid fast-column::part(cell) {
     font-size: 12px;
 }
 
-/* CRUD Toolbar */
 .FastGridToolbar {
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: space-between; 
+    position: relative; 
     padding: 8px 12px;
     background: #fafafa;
     border-bottom: 1px solid #e0e0e0;
@@ -212,6 +213,7 @@ fast-grid fast-column::part(cell) {
     flex-wrap: wrap;
     min-height: 40px;
 }
+
 
 .FastGridToolbar.hidden {
     display: none;
@@ -234,6 +236,8 @@ fast-grid fast-column::part(cell) {
     min-height: 28px;
     gap: 4px;
     box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    font-family: 'Segoe UI Emoji', Arial, sans-serif;
+    line-height: 1.4;
 }
 
 .FastGridToolbarButton:hover {
@@ -264,21 +268,24 @@ fast-grid fast-column::part(cell) {
 
 .FastGridToolbarToggle {
     position: absolute;
-    top: 4px;
-    right: 8px;
-    width: 20px;
-    height: 20px;
+    top: 14px; /* <-- Alineado con botones de 28px de alto */
+    right: 12px;
+    width: 28px;
+    height: 28px;
     border: 1px solid #ccc;
-    border-radius: 2px;
+    border-radius: 4px;
     background: #fff;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 10px;
+    font-size: 14px;
+    font-family: 'Segoe UI Emoji', Arial, sans-serif;
     color: #666;
     z-index: 10;
+    box-sizing: border-box;
 }
+
 
 .FastGridToolbarToggle:hover {
     background: #f0f0f0;
@@ -380,4 +387,42 @@ fast-grid fast-column::part(cell) {
 
 .FastGridCell:last-child {
     border-right: none;
+}
+
+.FastGridSearchInput {
+    padding: 6px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 13px;
+    height: 28px;
+    font-family: Arial, sans-serif;
+    line-height: 1;
+    flex-grow: 1;
+    min-width: 200px;
+    max-width: calc(100% - 280px); 
+    box-sizing: border-box;
+    margin-left: auto;
+    margin-right: 36px; 
+}
+
+.FastGridCell:hover {
+    background-color: #d0e0f0;
+}
+
+.FastGridToolbarWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    padding: 8px 12px;
+    border-bottom: 1px solid #e0e0e0;
+    background: #fafafa;
+}
+
+.FastGridScrollWrapper {
+    overflow-x: auto;
+    overflow-y: hidden;
+    width: 100%;
+    box-sizing: border-box;
+    border-bottom: 1px solid #e0e0e0;
 }

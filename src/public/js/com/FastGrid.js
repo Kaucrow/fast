@@ -27,16 +27,18 @@ export const FastGrid = class extends Fast {
     }
 
     #getTemplate() {
-        return `
-            <div class="FastGrid">
-                <div class="FastGridToolbarToggle" title="Mostrar/Ocultar herramientas">⚙</div>
-                <div class="FastGridToolbar ${this._showCrudToolbar ? '' : 'hidden'}"></div>
-                <div class="FastGridHeader"></div>
-                <div class="FastGridBody"></div>
-                <div class="FastGridFooter"></div>
-            </div>
-        `;
-    }
+    return `
+        <div class="FastGrid">
+            <div class="FastGridToolbarToggle" title="Mostrar/Ocultar herramientas">⚙</div>
+            <div class="FastGridToolbar ${this._showCrudToolbar ? '' : 'hidden'}"></div>
+            <div class="FastGridHeader"></div>
+            <div class="FastGridBody"></div>
+            <div class="FastGridFooter"></div>
+        </div>
+    `;
+}
+
+
 
     async #getCss() {
         return await fast.getCssFile("FastGrid");
@@ -98,26 +100,38 @@ export const FastGrid = class extends Fast {
         const css = await this.#getCss();
         this.sheet.replaceSync(css);
         this.shadowRoot.adoptedStyleSheets = [this.sheet];
-        
+
         this.template = document.createElement('template');
         this.template.innerHTML = this.#getTemplate();
         const content = this.template.content.cloneNode(true);
         this.mainElement = content.firstElementChild;
         this.shadowRoot.appendChild(this.mainElement);
-        
-        // Referencias a elementos
-        this.toggleButton = this.mainElement.querySelector('.FastGridToolbarToggle');
-        this.toolbarElement = this.mainElement.querySelector('.FastGridToolbar');
+
+        // Crear contenedor de scroll para header + body
+        this.scrollWrapper = document.createElement('div');
+        this.scrollWrapper.className = 'FastGridScrollWrapper';
+
+        // Obtener header y body, luego moverlos dentro del contenedor
         this.headerElement = this.mainElement.querySelector('.FastGridHeader');
         this.bodyElement = this.mainElement.querySelector('.FastGridBody');
+        this.scrollWrapper.appendChild(this.headerElement);
+        this.scrollWrapper.appendChild(this.bodyElement);
+
+        // Insertar el contenedor de scroll antes del footer
         this.footerElement = this.mainElement.querySelector('.FastGridFooter');
-        
-        // Configurar toggle toolbar
+        this.mainElement.insertBefore(this.scrollWrapper, this.footerElement);
+
+        // Referencias al resto de elementos
+        this.toggleButton = this.mainElement.querySelector('.FastGridToolbarToggle');
+        this.toolbarElement = this.mainElement.querySelector('.FastGridToolbar');
+
+        // Configurar toggle del botón ⚙
         this.toggleButton.addEventListener('click', () => {
             this._showCrudToolbar = !this._showCrudToolbar;
             this.showCrudToolbar(this._showCrudToolbar);
         });
     }
+
 
     // Navegación simplificada
     async #createNavigator() {
@@ -450,6 +464,7 @@ export const FastGrid = class extends Fast {
 
     setData(data) {
         this._data = data;
+        this._originalData = [...data];
         this.#calculateTotalPages();
         this._currentPage = 0;
         if (this.navigator) {
@@ -739,23 +754,47 @@ export const FastGrid = class extends Fast {
 
     // CRUD simplificado
     #createCrudToolbar() {
-        if (!this.toolbarElement) return;
-        
-        const buttons = [
-            { id: 'addRowBtn', text: '+ Agregar Fila', action: () => this.addNewRow() },
-            { id: 'deleteRowBtn', text: '🗑 Eliminar Fila', action: () => this.deleteSelectedRow() },
-            { id: 'addColumnBtn', text: '+ Agregar Columna', action: () => this.addNewColumn() }
-        ];
-        
-        this.toolbarElement.innerHTML = `
-            ${buttons.map(btn => `<button class="FastGridToolbarButton" id="${btn.id}">${btn.text}</button>`).join('')}
-            <div class="FastGridToolbarSeparator"></div>
-        `;
+    if (!this.toolbarElement) return;
 
-        buttons.forEach(btn => {
-            this.toolbarElement.querySelector(`#${btn.id}`)?.addEventListener('click', btn.action);
+    const buttons = [
+        { id: 'addRowBtn', text: '+ Agregar Fila', action: () => this.addNewRow() },
+        { id: 'deleteRowBtn', text: '🗑 Eliminar Fila', action: () => this.deleteSelectedRow() },
+        { id: 'addColumnBtn', text: '+ Agregar Columna', action: () => this.addNewColumn() }
+    ];
+
+    this.toolbarElement.innerHTML = `
+        ${buttons.map(btn => `<button class="FastGridToolbarButton" id="${btn.id}">${btn.text}</button>`).join('')}
+        <input type="text" id="FastGridSearchInput" class="FastGridSearchInput" placeholder="Buscar..." />
+    `;
+
+    buttons.forEach(btn => {
+        this.toolbarElement.querySelector(`#${btn.id}`)?.addEventListener('click', btn.action);
+    });
+
+    const searchInput = this.toolbarElement.querySelector("#FastGridSearchInput");
+    if (searchInput) {
+        searchInput.addEventListener("input", (e) => {
+            const query = e.target.value.toLowerCase().trim();
+
+            if (query === "") {
+                this._data = [...this._originalData];
+            } else {
+                const filtered = this._originalData.filter(row =>
+                    Object.values(row).some(val =>
+                        String(val).toLowerCase().includes(query)
+                    )
+                );
+                this._data = filtered;
+            }
+
+            this.#calculateTotalPages();
+            this._currentPage = 0;
+            this.renderRows();
         });
     }
+}
+
+
 
     addNewRow() {
         const newRow = Object.fromEntries(this._columnsConfig.map(col => [col.name, '']));
@@ -827,12 +866,18 @@ export const FastGrid = class extends Fast {
 
     showCrudToolbar(show = true) {
         this._showCrudToolbar = show;
+
         if (this.toolbarElement) {
             this.toolbarElement.className = `FastGridToolbar ${show ? '' : 'hidden'}`;
+            
+            const input = this.toolbarElement.querySelector("#FastGridSearchInput");
+            if (input) input.style.display = show ? 'inline-flex' : 'none';
         }
         this.adjustGridHeight();
         return this;
     }
+
+
 
     hideCrudToolbar() {
         return this.showCrudToolbar(false);
