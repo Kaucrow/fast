@@ -8,43 +8,36 @@
 </head>
 <body>
     <div class="transfer-list-container">
-        <h1 class="transfer-list-title">Selecciona las opciones</h1>
+        <div class="list-configuration">
+            <div class="config-input">
+                <label for="left-title">Titulo lista izquierda:</label>
+                <input type="text" id="left-title" value="">
+                <button class="apply-btn" id="apply-left-title">Aplicar</button>
+            </div>
+            <div class="config-input">
+                <label for="right-title">Titulo lista derecha:</label>
+                <input type="text" id="right-title" value="">
+                <button class="apply-btn" id="apply-right-title">Aplicar</button>
+            </div>
+            <div class="config-input">
+                <label for="options-list">Opciones :</label>
+                <textarea id="options-list" rows="1"></textarea>
+                <div class="options-buttons">
+                    <button class="apply-btn" id="apply-options">Agregar </button>
+                    <button class="delete-btn" id="delete-options">Eliminar </button>
+                </div>
+            </div>
+        </div>
+        
+        <h1 class="transfer-list-title">Exchange List</h1>
         
         <div class="transfer-list-content">
             <div class="options-column">
                 <div class="column-header">
-                    <span>Opciones Disponibles</span>
-                    <span id="available-count">0/7 seleccionadas</span>
+                    <span id="left-header"></span>
                 </div>
                 <ul class="options-list" id="available-options">
-                    <li class="option-item" data-value="4wd">
-                        <span class="checkbox"></span>
-                        <span>Opcion 1</span>
-                    </li>
-                    <li class="option-item" data-value="steering">
-                        <span class="checkbox"></span>
-                        <span>Opcion 2</span>
-                    </li>
-                    <li class="option-item" data-value="windows">
-                        <span class="checkbox"></span>
-                        <span>Opcion 3</span>
-                    </li>
-                    <li class="option-item" data-value="locks">
-                        <span class="checkbox"></span>
-                        <span>Opcion 4</span>
-                    </li>
-                    <li class="option-item" data-value="nav">
-                        <span class="checkbox"></span>
-                        <span>Opcion 5</span>
-                    </li>
-                    <li class="option-item" data-value="charger">
-                        <span class="checkbox"></span>
-                        <span>Opcion 6</span>
-                    </li>
-                    <li class="option-item" data-value="sunroof">
-                        <span class="checkbox"></span>
-                        <span>Opcion 7</span>
-                    </li>
+                    <!-- Opciones se generarán dinámicamente -->
                 </ul>
             </div>
              
@@ -63,8 +56,7 @@
             
             <div class="options-column">
                 <div class="column-header">
-                    <span>Opciones Disponibles</span>
-                    <span id="selected-count">0/0 seleccionadas</span>
+                    <span id="right-header"></span>
                 </div>
                 <ul class="options-list" id="selected-options">
                     <!-- Opciones seleccionadas aparecerán aquí -->
