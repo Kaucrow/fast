@@ -1,0 +1,50 @@
+<html>
+    <head>
+        <script type="module" src="../js/com/Fast.js"></script>
+        <link rel="icon" href="../images/icons/favicon.png" sizes="32x32" type="image/png">
+    </head>
+    <body>
+        <script>
+            let fastInit = async () => {
+                let findSelect = await fast.createInstance("FastFindSelect", {
+                    'id':'myFindSelect', 
+                    'style' : {'left':'300px', 'width':'300px'},
+                    'caption' : 'Programming languages:',
+                });                
+                
+                findSelect.built = () => {
+                    console.log('FindSelect component is ready.');
+                    findSelect.addOption({ 'text': 'JavaScript', 'value': 'js' });
+                    findSelect.addOption({ 'text': 'Python', 'value': 'py' });
+                    findSelect.addOption({ 'text': 'Java', 'value': 'java' });
+                    findSelect.addOption({ 'text': 'C++', 'value': 'cpp' });
+                    findSelect.addOption({ 'text': 'Ruby', 'value': 'rb' });
+                    findSelect.addOption({ 'text': 'Rust', 'value': 'rs' });
+                    findSelect.addOption({ 'text': 'Pascal', 'value': 'pas' });
+                };
+
+                findSelect.addEventListener('change', (e) => {
+                    console.log('New language selected!');
+                    console.log('Text:', e.detail.text);
+                    console.log('Value:', e.detail.value);
+                });
+
+                findSelect.addToBody();
+            };
+        </script>
+    
+    <div>
+        <fast-findselect caption="Countries:">
+            <option value="us">United States</option>
+            <option value="uk">United Kingdom</option>
+            <option value="fr">France</option>
+            <option value="de">Germany</option>
+            <option value="jp">Japan</option>
+            <option value="ve">Venezuela</option>
+            <option value="vm">Vietnam</option>
+            <option value="gm">Guatemala</option>
+        </fast-findselect>
+    </div>
+    
+    </body>
+</html>

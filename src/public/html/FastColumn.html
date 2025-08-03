@@ -1,0 +1,64 @@
+
+<html>
+    <head>
+        <script type="module" src="../js/com/Fast.js"></script>
+        <link rel="icon" href="../images/icons/favicon.png" sizes="32x32" type="image/png">
+    </head>
+    <style>
+        .otro{
+            background-color: darkblue;
+            color: white;
+        }
+    </style>
+    <body>
+        <script>
+            let next = ()=>{alert('next')}
+            let prior = ()=>{alert('prior')}
+            let fastInit = async () => {
+                let c = document.createElement('input');
+                c.type = 'checkbox';
+                let comp = await fast.createInstance("FastColumn", {
+                    'id':'MyFastColumnJS',
+                    'contenteditable' : true,
+                    'columntitle' : c,
+                    'style' : {'left' : '100px', 'top' : '100px', 'border-radius':'1em'},
+                    'columnname' : 'c1',
+                    'pagesize' : 9,
+                    'events' : {
+                        'cellfocus' :  (e)=>{ console.log('focus ', e.detail);},
+                        // 'cellover' :  (e)=>{ console.log('cellover ', e.detail);},
+                        // 'cellout' :  (e)=>{ console.log('cellout ', e.detail);},
+                        // 'cellclick' :  (e)=>{ console.log('click ',e.detail);},
+                        //'cellblur' :  (e)=>{ console.log(e.detail);},
+                        // 'cellkeydown' :  (e)=>{ console.log(e.detail);},
+                        // 'cellkeyup' :  (e)=>{ console.log(e.detail);}
+                    }
+                });
+                comp.built = ()=>{
+                    console.log('Componente construido...');
+                    comp.addData('Elemento 0');
+                    comp.addData('Elemento 1');
+                    comp.addData('Elemento numero tres, con un texto mucho mas largo para probar');
+                    let dat = [];
+                    for(let i=0; i<17; i++) dat.push('Nuevo valor '+(i+3)); 
+                    comp.data = dat;
+                    comp.addData('Otro Elemento con un texto largo para probar')
+                    .showPage();
+                    console.log(comp.getValue(1));
+                    // comp.clearData();
+                    comp.setValue('texto cambiado 12', 12);
+                    // comp.deleteRow(1);
+                    // comp.deleteRow(7);
+                    // comp.getCellContainer(3).style.backgroundColor = 'red';
+                    console.log(comp.sheet);
+                    // comp.sheet.replaceSync('<style>.otro{background-color:darkblue</style>}')
+                    // comp.getCellInternalContainer(3).classList.toggle('otro');
+                }
+                comp.addToBody();
+            };
+        </script>
+        <button onclick="next()">NextPage</button>
+        <button onclick="prior()">PriorPage</button>
+        <!-- <fast-column id="MyFastColumnHTML" style="position:absolute; left:10px; top:100px; width: 100px; height:100px"></fast-column> -->
+    </body>
+</html> 

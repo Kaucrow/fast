@@ -9,7 +9,7 @@ export const FastTab = class extends Fast{
         this._coloricon = 'rgba(8, 143, 136, 0.5)'; 
         this._colorln = 'white';
         this._iconsize = 24;
-        this.attachShadow({mode:'open'});
+        this.shadowroot = this.attachShadow({mode:'open'});
         this.tabElements = new Map();
         this.tabSelected=null;
         this._maxshow = 1;
@@ -22,6 +22,7 @@ export const FastTab = class extends Fast{
         this._heighttaboption = '20px';
         this.tabOrderSelected = 0;
         this._paddingTab = 20;
+        this._disabledTab = [];
     }
 
     #getTemplate(){ return `
@@ -29,7 +30,7 @@ export const FastTab = class extends Fast{
                 <div class = "FastTabHead">
                     <div class = "FastTabIcon"></div>
                     <div class = "FastTabOptionContainer">
-                       <slot name = "fasttabslot" class="FastTabOptionContainer"></slot>
+                       
                     </div>
                     <div class = "FastTabIcon"></div>
                 </div>
@@ -61,33 +62,40 @@ export const FastTab = class extends Fast{
         })
     }
 
-    async #getCss(){ 
-        return await fast.getCssFile("FastTab");
-    }
+    async #getCss(){ return await fast.getCssFile("FastTab"); }
 
     allDiselected(tab){    
         for(let obj of this.tabElements)  {
-            if(obj[1]!==tab) obj[1].tabElement.style.animationName = "diselected";
+            if(obj[1].enable) 
+                if(obj[1]!==tab) obj[1].tabElement.style.animationName = "diselected"; 
         };
         return this;
     }
 
     selected(tabOpt){
         this.tabSelected = tabOpt.tabElement;
-        tabOpt.tabElement.style.animationName = "selected";    
+        tabOpt.tabElement.style.animationName = "selected";  
         this.divContent.animate([{left:'-110%'}],{duration:150, fill:'both'});
         setTimeout(()=>{this.#addRowElements(tabOpt);}, 150);
         setTimeout(()=>{this.divContent.animate([{left:'110%'}],{duration:1, fill:'both'})},150);
         setTimeout(()=>{this.divContent.animate([{left:'0%'}],{duration:500, fill:'both'})},300);
         return this;
     }
-
-    diselected(tab){
-        tab.style.animationName = "diselected";
-        return this;
+    diselected(tab){ tab.style.animationName = "diselected"; return this; }  
+    enableAllTabs(){ for(let t of this.tabElements){ t[1].enable = true;} }
+    
+    setDisableTabs(){
+        for(let idx of this._disabledTab){
+            if(this.tabElements.has(idx)){
+                let tabOpt = this.tabElements.get(idx);
+                tabOpt.tabElement.style.animationName = "disabled";  
+                this.tabElements.get(idx).enable = false;
+            }
+        }
     }
 
     showTabs(pag){
+        this._maxshow = parseInt(this._maxshow);
         if(pag) this.page = pag;
         let side = -1;
         if(this.page < this.actPage)  side = -1; else side = 1;
@@ -108,6 +116,8 @@ export const FastTab = class extends Fast{
             this.iconRight.disabled = false;
         }
         let setTabs = ()=>{
+            this.enableAllTabs();
+            this.setDisableTabs();
             this.tabsGroup.innerHTML = '';
             this.tabsGroup.className = "FastTabGroup";
             let w = parseInt(getComputedStyle(this.mainElement,'').width, 10);
@@ -121,7 +131,7 @@ export const FastTab = class extends Fast{
             this.divTabHead.style.opacity = 1;
             this.divTabHead.style.height = parseInt(this._heighttaboption, 10) + this._paddingTab + 'px';
             for(let obj of this.tabElements){
-                obj[1].tabElement.style.height = this._heighttaboption;
+                obj[1].tabElement.style.height = this._heighttaboption;                   
                 if(counter < endCounter && counter >= initCounter) this.tabsGroup.appendChild(obj[1].tabElement);
                 counter++;
             }
@@ -188,7 +198,7 @@ export const FastTab = class extends Fast{
             try {
                 for(let attr of this.getAttributeNames()){   
                     if(attr.substring(0,2)!="on"){
-                        this.mainElement.setAttribute(attr, this.getAttribute(attr));
+                        this.mainElement.setAttribute(attr, this.getAttribute(attr)); 
                         this[attr] = this.getAttribute(attr);
                     }
                     else{
@@ -196,34 +206,64 @@ export const FastTab = class extends Fast{
                         this[attr] = ()=>{ if(!this.disabled) f(); };
                     }
                     switch(attr){
-                        case 'id' : 
+                        case 'id' : {
                             fast.createInstance('FastTab', {'id': this[attr]});
                             break;
+                        }
                     }
                 }
                 if(this.getAttributeNames().length > 0){
-                    this.style.width ="auto";
-                    this.style.height ="auto";
-                    this.style.left ="auto";
-                    this.style.top ="auto";
-                    this.divTabOptionContainer.style.width = '400px';
-                    this.divTabHead.style.width = '400px';
-                    // this.divSlot.style.width = '400px';
-                    // let opts =  this.removeChild(this.firstChild.nextSibling);                
-                    // console.log(opts.innerHTML, this.divSlot);
-                    // this.divSlot.innerHTML = opts.innerHTML;  
-                    // this.divSlot.style.width = '100%';
-                    let element = this.firstChild.nextSibling;
-                    while(element){
-                        let jsonOpt ={}
-                        for(let attr of element.getAttributeNames()){
-                            console.log(attr, element.getAttribute(attr));
-                            jsonOpt[attr] = element.getAttribute(attr);    
-                        };
-                        jsonOpt["elements"] = element.firstChild;
-                        // console.log(jsonOpt);
-                        this.addTab(jsonOpt);
-                        element=element.nextSibling.nextSibling;
+                    this.style.left ="-8px";
+                    this.style.top ="-8px";
+                    this.divTabOptionContainer.style.width = this.style.width;
+                    this.divTabHead.style.width = this.style.width;
+                    let ele = this.firstChild.nextSibling;
+                    while(ele){
+                        switch(ele.tagName.toUpperCase()){
+                            case "TABS" :{
+                                let tabOpt = ele.firstChild.nextSibling;
+                                while(tabOpt){
+                                    let jsonOpt ={};
+                                    for(let attr of tabOpt.getAttributeNames()){
+                                        jsonOpt[attr] = tabOpt.getAttribute(attr);    
+                                    };
+                                    jsonOpt["elements"] = tabOpt.firstChild;
+                                    this.addTab(jsonOpt);
+                                    tabOpt = tabOpt.nextSibling.nextSibling;
+                                }
+                                break;
+                            }
+                            case "ROWTAB" : {
+                                let jsonRow = {tabId:null,elements:[], style:{}};
+                                for(let attr of ele.getAttributeNames()){
+                                    switch(attr){
+                                        case "tabid" :{
+                                            jsonRow.tabId = ele.getAttribute(attr); 
+                                            break;
+                                        }
+                                        case "style" : {
+                                            let sty = ""; 
+                                            for(let i=0; i<ele.style.length; i++){
+                                                if(ele.style[i]!==null){
+                                                    sty+= `"${ele.style[i]}":"${ele.style[ele.style[i]]}",`
+                                                }
+                                            }
+                                            sty= `{${sty.substring(0,sty.length-1)}}`;
+                                            jsonRow.style = JSON.parse(sty);                                            
+                                            break;
+                                        }
+                                    }    
+                                };
+                                let elem = ele.firstChild.nextSibling;
+                                while(elem){
+                                    jsonRow.elements.push(elem);
+                                    elem = elem.nextSibling.nextSibling;
+                                }
+                                this.addRow(jsonRow)
+                                break;
+                            } 
+                        }
+                        ele=ele.nextSibling.nextSibling;
                     }
                     this.showTabs();
                 }
@@ -277,16 +317,20 @@ export const FastTab = class extends Fast{
     addTab(option){
         let tab = document.createElement("div");
         tab.innerText = option.tabname;
-        tab.className = "FastTabOption";        
+        tab.className = "FastTabOption";
+        tab.id = option.id;        
         option.tabElement = tab;
         option.tabRow = [];
+        option.enable = true;
         option.tabOrder = this.tabElements.size;
         this.tabElements.set(option.id,option);
         this.diselected(tab);
         tab.addEventListener("click", (e)=>{
-            this.allDiselected(tab); 
-            this.tabSelected = tab;
-            this.selected(option);
+            if(option.enable){
+                this.allDiselected(tab); 
+                this.tabSelected = tab;
+                this.selected(option);
+            }
         });        
         return this;
     }
@@ -334,6 +378,18 @@ export const FastTab = class extends Fast{
     set heighttaboption(val){ this._heighttaboption = val; }
     get pageselected(){ return this.page }
     set pageselected(val){ this.page = val; }
+    get disabledtab(){return this._disabledTab;}
+    set disabledtab(objDisabled){ 
+        if(typeof objDisabled==='string'){
+            let p = objDisabled.split(",");
+            objDisabled = [];
+            for(let i=0; i<p.length; i++){
+                objDisabled.push(p[i]);
+            }
+        }
+        this._disabledTab = objDisabled;
+        this.setDisableTabs();
+    }
 }
 
 if (!customElements.get ('fast-tab')) {

@@ -1,0 +1,77 @@
+.FastCard { 
+    background: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 15rem;
+    width: 15rem;
+    margin: 0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 1em;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);  
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.FastCard .card-title {
+    font-size: 1.2em;
+    margin-bottom: 0.5em;
+    font-weight: bold;
+    text-align: center;
+}
+
+.FastCard .card-content {
+    font-size: 1em;
+    text-align: center;
+}
+
+.FastCard .card-img {
+    width: 100px;
+    height: 100px;
+    border-radius: 6px;
+    margin: auto;
+    object-fit: cover;
+
+}
+.card-img[hidden] {
+    display: none;
+}
+
+.card-img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+.card-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.card-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+}
+.card-title {
+    font-weight: bold;
+    margin: 0;
+    user-select: none;
+}
+.card-content {
+    font-size: 14px;
+    color: #333;
+    user-select: none;
+}
+:host {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    width: 250px;
+}

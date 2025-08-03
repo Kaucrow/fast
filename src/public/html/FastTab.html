@@ -10,9 +10,10 @@
                 let t = await fast.createInstance("FastTab", {
                     'id':'MyFastTabJS',
                     'maxshow':2,
-                    // // 'pageselected' : 1,//por ddefecto es 0
+                    // 'pageselected' : 1, //por defecto es 0
                     // 'heighttaboption' : '30px',
-                    'style' : { 'position':'absolute', 'top':'40px', 'left' : '10px', 'width' : '300px', 'height': '50%'},
+                    'disabledtab' :["t1"],
+                    'style' : { 'position':'absolute', 'top':'20px', 'left' : '10px', 'width' : '600px', 'height': '50%'},
                 });
                 t.built = ()=>{
                     console.log('Componente construido...');
@@ -61,10 +62,25 @@
                 t.addToBody();
             };
         </script>
-        <fast-tab id="MyFastTabHTML" maxshow = 2 style="position:relative; left:450px; top:10px; width: 400px; height:200px">
-            <tab id="tab1" tabName = "Option 1"><div>Hola 1</div></tab>
-            <tab id="tab2" tabName = "Option 2"><div>Hola 2</div></tab>
-            <tab id="tab3" tabName = "Option 3"><div>Hola 3</div></tab>
+        <fast-tab id="MyFastTabHTML" disabledtab = "tab1,tab3" pageselected=1 maxshow = 1 style="position:relative; left:620px; top:20px; width: 400px; height:200px">
+            <tabs>
+                <tab id="tab1" tabName = "HTML Option 1"><div>Hola 1</div></tab>
+                <tab id="tab2" tabName = "HTML Option 2"><div>Hola 2</div></tab>
+                <tab id="tab3" tabName = "HTML Option 3"><div>Hola 3</div></tab>
+            </tabs>
+            <rowtab tabId = "tab1" style = "height:40px; column-gap:10px; justify-content:center; align-items:center">
+                <input value="hola 1"  style="width:50px">
+                <input value="hola 2"  style="width:50px">
+            </rowtab>
+            <rowtab tabId = "tab2" style = "height:40px; column-gap:10px; justify-content:center; align-items:center">
+                <input value="hola 1"  style="width:50px">
+                <input value="hola 2"  style="width:50px">
+                <input value="hola 3"  style="width:50px">
+            </rowtab>
+            <rowtab tabId = "tab3" style = "height:40px; column-gap:10px; justify-content:center; align-items:center">
+                <textarea   style="width:70px">Hola 3</textarea>
+                <textarea   style="width:70px">Texto 3</textarea>
+            </rowtab>
         </fast-tab>
     </body>
 </html> 

@@ -8,7 +8,7 @@
             let fastInit = async () => {
                 let i = await fast.createInstance("FastIcon", {
                     'id':'MyFastIconJS',
-                    'disabled' : true,
+                    'disabled' : false,
                     'iconname' : 'exit',
                     'caption' : 'salir',
                     'hint' : 'Aqui se sale del sistema..!',
@@ -148,7 +148,7 @@
                     'id':'MyFastIconJS21',
                     'iconname' : 'filter',
                     'caption' : 'Filtro',
-                    'style' : {'position':'absolute', 'left':'80px', 'top':'200px'},
+                    'style' : {'position':'absolute', 'left':'80px', 'top':'210px'},
                     'hint' : 'Filtre pulsando en este icono..!',
                 });
                 let i22 = await fast.createInstance("FastIcon", {
@@ -158,11 +158,64 @@
                     'style' : {
                         'position':'absolute', 
                         'left':'130px', 
-                        'top':'200px', 
+                        'top':'210px', 
                         'fill' : 'white',
                         'stroke': 'rgba(9, 92, 88)',
                     },
                     'hint' : 'Bajar de la nube..!',                    
+                });
+                let i23 = await fast.createInstance("FastIcon", {
+                    'id':'MyFastIconJS23',
+                    'iconname' : 'arrowLeft',
+                    'caption' : 'retrocede',
+                    'style' : {'position':'absolute', 'left':'180px', 'top':'210px'},
+                });
+                let i24 = await fast.createInstance("FastIcon", {
+                    'id':'MyFastIconJS24',
+                    'iconname' : 'arrowLast',
+                    'caption' : 'ultimo',
+                    'style' : {'position':'absolute', 'left':'240px', 'top':'210px'},
+                });
+                let i25 = await fast.createInstance("FastIcon", {
+                    'id':'MyFastIconJS25',
+                    'iconname' : 'arrowFirst',
+                    'caption' : 'primero',
+                    'style' : {'position':'absolute', 'left':'280px', 'top':'210px'},
+                });
+                let i26 = await fast.createInstance("FastIcon", {
+                    'id':'MyFastIconJS26',
+                    'iconname' : 'refresh',
+                    'caption' : 'refrescar',
+                    'style' : {'position':'absolute', 'left':'330px', 'top':'210px'},
+                    'hint' : 'Refrescar los datos...'
+                });
+                let i27 = await fast.createInstance("FastIcon", {
+                    'id':'MyFastIconJS27',
+                    'iconname' : 'save',
+                    'caption' : 'salvar',
+                    'style' : {'position':'absolute', 'left':'390px', 'top':'210px'},
+                    'hint' : 'Salva los datos...'
+                });
+                let i28 = await fast.createInstance("FastIcon", {
+                    'id':'MyFastIconJS28',
+                    'iconname' : 'download',
+                    'caption' : 'bajar',
+                    'style' : {'position':'absolute', 'left':'440px', 'top':'210px'},
+                    'hint' : 'Bajar archivo...'
+                });
+                let i29 = await fast.createInstance("FastIcon", {
+                    'id':'MyFastIconJS29',
+                    'iconname' : 'upload',
+                    'caption' : 'subir',
+                    'style' : {'position':'absolute', 'left':'490px', 'top':'210px'},
+                    'hint' : 'Subir archivo...'
+                });
+                let i30 = await fast.createInstance("FastIcon", {
+                    'id':'MyFastIconJS30',
+                    'iconname' : 'menuPointer',
+                    'caption' : 'menu',
+                    'style' : {'position':'absolute', 'left':'530px', 'top':'210px', 'fill':'red'},
+                    'hint' : 'Mostrar opciones de menu...',
                 });
                 i.built = ()=>{
                     console.log('Componente construido...');
@@ -189,8 +242,16 @@
                 i20.addToBody();
                 i21.addToBody();
                 i22.addToBody();
+                i23.addToBody();
+                i24.addToBody();
+                i25.addToBody();
+                i26.addToBody();
+                i27.addToBody();
+                i28.addToBody();
+                i29.addToBody();
+                i30.addToBody();
             };
         </script>
-        <fast-icon onclick = "alert('config HTML')" id = "MyFastIconHTML" iconname="config" caption="config HTML" style="position:absolute; left:20px; top:200px;"></fast-icon>
+        <fast-icon onclick = "alert('config HTML')" id = "MyFastIconHTML" iconname="config" caption="config HTML" style="position:absolute; left:20px; top:210px;"></fast-icon>
     </body>
 </html>

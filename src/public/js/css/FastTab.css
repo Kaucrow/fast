@@ -1,9 +1,13 @@
 
 .FastTabContainer{
+    position:absolute;
+    left:0px;
+    top:0px;
+    width: auto;
+    height: auto;
     display : grid;
     background-color : rgba(0,0,0,0);
     align-items : center;
-    padding: 5px;
     justify-content : center;
     border : 1px;
     border-style: solid;
@@ -11,6 +15,30 @@
     border-radius: 0.5em;
     grid-template-rows: 0.1fr 0.9fr;
     overflow: hidden;
+}
+
+.FastTabDisabled{
+    display : flex;
+    background-color : rgba(180, 197, 187, 1);
+    font-family: Trebuchet MS;
+    font-size: 12px;
+    font-weight: bold;
+    margin:5px;
+    padding: 5px;
+    border-style: solid;
+    border-width: 2px;
+    border-color: rgb(24, 107, 103);
+    align-items: center;
+    justify-content:center;
+    border-radius: 0.5em;
+    animation-name: selected;
+    animation-duration: 0.6s;
+    animation-delay: 0s;
+    animation-fill-mode: both;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .FastTabHead{
@@ -39,6 +67,7 @@
     background-color : rgb(24, 107, 103);
     font-family: Trebuchet MS;
     font-size: 12px;
+    font-weight: bold;
     margin:5px;
     padding: 5px;
     border-style: solid;
@@ -106,10 +135,23 @@
     to{ left:100%; }
 }
 
-@keyframes diselected{
+@keyframes disabled{
     from{
         opacity: 1;
         color : white;
+        background-color : rgb(11, 66, 64);
+    }
+    to{
+        opacity : 0.3;
+        color : rgb(34, 33, 33); 
+        background-color : rgb(114, 112, 122);
+    }
+}
+
+@keyframes diselected{
+    from{
+        opacity: 1;
+        color : rgb(157, 182, 178);
         background-color : rgb(11, 66, 64);
     }
     to{
