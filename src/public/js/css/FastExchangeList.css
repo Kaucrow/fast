@@ -1,0 +1,234 @@
+:root {
+    --primary-color: rgb(24, 107, 103);
+    --primary-dark-color: rgb(11, 66, 64);
+    --hover-color: rgba(216, 219, 46, 0.2);
+    --selected-color: rgba(8, 143, 136, 0.3);
+    --border-color: rgba(0,0,0,0.2);
+    --text-color: #202124;
+    --button-hover-color: rgb(216, 219, 46);
+    --delete-color: #dc3545;
+    --delete-hover-color: #bb2d3b;
+}
+
+body {
+    font-family: 'Trebuchet MS', Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background-color: #f8f9fa;
+    color: var(--text-color);
+}
+
+.transfer-list-container {
+    width: 700px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 2px 6px 2px rgba(60,64,67,0.15);
+    padding: 24px;
+}
+
+.list-configuration {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.config-input {
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.config-input label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.config-input input,
+.config-input textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-family: inherit;
+}
+
+.config-input textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.options-buttons {
+    display: flex;
+    gap: 8px;
+    margin-top: 5px;
+}
+
+.options-buttons button {
+    flex: 1;
+}
+
+.apply-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    font-family: 'Trebuchet MS';
+}
+
+.apply-btn:hover {
+    background-color: var(--primary-dark-color);
+}
+
+.delete-btn {
+    background-color: var(--delete-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    font-family: 'Trebuchet MS';
+}
+
+.delete-btn:hover {
+    background-color: var(--delete-hover-color);
+}
+
+.delete-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: var(--border-color);
+}
+
+.transfer-list-title {
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin-bottom: 20px;
+    color: var(--text-color);
+}
+
+.transfer-list-content {
+    display: flex;
+    gap: 16px;
+}
+
+.options-column {
+    flex: 1;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.column-header {
+    padding: 12px 16px;
+    font-weight: 500;
+    border-bottom: 1px solid var(--border-color);
+    background-color: #f8f9fa;
+}
+
+.options-list {
+    height: 300px;
+    overflow-y: auto;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.option-item {
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: all 0.2s ease-in-out;
+    font-family: 'Trebuchet MS';
+    font-size: 12px;
+}
+
+.option-item:hover {
+    background-color: var(--hover-color);
+}
+
+.option-item.selected {
+    background-color: var(--selected-color);
+    color: var(--primary-dark-color);
+    font-weight: 500;
+    border-left: 3px solid var(--primary-color);
+}
+
+.option-item .checkbox {
+    margin-right: 12px;
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--primary-color);
+    border-radius: 4px;
+    display: inline-block;
+    position: relative;
+}
+
+.option-item.selected .checkbox {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.option-item.selected .checkbox::after {
+    content: '';
+    position: absolute;
+    left: 4px;
+    top: 1px;
+    width: 4px;
+    height: 8px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.transfer-actions {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+}
+
+.transfer-btn {
+    background-color: white;
+    border: 2px solid var(--primary-color);
+    border-radius: 0.5em;
+    padding: 8px 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease-in-out;
+    font-family: 'Trebuchet MS';
+}
+
+.transfer-btn:hover {
+    background-color: var(--hover-color);
+    border-color: var(--button-hover-color);
+}
+
+.transfer-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    border-color: var(--border-color);
+    background-color: white;
+}
+
+.transfer-btn svg {
+    width: 20px;
+    height: 20px;
+    fill: var(--primary-color);
+    transition: all 0.2s ease-in-out;
+}
+
+.transfer-btn:hover svg {
+    fill: var(--button-hover-color);
+}

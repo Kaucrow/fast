@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exchange List</title>
+    <link rel="stylesheet" href="../js/css/FastExchangeList.css">
+</head>
+<body>
+    <div class="transfer-list-container">
+        <div class="list-configuration">
+            <div class="config-input">
+                <label for="left-title">Titulo lista izquierda:</label>
+                <input type="text" id="left-title" value="">
+                <button class="apply-btn" id="apply-left-title">Aplicar</button>
+            </div>
+            <div class="config-input">
+                <label for="right-title">Titulo lista derecha:</label>
+                <input type="text" id="right-title" value="">
+                <button class="apply-btn" id="apply-right-title">Aplicar</button>
+            </div>
+            <div class="config-input">
+                <label for="options-list">Opciones :</label>
+                <textarea id="options-list" rows="1"></textarea>
+                <div class="options-buttons">
+                    <button class="apply-btn" id="apply-options">Agregar </button>
+                    <button class="delete-btn" id="delete-options">Eliminar </button>
+                </div>
+            </div>
+        </div>
+        
+        <h1 class="transfer-list-title">Exchange List</h1>
+        
+        <div class="transfer-list-content">
+            <div class="options-column">
+                <div class="column-header">
+                    <span id="left-header"></span>
+                </div>
+                <ul class="options-list" id="available-options">
+                    <!-- Opciones se generarán dinámicamente -->
+                </ul>
+            </div>
+             
+            <div class="transfer-actions">
+                <button class="transfer-btn" id="add-btn" disabled>
+                    <svg viewBox="0 0 24 24">
+                        <path d="M10 17l5-5-5-5v10z"/>
+                    </svg>
+                </button>
+                <button class="transfer-btn" id="remove-btn" disabled>
+                    <svg viewBox="0 0 24 24">
+                        <path d="M14 7l-5 5 5 5V7z"/>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="options-column">
+                <div class="column-header">
+                    <span id="right-header"></span>
+                </div>
+                <ul class="options-list" id="selected-options">
+                    <!-- Opciones seleccionadas aparecerán aquí -->
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/com/FastExchangeList.js"></script>
+</body>
+</html>
