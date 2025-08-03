@@ -1,3 +1,4 @@
+import {FastIcon} from "./FastIcon.js"
 export const FastSliderText = class extends Fast {
     constructor(props) {
         super();
@@ -15,12 +16,11 @@ export const FastSliderText = class extends Fast {
 
     // Método privado para obtener el template HTML
     #getTemplate() {
-        const leftArrowUrl = new URL('../../images/icons/leftArrow.svg', import.meta.url).href;
-        const rightArrowUrl = new URL('../../images/icons/rightArrow.svg', import.meta.url).href;
-
         return `
                 <div class="main-content">
-                    <button id="prevBtn" class="arrow-btn"><img src="${leftArrowUrl}" alt="Previous"></button>
+                    <button id="prevBtn" class="arrow-btn">
+                        <fast-icon iconname="leftArrow"></fast-icon>
+                    </button>
                     <div class="slides-list">
                         <div class="slides">
                             ${this.slides.map((text) =>
@@ -28,9 +28,10 @@ export const FastSliderText = class extends Fast {
                             ).join('')}
                         </div>
                     </div>
-                    <button id="nextBtn" class="arrow-btn"><img src="${rightArrowUrl}" alt="Next"></button>
+                    <button id="nextBtn" class="arrow-btn">
+                        <fast-icon iconname="rightArrow"></fast-icon>
+                    </button>
                 </div>
-            </div>
         `;
     }
 
@@ -64,7 +65,103 @@ export const FastSliderText = class extends Fast {
         this.shadowRoot.querySelector('#prevBtn').onclick = () => this.prevSlide();
         this.shadowRoot.querySelector('#nextBtn').onclick = () => this.nextSlide();
 
+        this.#setupIconHover(); // Configurar hover de iconos
+        this.#removeIconBorders();
+
         this.#updateView();
+    }
+
+    // Método para eliminar bordes de los iconos
+    #removeIconBorders() {
+        // Esperar a que los fast-icon se rendericen completamente
+        setTimeout(() => {
+            const fastIcons = this.shadowRoot.querySelectorAll('fast-icon');
+            fastIcons.forEach(icon => {
+                // Acceder al shadow root del fast-icon
+                if (icon.shadowRoot) {
+                    const iconContainers = icon.shadowRoot.querySelectorAll('.FastIconContainer, .FastIconContainer:active, .FastIconContainer:focus');
+                    iconContainers.forEach(container => {
+                        container.style.border = 'none';
+                        container.style.boxShadow = 'none';
+                        container.style.outline = 'none';
+                    });
+                    
+                    // También eliminar bordes del SVG
+                    const svgElements = icon.shadowRoot.querySelectorAll('.FastIcon');
+                    svgElements.forEach(svg => {
+                        svg.style.outline = 'none';
+                        svg.style.border = 'none';
+                    });
+                }
+            });
+        }, 100);
+    }
+
+    #smallIcon(){
+        // Esperar a que los fast-icon se rendericen completamente
+        setTimeout(() => {
+            const fastIcons = this.shadowRoot.querySelectorAll('fast-icon');
+            fastIcons.forEach(icon => {
+                // Acceder al shadow root del fast-icon
+                if (icon.shadowRoot) {
+                    const iconContainers = icon.shadowRoot.querySelectorAll('.FastIcon');
+                    iconContainers.forEach(container => {
+                        container.style.width = '10px';
+                        container.style.height = '10px';
+                    });
+                }
+            });
+        }, 100);
+    }
+
+    // Método para manejar el hover de los iconos
+    #setupIconHover() {
+        const arrowButtons = this.shadowRoot.querySelectorAll('.arrow-btn');
+        
+        arrowButtons.forEach(button => {
+            const icon = button.querySelector('fast-icon');
+            
+            if (icon) {
+                // Evento mouseenter
+                button.addEventListener('mouseenter', () => {
+                    if (icon.shadowRoot) {
+                        // Cambiar el color del SVG directamente
+                        /* const svgElement = icon.shadowRoot.querySelector('.FastIcon');
+                        if (svgElement) {
+                            svgElement.style.fill = '#007bff';
+                            svgElement.style.transition = 'fill 0.3s ease';
+                        } */
+                        
+                        // También cambiar el contenedor si es necesario
+                        const iconContainers = icon.shadowRoot.querySelectorAll('.FastIconContainer');
+                        iconContainers.forEach(container => {
+                            container.style.transform = 'scale(1.1)';
+                            container.style.transition = 'transform 0.3s ease';
+                            container.style.padding = '0';
+                        });
+                    }
+                });
+                
+                // Evento mouseleave
+                button.addEventListener('mouseleave', () => {
+                    if (icon.shadowRoot) {
+                        // Restaurar el color original del SVG
+                        const svgElement = icon.shadowRoot.querySelector('.FastIcon');
+                        if (svgElement) {
+                            svgElement.style.fill = 'rgb(10, 70, 62)';
+                            svgElement.style.transition = '';
+                        }
+                        
+                        // Restaurar el contenedor
+                        const iconContainers = icon.shadowRoot.querySelectorAll('.FastIconContainer');
+                        iconContainers.forEach(container => {
+                            container.style.transform = '';
+                            container.style.transition = '';
+                        });
+                    }
+                });
+            }
+        });
     }
 
     // Actualiza la vista (transform e indicadores)
@@ -85,16 +182,8 @@ export const FastSliderText = class extends Fast {
         const arrows = this.shadowRoot.querySelector('.arrow-btn');
         if (slideContent && arrows) {
             const width = slideContent.offsetWidth;
-            if (width < 150) {
-                const slideContentElements = this.shadowRoot.querySelectorAll('.slide-content');
-                slideContentElements.forEach(element => {
-                    element.style.fontSize = '10px';
-                });
-                const arrow = this.shadowRoot.querySelectorAll('.arrow-btn img');
-                arrow.forEach(element=>{
-                    element.style.width = '10px';
-                    element.style.height = '10px';
-                })
+            if (width < 100) {
+                this.#smallIcon();
             }
         }
     }
@@ -216,16 +305,6 @@ export const FastSliderText = class extends Fast {
         if (this._isBuilt) { 
             this.#render();
         }
-    }
-
-    // Muestra la siguiente diapositiva
-    
-
-
-    // Añadida funcion para ir a una diapositiva específica
-    goToSlide(index) {
-        this.currentIndex = index;
-        this.#updateView();
     }
 
     // Devuelve el valor del texto activo
