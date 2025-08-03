@@ -1,6 +1,9 @@
 # Fast
 A collection of reusable web components maintained by Professor Jubert Pérez at [URU](https://uru.edu/), with contributions from Web Development 1 students.
 
+### README.md Translations
+* [🇪🇸 Español](README.es.md)
+
 ### Team Structure (May 2025)
 
 This project is collaboratively developed under the guidance of Professor Jubert Pérez by four student teams from Web Development 1:
@@ -11,7 +14,7 @@ This project is collaboratively developed under the guidance of Professor Jubert
 
 **Team 2** 
 * **Components**: SliderText, Grid, Card
-* **Members**: [Erick Semprún](https://github.com/Ejsll03), David Mundo, Carlos Bracho
+* **Members**: [Erick Semprún](https://github.com/Ejsll03), David Mundo, Carlos Bracho, [Juan Villasmil](https://github.com/jdvillasmil)
 
 **Team 3**
 * **Components**: Calendar, FieldSet
