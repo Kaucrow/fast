@@ -10,7 +10,7 @@
 }
 
 .slides-list { 
-    width: 70%;
+    width: 100%;
     overflow: hidden;
 }
 
@@ -105,14 +105,13 @@ button:not(.arrow-btn):hover, button:not(.arrow-btn):focus {
 
 .indicators {
     display: flex;
-    flex-direction: column;
-    align-items: center;
     justify-content: center;
-    z-index: 10;
+    margin-top: 18px;
+    gap: 8px;
 }
 
-/* Estilos de hover para los iconos */
-.arrow-btn:hover fast-icon {
-    filter: brightness(1.2) saturate(1.2);
-    transition: all 0.3s ease;
+.indicators .active {
+    background: rgb(24, 107, 103);
+    transform: scale(1.2);
+    box-shadow: 0 2px 8px rgba(0,123,255,0.18);
 }
