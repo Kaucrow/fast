@@ -69,6 +69,8 @@ export const FastSliderText = class extends Fast {
         this.#removeIconBorders();
 
         this.#updateView();
+
+        this.#attachContentClicks();
     }
 
     // Método para eliminar bordes de los iconos
@@ -182,8 +184,16 @@ export const FastSliderText = class extends Fast {
         const arrows = this.shadowRoot.querySelector('.arrow-btn');
         if (slideContent && arrows) {
             const width = slideContent.offsetWidth;
-            if (width < 100) {
-                this.#smallIcon();
+            if (width < 150) {
+                const slideContentElements = this.shadowRoot.querySelectorAll('.slide-content');
+                slideContentElements.forEach(element => {
+                    //element.style.fontSize = '10px';
+                });
+                const arrow = this.shadowRoot.querySelectorAll('.arrow-btn img');
+                arrow.forEach(element=>{
+                    //element.style.width = '10px';
+                    //element.style.height = '10px';
+                })
             }
         }
     }
@@ -234,6 +244,23 @@ export const FastSliderText = class extends Fast {
             this.#updateView();
         }
     }
+
+    #attachContentClicks() {
+        const contents = this.shadowRoot.querySelectorAll('.slide-content');
+        contents.forEach((div, idx) => {
+            div.onclick = () => {
+                this.dispatchEvent(new CustomEvent('slide-text-click', {
+                    bubbles: true,
+                    composed: true,
+                    detail: {
+                        text: div.textContent,
+                        index: idx
+                    }
+                }));
+            };
+        });
+    }
+
 
     // Obtiene el valor activo (para el calendario)
     getActiveValue() {

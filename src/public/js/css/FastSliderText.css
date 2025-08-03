@@ -3,15 +3,10 @@
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    width: 150px; 
-    height: 50px;
-    color: #111;
-    border-radius: 18px;
-    box-shadow: none;
-    border: 2px solid transparent;
-    backdrop-filter: blur(4px);
+    width: 130px; 
+    height: 20px;
+    padding: 4px 0;
     overflow: hidden;
-    min-height: 10px;
 }
 
 .slides-list { 
@@ -38,14 +33,11 @@
 
 .slide-content {
     display: inline-block;
-    font-size: auto;
-    letter-spacing: 0.5px;
+    font-size: 14px;
     box-sizing: border-box;
     color: #111;
-    width: auto;
-    min-width: 0;
+    width: 110px;
     text-align: center;
-    white-space: nowrap;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
@@ -70,7 +62,48 @@
     transition: opacity 0.3s, transform 0.2s;
 }
 
-fast-icon {
+.arrow-btn img {
+    width: 15px;
+    height: 15px;
+    filter: invert(27%) sepia(87%) saturate(656%) hue-rotate(134deg) brightness(95%) contrast(96%);
+}
+
+.arrow-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    transform: scale(1);
+}
+
+.arrow-btn:not(:disabled):hover {
+    transform: scale(1.4);
+    transition: all .6s ease;
+}
+
+.controls {
+    display: none; /* Oculta el contenedor de botones anterior */
+}
+
+button:not(.arrow-btn) {
+    background: linear-gradient(90deg, #00c6ff 0%, #0072ff 100%);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 0 2px;
+    border-radius: 7px;
+    box-shadow: 0 2px 8px rgba(0,123,255,0.10);
+    transition: background 0.3s, transform 0.2s;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+button:not(.arrow-btn):hover, button:not(.arrow-btn):focus {
+    background: linear-gradient(90deg, #0072ff 0%, #00c6ff 100%);
+    transform: translateY(-2px) scale(1.04);
+    outline: none;
+}
+
+.indicators {
     display: flex;
     flex-direction: column;
     align-items: center;
