@@ -1,96 +1,87 @@
+// FastFieldSet.js
 export const FastFieldSet = class extends Fast {
     constructor(props) {
         super();
         this.name = "FastFieldset";
-        this.props = props;
+        this.props = props || {};
         if (props && props.id) this.id = props.id;
         this.built = () => {};
         this.attachShadow({ mode: 'open' });
         this._isBuilt = false;
-        this.objectProps = new Map();
+        this.isRoot = this.hasAttribute('is-root') || !!this.props?.isRoot;
+
     }
 
     #getTemplate() {
         return `
-            <div class="FieldSet">
-                <div class="Title"></div>
-                <div class="Row"></div>
-            </div>
+            <fieldset class="FieldSet">
+                <legend class="Title"></legend>
+                <div class="Row">
+                    <slot></slot>
+                </div>
+                ${this.isRoot ? `
+                    <div class="button-container">
+                        <fast-button id = "Cancelar" caption="cancelar"></fast-button>
+                        <fast-button id = "Enviar" caption="Enviar"></fast-button>
+                    </div>
+                ` : ''}
+            </fieldset>
         `;
     }
 
+
+
     async #getCss() {
-        return await fast.getCssFile("FastFieldSet");
+        const response = await fetch('../js/css/FastFieldSet.css');
+        return await response.text();
     }
 
     #checkAttributes() {
-        return new Promise((resolve, reject) => {
-            try {
-                for (let attr of this.getAttributeNames()) {
-                    if (!attr.startsWith('on')) {
-                        this[attr] = this.getAttribute(attr);
-                    }
-                    if (attr === 'id') {
-                        fast.createInstance('FastFieldSet', { 'id': this[attr] });
-                    }
+        return new Promise((resolve) => {
+            this.props = this.props || {};
+            for (let attr of this.getAttributeNames()) {
+                if (!attr.startsWith('on')) {
+                    let val = this.getAttribute(attr);
+                    try { this.props[attr] = JSON.parse(val); } catch { this.props[attr] = val; }
+                    this[attr] = this.props[attr];
                 }
-                resolve(this);
-            } catch (e) {
-                reject(e);
             }
+            resolve(this);
         });
     }
 
     #checkProps() {
-        return new Promise((resolve, reject) => {
-            try {
-                if (this.props) {
-                    for (let prop in this.props) {
-                        switch (prop) {
-                            case 'style':
-                                for (let cssProp in this.props.style) {
-                                    this.shadowRoot.querySelector('.FieldSet').style[cssProp] = this.props.style[cssProp];
-                                }
-                                break;
-                            case 'events':
-                                for (let eventName in this.props.events) {
-                                    this.shadowRoot.querySelector('.FieldSet').addEventListener(eventName, this.props.events[eventName]);
-                                }
-                                break;
-                            case 'title':
-                                this.shadowRoot.querySelector('.Title').textContent = this.props[prop];
-                                break;
-                            default:
-                                this[prop] = this.props[prop];
-                                this.setAttribute(prop, this.props[prop]);
-                                if (prop === 'id') {
-                                    fast.createInstance('FastFieldSet', { 'id': this[prop] });
-                                }
+        return new Promise((resolve) => {
+            if (this.props) {
+                for (let prop in this.props) {
+                    if (prop === 'style') {
+                        for (let cssProp in this.props.style) {
+                            this.shadowRoot.querySelector('.FieldSet')
+                                .style.setProperty(cssProp, this.props.style[cssProp]);
                         }
+                    } else if (prop === 'title') {
+                        const titleDiv = this.shadowRoot.querySelector('.Title');
+                        if (titleDiv) titleDiv.textContent = this.props.title;
+                    } else {
+                        this.setAttribute(prop, this.props[prop]);
                     }
                 }
-                resolve(this);
-            } catch (e) {
-                reject(e);
             }
+            resolve(this);
         });
     }
 
     #render(css) {
         return new Promise((resolve, reject) => {
             try {
-                this.template = document.createElement('template');
-                this.template.innerHTML = this.#getTemplate();
-
-                let sheet = new CSSStyleSheet();
+                const tpl = document.createElement('template');
+                tpl.innerHTML = this.#getTemplate();
+                const sheet = new CSSStyleSheet();
                 sheet.replaceSync(css);
                 this.shadowRoot.adoptedStyleSheets = [sheet];
-
-                let clone = this.template.content.cloneNode(true);
-                this.mainElement = clone.querySelector('.FieldSet');
-                this.rowsContainer = this.mainElement.querySelector('.Row');
-                this.shadowRoot.appendChild(this.mainElement);
-
+                this.shadowRoot.appendChild(tpl.content.cloneNode(true));
+                this.mainElement = this.shadowRoot.querySelector('.FieldSet');
+                this.rowsContainer = this.shadowRoot.querySelector('.Row');
                 resolve(this);
             } catch (e) {
                 reject(e);
@@ -104,36 +95,105 @@ export const FastFieldSet = class extends Fast {
         await this.#checkProps();
         this._isBuilt = true;
         this.built(this);
+
+        this._registerButtonEvents();
+    }
+
+    _registerButtonEvents() {
+        const clearBtn = this.shadowRoot.querySelector('#Cancelar');
+        const saveBtn = this.shadowRoot.querySelector('#Enviar');
+
+        if (clearBtn) {
+            clearBtn.addEventListener('click', () => this._clearAll());
+        }
+
+        if (saveBtn) {
+            const patronesPorTipo = {
+                tx: /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/,    // texto
+                nm: /^\d{7,15}$/,                   // número telefono o similar
+                gm: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,  // gmail
+            };
+            saveBtn.addEventListener('click', () => this._validateAndSend(patronesPorTipo));
+        }
+    }
+
+    
+
+    _clearAll() {
+        this.querySelectorAll('input').forEach(i => {
+            i.value = '';
+            i.classList.remove('invalid');
+            const msg = i.nextElementSibling;
+            if (msg && msg.classList.contains('error-message')) msg.remove();
+        });
+    }
+
+    _validateAndSend(patronesPorTipo) {
+        const inputs = Array.from(this.querySelectorAll('input'));
+        let allValid = true;
+
+        inputs.forEach(input => {
+            input.classList.remove('invalid');
+            const msg = input.nextElementSibling;
+            if (msg && msg.classList.contains('error-message')) msg.remove();
+
+            const val = input.value.trim();
+            const tipo = input.dataset.valtype; // lee el atributo data-valtype
+
+            if (!val) {
+            allValid = false;
+            this._markError(input, 'Este campo es obligatorio');
+            } else if (tipo && patronesPorTipo[tipo] && !patronesPorTipo[tipo].test(val)) {
+            allValid = false;
+            this._markError(input, 'Formato inválido');
+            }
+        });
+
+        if (!allValid) {
+            const first = this.querySelector('input.invalid');
+            if (first) first.focus();
+            return;
+        }
+        this.sendData(this.getFields());
+        }
+
+
+    _markError(input, message) {
+        input.classList.add('invalid');
+        const err = document.createElement('div');
+        err.classList.add('error-message');
+        err.textContent = message;
+        input.insertAdjacentElement('afterend', err);
+    }
+
+    addContent(element) {
+        if (this.rowsContainer) this.rowsContainer.appendChild(element);
+    }
+
+    getFields() {
+        const data = {};
+        this.querySelectorAll('input').forEach(i => {
+            data[i.name] = i.value;
+        });
+        return data;
+    }
+
+
+    async sendData(data) {
+        try {
+            const res = await fetch('https://jsonplaceholder.typicode.com/posts', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            console.log('Datos enviados:', await res.json());
+        } catch (e) {
+            console.error('Error al enviar:', e);
+        }
     }
 
     addToBody() {
         document.body.appendChild(this);
-        return this;
-    }
-
-    addRowBody({ elements = [], style = {} }, index = null) {
-        let row = document.createElement('div');
-        row.classList.add('Row');
-
-        if (!Array.isArray(elements)) {
-            elements = [elements];
-        }
-
-        for (let e of elements) {
-            let field = document.createElement('div');
-            field.classList.add('Field');
-            field.appendChild(e);
-            row.appendChild(field);
-        }
-
-        Object.assign(row.style, style);
-
-        if (index === null || index >= this.rowsContainer.children.length) {
-            this.rowsContainer.appendChild(row);
-        } else {
-            this.rowsContainer.insertBefore(row, this.rowsContainer.children[index]);
-        }
-
         return this;
     }
 };

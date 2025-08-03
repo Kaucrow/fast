@@ -1,48 +1,46 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Formulario con FastFieldSet</title>
-    <script type="module" src="../js/com/Fast.js"></script>
-    <script type="module" src="../js/com/FastFieldSet.js"></script>
+  <meta charset="UTF-8">
+  <title>Formulario con Fieldsets</title>
+  <!-- Carga de Fast y registro de <fast-fieldset> -->
+  <script type="module" src="../js/com/Fast.js"></script>
+  <script type="module" src="../js/com/FastFieldSet.js"></script>
+  <script type="module" src="../js/com/FastButton.js"></script>
 </head>
 <body>
-    <script type="module">
-        let fastInit = async () => {
-            let d = await fast.createInstance("FastFieldSet", {
-                id: 'FieldSetJS',
-                title: 'Contacto',
-                style: {},
-            });
+  <fast-fieldset title="Formulario Principal" is-root>
+    <fast-fieldset  id="FieldSetJS" title="Datos Guardados">
+      <label for="nombre">Nombre:</label>
+      <input type="text" name="nombre" id="nombre" data-valtype="tx"/><br><br>
 
-            d.built = () => {
-                const createRow = (labelText, inputType = 'text') => {
-                    let label = document.createElement('label');
-                    label.textContent = labelText;
+      <label for="email">Correo:</label>
+      <input type="email" name="email" id="email" data-valtype="gm" /><br><br>
 
-                    let input;
-                    if (inputType === 'textarea') {
-                        input = document.createElement('textarea');
-                    } else {
-                        input = document.createElement('input');
-                        input.type = inputType;
-                    }
+      <label for="telefono">Teléfono:</label>
+      <input type="tel" name="telefono" id="telefono" data-valtype="nm"/><br><br>
 
-                    d.addRowBody({ elements: [label, input] });
-                };
+    </fast-fieldset>
 
-                createRow('Nombre:');
-                createRow('Apellido:');
-                createRow('Email:', 'email');
-                createRow('Mensaje:', 'textarea');
-            };
+    <fast-fieldset title="Dirección">
+      <label for="direccion">Dirección:</label>
+      <input type="text" name="direccion" id="direccion" data-valtype="tx"/><br><br>
 
-            d.addToBody();
-        };
+      <label for="ciudad">Ciudad:</label>
+      <input type="text" name="ciudad" id="ciudad" data-valtype="tx" /><br><br>
+    </fast-fieldset>
+  </fast-fieldset>
 
-        fastInit();
-    </script>
+  <!-- fastInit: punto de arranque para interactuar con tu <fast-fieldset> -->
+  <script type="module">
+    window.fastInit = async () => {
+      // Recupera la instancia estática
+      const fs = document.getElementById('FieldSetJS');
+      };
+
+    document.addEventListener('DOMContentLoaded', fastInit);
+  </script>
+
+  
 </body>
 </html>
-
-
