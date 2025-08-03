@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Treeview Web Component</title>
+  <link rel="icon" href="../images/icons/favicon.png" sizes="32x32" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+  <script type="module" src="../js/com/Fast.js"></script>
+</head>
+<body>
+  <script>
+      const treeData = [
+        {
+          label: "Root",
+          children: [
+            {
+              label: "Folder 1",
+              children: [
+                {
+                  label: "File 1.1",
+                  icon: "world",
+                  callback: () => console.log("Hello world!")
+                },
+              ]
+            },
+            {
+              label: "Folder 2",
+              children: [
+                {
+                  label: "File 2.1",
+                  icon: "edit"
+                },
+                { 
+                  label: "Subfolder 2.2",
+                  children: [
+                    {
+                      label: "File 2.2.1",
+                      icon: "config",
+                    },
+                    {
+                      label: "File 2.2.2",
+                      icon: "user",
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              label: "File 3",
+              icon: "exit"
+            }
+          ]
+        }
+      ];
+
+      let fastInit = async () => {
+        let treeview = await fast.createInstance("FastTreeview", {
+          'id': 'treeviewJS', 
+        });
+        treeview.built = () => {
+          console.log('Component built!');
+        }
+        treeview.addToBody();
+
+        treeview.data = treeData;
+
+        treeview.addEventListener('node-selected', (e) => {
+          console.log('Selected node:', e.detail.node.label);
+        });
+      };
+  </script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FastSlider Component</title>
+    <script type = "module" src="../js/com/Fast.js"></script>
+    <script src="../js/com/FastSlider.js"></script>
+</head>
+<body>
+
+    <fast-slider id="slider1" min="0" max="100" value="50" show-value></fast-slider>
+    <fast-slider id="slider2" min="0" max="100" value="25" orientation="vertical" show-value></fast-slider>
+
+    <div id="sliders"></div>
+    <script>
+        let fastInit = async () => {
+            let slider1 = await fast.createInstance("FastSlider", {
+                'id': "slider3",
+                'min': "0",
+                'max': "100",
+                'value': "60",
+                'show-value': true
+            });
+            let slider2 = await fast.createInstance("FastSlider", {
+                'id': "slider4",
+                'min': "0",
+                'max': "100",
+                'value': "30",
+                'orientation': "vertical"
+                
+            });
+            document.getElementById('sliders').appendChild(slider1);
+            document.getElementById('sliders').appendChild(slider2);
+        }
+        fastInit();
+    </script>
+</body>
+</html>
